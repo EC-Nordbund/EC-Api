@@ -35,7 +35,7 @@
     "express": "^4.16.3",
     "graphql": "^0.13.2",
     "graphql-subscriptions": "^0.5.8",
-    "js-sha3": "^0.7.0",
+    "js-sha3": "^0.8.0",
     "node-latex": "^2.4.4",
     "nodemailer": "^4.6.8",
     "promise-mysql": "^3.2.1"
