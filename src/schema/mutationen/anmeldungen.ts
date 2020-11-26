@@ -385,7 +385,7 @@ export default {
                 }
               } else {
                 if (maxWlistWeiblich > 0) {
-                  wartelistenplatz = maxWlistMännlich + 1
+                  wartelistenplatz = maxWlistWeiblich + 1
                 } else {
                   if (anzahlWeiblich < anzahlPlätzeWeiblich) {
                     if (anzahlGesamt < anzahlPlätze) {

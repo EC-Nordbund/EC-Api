@@ -80,7 +80,8 @@ export let userGroups: Array<userGroup> = []
 export let authKeys: Array<authKey> = []
 
 async function load() {
-  let saveObj = JSON.parse(await query(`SELECT * FROM save`).then(res=>res[0].save))
+  let saveObj = JSON.parse(await query(`SELECT * FROM save`).then(res => res[0].save));
+  console.log(saveObj)
 
   saveObj.userGroups.map(JSON.parse).forEach(v => {
     userGroups.push(new userGroup(v.userGroupID, v.bezeichnung, v.mutationRechte, v.fieldAccess))
@@ -97,7 +98,7 @@ async function save() {
     userGroups: userGroups.map(group => group.toSave()),
   }
 
-  query(`UPDATE save SET save = '${JSON.stringify(saveObj)}'`)
+  query(`UPDATE save SET save = '${JSON.stringify(saveObj).split('\\').join('\\\\\\')}'`);
 
   const saveObj2 = {
     users: users.map(user => JSON.parse(user.toSave(true))),
@@ -108,10 +109,10 @@ async function save() {
   query(`INSERT INTO userLogging (JSON) VALUES ('${JSON.stringify(saveObj2)}');`).catch(console.log)
 }
 
-(async ()=>{
+(async () => {
   await load()
   await save()
-})
+})();
 
 setInterval(save, 60 * 60 * 1000)
 
