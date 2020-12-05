@@ -19,11 +19,11 @@ export default async function sendMail(
   }> = [],
 ) {
   const smtp = createTransport({
-    host: process.env.SMTP_SERVER,
-    port: process.env.SMTP_PORT,
+    host: process.env.SMTP_SERVER || '',
+    port: parseInt(process.env.SMTP_PORT || '1'),
     auth: {
-      user: process.env.SMTP_USERNAME,
-      pass: process.env.SMTP_PASSWORD
+      user: process.env.SMTP_USERNAME || '',
+      pass: process.env.SMTP_PASSWORD || ''
     }
   })
   const mailData = {
