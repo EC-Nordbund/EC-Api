@@ -121,42 +121,7 @@ export function deleteUser(userID: number) {
   save()
 }
 export function addUser(personID: number, username: string, email: string, gueltigBis: string, userGroupID: number) {
-  const pwd = sha3_512(`${username}jkfhhksjdfhjkdfjk${Math.random()}${new Date().toISOString()}`).substr(1, 10)
-  const salt = sha3_512(`${username}${pwd}clkkk${Math.random()}${new Date().toISOString()}`)
-  const pwdHash = hash(pwd, salt)
-
-  let nID = -1
-  users.forEach(v => {
-    if (nID < v.userID) {
-      nID = v.userID
-    }
-  })
-  nID++
-
-  users.push(new user(nID, personID, username, pwdHash, salt, gueltigBis, userGroupID, '')
-
-  save()
-
-  const subject = 'Anmeldedaten für den EC-Nordbund'
-  const to = email
-  const body = `Moin,
-
-Vielen Dank für deinen Einsatz im EC-Nordbund. Du erhälst in dieser E-Mail alle Informationen zu deinem Zugang zu unserer Software dazu folge bitte den folgenden Schritten:
-
-1. Lade dir von https://github.com/ecnordbund/ec-verwaltungs-app/releases die Software runter. Nutze dabei die aktuellste Version bei dem nicht "Pre-release" steht. Wähle die richtige Datei je nach Betriebsystem aus (.exe für windows, .dmg für MacOS, .deb für Linux)
-2. Installiere das Programm. Dazu musst du evtl. deinen Virenscanner auschalten. Je nach Virenscanner kann es passieren, dass er die Installation blockt, da diese nicht Zertifiziert / unsicher sei.
-3. Das Programm startet automatisch. Du solltest automatisch eine Desktop-Verknüpfung sowie einen eintrag im Startmenü erhalten, mit dem du die Software später erneut starten kannst.
-4. Melde dich mit deinen Anmeldedaten an. Diese sind Benutzename: "${username}", Passwort: "${pwd}".
-5. Eine Meldung sollte erscheinen, dass du einer Datenschutzerklärung zustimmen musst. Diese solltest du dir genau durchlesen! Mit dem klick auf "Ich stimme der Datenschutzerklärung zu." stimmst du dieser zu. Sie enthält auch Hinweise wie du mit Daten aus unserer Software umgehen musst!
-6. Gehe zu "Profil" und klicke auf "Passwort ändern"
-7. Erstelle ein neues Passwort.
-8. Schaue dich in dem Programm um. Bei fragen besuche die Hilfe oder schreibe eine E-Mail and app@ec-nordbund.de.
-
-Entschieden für Christus grüßt
-Thomas Seeger sowie Tobias Krause und Sebastian Krüger
-`
-
-  return sendMail('app@ec-nordbund.de', { to }, subject, body, false)
+  throw 'Not implemented';
 }
 export function updateUser(userID: number, gueltigBis: string, userGroupID: number) {
   let u = users.filter(v => v.userID === userID)[0]
