@@ -233,11 +233,6 @@ async function mergePersonen (args: {personID_richtig: number, personID_falsch: 
     .map(sql=>query(sql));
   
   await Promise.all(mergeTabeles);
-  let mergeTabeles2 = ['adressen','eMails','telefone']
-    .map(table=>`DELETE IGNORE FROM ${table} WHERE personID = ${args.personID_falsch}`)
-    .map(sql=>query(sql));
-  
-  await Promise.all(mergeTabeles2);
   
   let telefone = await query(`SELECT * FROM telefone WHERE personID = ${args.personID_falsch}`);
   let telProms = telefone.map(async tel => {
@@ -269,6 +264,12 @@ async function mergePersonen (args: {personID_richtig: number, personID_falsch: 
     .map(sql=>query(sql));
   
   await Promise.all(mergeTabeles3);
+  
+  let mergeTabeles2 = ['adressen','eMails','telefone']
+    .map(table=>`DELETE IGNORE FROM ${table} WHERE personID = ${args.personID_falsch}`)
+    .map(sql=>query(sql));
+  
+  await Promise.all(mergeTabeles2);
   
   await query(`UPDATE fz SET gesehenVon = ${args.personID_richtig} WHERE gesehenVon = ${args.personID_falsch}`)
   await query(`UPDATE dublikate SET zielPersonID = ${args.personID_richtig} WHERE zielPersonID = ${args.personID_falsch}`)
