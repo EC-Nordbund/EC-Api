@@ -14,7 +14,7 @@ import {
   } from 'graphql';
 import { sha3_512 } from 'js-sha3';
 
-const wpTokens: Array<string> = [process.env.WP_TOKEN]
+const wpTokens: Array<string> = [process.env.WP_TOKEN || '']
 
 export default {
   anmeldungBesonderheiten: {
