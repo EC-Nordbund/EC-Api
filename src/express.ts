@@ -7,7 +7,7 @@ import * as express from 'express';
 
 export const getApp = (dev: boolean) => {
   const app = express()
-    .use(cors())
+    //.use(cors())
     .use(
       '/graphql',
       bodyParser.json(),
