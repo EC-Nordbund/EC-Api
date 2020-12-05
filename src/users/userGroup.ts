@@ -10,6 +10,6 @@ export class userGroup {
   ) { }
   
   toSave(): String {
-    return JSON.stringify(this, null, 2)
+    return JSON.stringify(this)
   }
 }
