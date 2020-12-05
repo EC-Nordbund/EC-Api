@@ -1,10 +1,10 @@
 import { createPool } from 'promise-mysql';
 
 const pool = createPool({
-  host: process.env.DB_HOST as string,
-  database: process.env.DB_DB as string,
-  user: process.env.DB_USERNAME as string,
-  password: process.env.DB_PASSWORT as string,
+  host: process.env.DB_HOST || '',
+  database: process.env.DB_DB || '',
+  user: process.env.DB_USERNAME || '',
+  password: process.env.DB_PASSWORT || '',
   connectionLimit: 18
 })
 
