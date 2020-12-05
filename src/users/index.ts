@@ -133,7 +133,7 @@ export function addUser(personID: number, username: string, email: string, guelt
   })
   nID++
 
-  users.push(new user(nID, personID, username, pwdHash, salt, gueltigBis, userGroupID, undefined))
+  users.push(new user(nID, personID, username, pwdHash, salt, gueltigBis, userGroupID, (undefined as unknown) as string))
 
   save()
 
