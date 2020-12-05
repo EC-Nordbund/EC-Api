@@ -34,9 +34,7 @@ export class user {
           ablaufDatum: this.ablaufDatum,
           userGroupID: this.userGroupID,
           pin: this.pin
-        },
-        null,
-        2
+        }
       )
     } else {
       return JSON.stringify(
@@ -49,9 +47,7 @@ export class user {
           ablaufDatum: this.ablaufDatum,
           userGroupID: this.userGroupID,
           pin: this.pin
-        },
-        null,
-        2
+        }
       )
     }
   }
