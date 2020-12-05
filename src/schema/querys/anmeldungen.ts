@@ -9,7 +9,7 @@ import { query } from '../mysql'
 import { getUser } from '../../users'
 import { anmeldung } from '../types'
 
-const wpTokens: Array<string> = [process.env.WP_TOKEN]
+const wpTokens: Array<string> = [process.env.WP_TOKEN || '']
 
 import { addAuth, handleAuth } from '../sonstiges'
 
