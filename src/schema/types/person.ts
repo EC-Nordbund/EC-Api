@@ -13,7 +13,7 @@ import {
   timeStamp,
   juleica,
   personTag
-  } from '.';
+} from '.';
 import {
   GraphQLBoolean,
   GraphQLInt,
@@ -21,7 +21,7 @@ import {
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
 export const _person = new GraphQLObjectType({
   name: 'person',
@@ -72,31 +72,31 @@ export const _person = new GraphQLObjectType({
     },
     adressen: {
       type: new GraphQLList(adresse),
-      resolve(parent: { personID: number }) {
+      resolve(parent: any) {
         return query(`SELECT * FROM adressen WHERE personID = ${parent.personID}`)
       },
     },
     emails: {
       type: new GraphQLList(email),
-      resolve(parent: { personID: number }) {
+      resolve(parent: any) {
         return query(`SELECT * FROM eMails WHERE personID = ${parent.personID}`)
       },
     },
     telefone: {
       type: new GraphQLList(telefon),
-      resolve(parent: { personID: number }) {
+      resolve(parent: any) {
         return query(`SELECT * FROM telefone WHERE personID = ${parent.personID}`)
       },
     },
     anmeldungen: {
       type: new GraphQLList(anmeldung),
-      resolve(parent: { personID: number }, args, context: { user: any }) {
+      resolve(parent: any, args, context: { user: any }) {
         return query(`SELECT * FROM anmeldungen WHERE personID = ${parent.personID}`)
       },
     },
     fzs: {
       type: new GraphQLList(fz),
-      resolve(parent: { personID: number }, args, context: { user: user }) {
+      resolve(parent: any, args, context: { user: user }) {
         if (
           context.user.checkAlowedFileds({
             table: 'personen',
@@ -111,7 +111,7 @@ export const _person = new GraphQLObjectType({
     },
     fzAntraege: {
       type: new GraphQLList(fzAntrag),
-      resolve(parent: { personID: number }, args, context: { user: user }) {
+      resolve(parent: any, args, context: { user: user }) {
         if (
           context.user.checkAlowedFileds({
             table: 'personen',
@@ -126,7 +126,7 @@ export const _person = new GraphQLObjectType({
     },
     datumDesLetztenFZ: {
       type: date,
-      resolve(parent: { personID: number }, args, context: { user: any }) {
+      resolve(parent: any, args, context: { user: any }) {
         return query(`SELECT fzVon FROM fz WHERE personID = ${parent.personID} ORDER BY gesehenAm DESC LIMIT 1`).then(rows => {
           if (rows.length === 0) {
             return null
@@ -143,7 +143,7 @@ export const _person = new GraphQLObjectType({
           type: GraphQLString,
         },
       },
-      resolve(parent: { personID: number }, args) {
+      resolve(parent: any, args) {
         if (args.wann === null) {
           args.wann = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
         }
@@ -164,7 +164,7 @@ export const _person = new GraphQLObjectType({
     },
     ecKreis: {
       type: ecKreis,
-      resolve(parent, args, context: { user: user }) {
+      resolve(parent: any, args, context: { user: user }) {
         if (
           context.user.checkAlowedFileds({
             table: 'personen',
@@ -183,7 +183,7 @@ export const _person = new GraphQLObjectType({
     },
     ecMitglied: {
       type: new GraphQLNonNull(GraphQLInt),
-      resolve(parent, args, context: { user: user }) {
+      resolve(parent: any, args, context: { user: user }) {
         if (
           context.user.checkAlowedFileds({
             table: 'personen',
@@ -198,19 +198,19 @@ export const _person = new GraphQLObjectType({
     },
     juleica: {
       type: new GraphQLList(juleica),
-      resolve(parent, _, context: { user: user }) {
+      resolve(parent: any, _, context: { user: user }) {
         return query(`SELECT * FROM juleica WHERE personID = ${parent.personID}`)
       },
     },
     tags: {
       type: new GraphQLList(personTag),
-      resolve(parent, _, context: { user: user }) {
+      resolve(parent: any, _, context: { user: user }) {
         return query(`SELECT * FROM tagsPersonen WHERE personID = ${parent.personID}`)
       },
     },
     ak: {
       type: new GraphQLList(personAK),
-      resolve(parent, _, context: { user: user }) {
+      resolve(parent: any, _, context: { user: user }) {
         if (
           context.user.checkAlowedFileds({
             table: 'personen',
@@ -230,7 +230,7 @@ export const _person = new GraphQLObjectType({
     },
     bisherigeRollen: {
       type: new GraphQLList(GraphQLInt),
-      resolve(parent, _, context: { user: user }) {
+      resolve(parent: any, _, context: { user: user }) {
         return query(`SELECT DISTINCT position FROM anmeldungen WHERE personID = ${parent.personID}`)
       },
     },
