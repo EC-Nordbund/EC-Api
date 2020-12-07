@@ -516,7 +516,7 @@ bignumber.js@9.0.0:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.0.tgz#805880f84a329b5eac6e7cb6f8274b6d82bdf075"
   integrity sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A==
 
-bluebird@^3.5.0:
+bluebird@^3.5.1:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
@@ -1068,7 +1068,7 @@ ms@2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
 
-mysql@^2.17.1:
+mysql@^2.18.1:
   version "2.18.1"
   resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.18.1.tgz#2254143855c5a8c73825e4522baf2ea021766717"
   integrity sha512-Bca+gk2YWmqp2Uf6k5NFEurwY/0td0cpebAucFpY/3jhrwrVGuxU2uQFCHjU19SJfje0yQvi+rVWdq78hR5lig==
@@ -1159,15 +1159,15 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-promise-mysql@^3.2.1:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/promise-mysql/-/promise-mysql-3.3.2.tgz#c98dc75794dac7f8b94a3e51808a4f63984a4dd8"
-  integrity sha512-b0Ew/FB33JXKdIEtExs9GuPTtTD29ABrIMSJlzakSL8AuiM+yLXIshc9lOY28+M3bNNXGNPllTWM/gDQ9FM+7g==
+promise-mysql@^4.1.4:
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/promise-mysql/-/promise-mysql-4.1.4.tgz#34327cab0c246068ae92ec9e8a7b7d142ed0ec84"
+  integrity sha512-gsO1+DsQvtEXG8X9jkN0Z5rwkDg0DrE/9MsVpv8djoid/cZbfA9djgzxDyXdMuPwXGxL3p+BRiEnCG3w0FoG2A==
   dependencies:
     "@types/bluebird" "^3.5.26"
     "@types/mysql" "^2.15.2"
-    bluebird "^3.5.0"
-    mysql "^2.17.1"
+    bluebird "^3.5.1"
+    mysql "^2.18.1"
 
 proxy-addr@~2.0.5:
   version "2.0.6"
