@@ -1143,10 +1143,10 @@ node-fetch@^2.1.2, node-fetch@^2.2.0:
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
   integrity sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
 
-node-latex@^2.4.4:
-  version "2.6.3"
-  resolved "https://registry.yarnpkg.com/node-latex/-/node-latex-2.6.3.tgz#3a086d5bc72bc7817214a8b0bb35f776d2b0f73c"
-  integrity sha512-c8dDWC4T26bU5wMCjGWJVn9xY3euRW+csvBYChtqXHSvC/l1H+YfFgvdIbx+h/OLWDZ0qD0xAZxNI6OwafWmrA==
+node-latex@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/node-latex/-/node-latex-3.0.0.tgz#024d2b2474dbcd6a753552644df0359756008c40"
+  integrity sha512-GrcJDu38/kSauDe6/V9j1wEHqwaUJyHJUb7xeGdvhQ0sofV1LecgyORRk7XEzyUFpV0jUCp1w0twvlb2T4CnqA==
   dependencies:
     "@types/node" "^11.12.0"
     fs-extra "^2.0.0"

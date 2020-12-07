@@ -36,7 +36,7 @@
     "graphql": "^15.4.0",
     "graphql-subscriptions": "^1.1.0",
     "js-sha3": "^0.8.0",
-    "node-latex": "^2.4.4",
+    "node-latex": "^3.0.0",
     "nodemailer": "^4.6.8",
     "promise-mysql": "^3.2.1"
   }
