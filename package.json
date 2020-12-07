@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/eventemitter2": "4.1.0",
     "@types/express": "4.17.0",
-    "@types/graphql": "0.13.4",
+    "@types/graphql": "14.2.3",
     "@types/node": "10.17.48",
     "typescript": "2.9.2"
   },
