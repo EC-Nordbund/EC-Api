@@ -1,5 +1,3 @@
-import { Stream } from 'stream'
-
-export const latex: (latex: string) => Stream = eval(
-  "require('node-latex')"
-)
+export function latex(latex: string) {
+  throw "LaTeX ist nicht implementiert"
+}
