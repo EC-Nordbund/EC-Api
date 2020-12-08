@@ -1,12 +1,12 @@
 import { query } from '../mysql';
 import { addAuth, handleAllowed } from '../sonstiges';
-import * as Promise from 'bluebird';
+
 import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
 export default {
   addAK: {
@@ -18,7 +18,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function(_, args) {
+    resolve: handleAllowed(async function (_, args) {
       await query(`INSERT INTO ak (bezeichnung) VALUES ('${args.bezeichnung}')`)
       const ak = await query(`SELECT akID FROM ak WHERE bezeichnung = '${args.bezeichnung}'`)
       return ak[0].akID
@@ -37,7 +37,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function(_, args) {
+    resolve: handleAllowed(async function (_, args) {
       await query(`UPDATE ak SET bezeichnung = '${args.bezeichnung}' WHERE akID = ${args.akID}`)
       return true
     }, 'editAK'),

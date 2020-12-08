@@ -1,12 +1,12 @@
 import { query } from '../mysql';
 import { addAuth, handleAllowed } from '../sonstiges';
-import * as Promise from 'bluebird';
+
 import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
 
 export default {
