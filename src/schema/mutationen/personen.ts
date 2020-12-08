@@ -1,7 +1,7 @@
 import { createFZ } from '../../serienbrief/fz';
 import { query } from '../mysql';
 import { addAuth, handleAllowed } from '../sonstiges';
-import * as Promise from 'bluebird';
+
 import {
   GraphQLBoolean,
   GraphQLInt,
@@ -159,8 +159,7 @@ export default {
     }),
     resolve: handleAllowed((_, args) => {
       query(
-        `UPDATE personen SET juLeiCaNr="${args.juLeiCaNr}",ecKreis=${args.ecKreis ? args.ecKreis : null},ecMitglied=${args.ecMitglied}, Fuehrerschein=${args.Fuehrerschein},Rettungsschwimmer=${
-          args.Rettungsschwimmer
+        `UPDATE personen SET juLeiCaNr="${args.juLeiCaNr}",ecKreis=${args.ecKreis ? args.ecKreis : null},ecMitglied=${args.ecMitglied}, Fuehrerschein=${args.Fuehrerschein},Rettungsschwimmer=${args.Rettungsschwimmer
         },ErsteHilfe=${args.ErsteHilfe},Notizen="${args.notizen}" WHERE personID=${args.personID}`,
       )
     }, 'editPersonSonstiges'),
@@ -201,7 +200,7 @@ export default {
     resolve: handleAllowed(async (_, args: any) => {
       await mergePersonen(args)
     }, 'mergePersonen'),
-  },  
+  },
   noMerge: {
     type: GraphQLBoolean,
     args: addAuth({
@@ -227,50 +226,50 @@ export default {
 }
 
 
-async function mergePersonen (args: {personID_richtig: number, personID_falsch: number}) {
-  let mergeTabeles = ['adressen','akPerson','anmeldungen','eMails','fz','fzAntrag','telefone', 'juleica', 'tagsPersonen']
-    .map(table=>`UPDATE IGNORE ${table} SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch}`)
-    .map(sql=>query(sql));
-  
+async function mergePersonen(args: { personID_richtig: number, personID_falsch: number }) {
+  let mergeTabeles = ['adressen', 'akPerson', 'anmeldungen', 'eMails', 'fz', 'fzAntrag', 'telefone', 'juleica', 'tagsPersonen']
+    .map(table => `UPDATE IGNORE ${table} SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch}`)
+    .map(sql => query(sql));
+
   await Promise.all(mergeTabeles);
-  
+
   let telefone = await query(`SELECT * FROM telefone WHERE personID = ${args.personID_falsch}`);
   let telProms = telefone.map(async tel => {
     let newTelID = await query(`SELECT telefonID FROM telefone WHERE telefon = '${tel.telefon}' AND personID = ${tel.personID}`);
     await query(`UPDATE anmeldungen SET telefonID = ${newTelID[0].telefonID} WHERE telefonID = ${args.personID_richtig}`)
   })
-  
+
   await Promise.all(telProms);
-  
+
   let emails = await query(`SELECT * FROM eMails WHERE personID = ${args.personID_falsch}`);
   let mailProms = emails.map(async mail => {
     let newMailID = await query(`SELECT eMailID FROM eMails WHERE eMail = '${mail.eMail}' AND personID = ${args.personID_richtig}`);
     await query(`UPDATE anmeldungen SET eMailID = ${newMailID[0].eMailID} WHERE eMailID = ${mail.eMailID}`)
   })
-  
+
   await Promise.all(mailProms);
-  
-  
+
+
   let adressen = await query(`SELECT * FROM adressen WHERE personID = ${args.personID_falsch}`);
   let adressProms = adressen.map(async adresse => {
     let newAdressID = await query(`SELECT adressID FROM adressen WHERE strasse = '${adresse.strasse}' AND plz = '${adresse.plz}' AND ort = '${adresse.ort}' AND personID = ${args.personID_richtig}`);
     await query(`UPDATE anmeldungen SET adressID = ${newAdressID[0].adressID} WHERE adressID = ${adresse.adressID}`)
   })
-  
+
   await Promise.all(adressProms);
-  
-  let mergeTabeles3 = ['adressen','eMails','telefone']
-    .map(table=>`DELETE IGNORE FROM ${table} WHERE personID = ${args.personID_falsch}`)
-    .map(sql=>query(sql));
-  
+
+  let mergeTabeles3 = ['adressen', 'eMails', 'telefone']
+    .map(table => `DELETE IGNORE FROM ${table} WHERE personID = ${args.personID_falsch}`)
+    .map(sql => query(sql));
+
   await Promise.all(mergeTabeles3);
-  
-  let mergeTabeles2 = ['adressen','eMails','telefone']
-    .map(table=>`DELETE IGNORE FROM ${table} WHERE personID = ${args.personID_falsch}`)
-    .map(sql=>query(sql));
-  
+
+  let mergeTabeles2 = ['adressen', 'eMails', 'telefone']
+    .map(table => `DELETE IGNORE FROM ${table} WHERE personID = ${args.personID_falsch}`)
+    .map(sql => query(sql));
+
   await Promise.all(mergeTabeles2);
-  
+
   await query(`UPDATE fz SET gesehenVon = ${args.personID_richtig} WHERE gesehenVon = ${args.personID_falsch}`)
   await query(`UPDATE dublikate SET zielPersonID = ${args.personID_richtig} WHERE zielPersonID = ${args.personID_falsch}`)
   let wrongData = await query(`SELECT vorname, nachname, gebDat FROM personen WHERE personID = ${args.personID_falsch}`);

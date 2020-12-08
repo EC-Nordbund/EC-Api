@@ -12,8 +12,7 @@ export const createFZ = (personID: number, email: string, adressID: number = -1)
         { to: email, bcc: 'fz@ec-nordbund.de;datenschutz@ec-nordbund.de' },
         'Erweitertes Führungszeugnis',
         `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
-        <p>du bist als Mitarbeiter${
-          p.geschlecht === 'w' ? 'in' : ''
+        <p>du bist als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''
         } im EC-Nordbund überregional oder in deiner Gemeinschaft/Gemeinde vor Ort tätig. Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>
         Der Gesetzgeber verlangt von uns, dass wir alle fünf Jahre Einsicht in ein <u><i>aktuelles</i> erweitertes Führungszeugnis</u> nehmen müssen.<br>
         Im Anhang findest du das Formular, mit dem Du <u>bei deiner zuständigen Meldebehörde</u> das Führungszeugnis beantragen kannst.<br>
@@ -140,7 +139,7 @@ Wir bitten darum, \\ecName{} Gebührenbefreiung gemäß §12 JVKostO zu gewähre
   `
 
   return new Promise<string>((res, rej) => {
-    let pdf = latex(latexCode)
+    let pdf = latex(latexCode) as any
     console.log(__dirname)
     pdf.pipe(createWriteStream(join(__dirname, '../../tmp/output.pdf')))
     pdf.on('error', rej)
