@@ -1,5 +1,6 @@
 import { query } from './mysql';
 import { createTransport } from 'nodemailer';
+import { Readable } from 'stream';
 
 interface empfaenger {
   to: string
@@ -14,7 +15,7 @@ export default async function sendMail(
   body: string,
   isHTML: boolean = true,
   attachments: Array<{
-    content: string
+    content: string | Readable
     filename: string
   }> = [],
 ) {
@@ -35,7 +36,7 @@ export default async function sendMail(
     ...(isHTML ? { html: body } : { text: body }),
     attachments: attachments.map(at => ({
       ...at,
-      encoding: 'base64',
+      ...(typeof at.content === 'string' ? { encoding: 'base64' } : {})
     })),
   }
   await smtp.sendMail(mailData)

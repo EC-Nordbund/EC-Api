@@ -2,7 +2,9 @@ import { latex } from './latex';
 import mail from '../schema/mail';
 import { query } from '../schema/mysql';
 import { createWriteStream, readFileSync } from 'fs';
+import { Readable } from "stream";
 import { join } from 'path';
+import createReport from "./generator";
 export const createFZ = (personID: number, email: string, adressID: number = -1) => {
   createFZWithData(personID, adressID).then(file => {
     query(`SELECT vorname, nachname, geschlecht FROM personen WHERE personID = ${personID}`).then(rows => {
@@ -23,18 +25,18 @@ export const createFZ = (personID: number, email: string, adressID: number = -1)
         <p>Entschieden für Christus grüßt</p>
         <p><b>ThomaS:-)</b></p>`,
         true,
-        [{ content: file, filename: 'fzAntrag.pdf' }],
+        [{ content: Readable.from(file), filename: 'fzAntrag.pdf' }],
       )
     })
   })
 }
 
-export function createFZWithData(personID: number, adressID: number = -1): Promise<string> {
+export function createFZWithData(personID: number, adressID: number = -1): Promise<NodeJS.ReadableStream> {
   return new Promise((res, rej) => {
     if (adressID === -1) {
       query(`SELECT adressID FROM adressen WHERE personID = ${personID} AND isOld = 0 ORDER BY lastUsed LIMIT 1`).then((row: Array<{ adressID: number }>) => {
         if (row.length === 0) {
-          res('Keine Gültige Adresse gefunden')
+          rej('Keine Gültige Adresse gefunden')
         } else {
           createFZWithData(personID, row[0].adressID).then(res)
         }
@@ -60,91 +62,19 @@ export function createFZWithData(personID: number, adressID: number = -1): Promi
   })
 }
 
-function createFZDocument(vorname: string, nachname: string, gebDat: string, strasse: string, plz: string, ort: string, geschlecht: string): Promise<string> {
-  const settings = `
-    \\newcommand{\\ecName}{${vorname} ${nachname}}
-    \\newcommand{\\ecGebDat}{${gebDat}}
-    \\newcommand{\\ecStrasse}{${strasse}}
-    \\newcommand{\\ecPLZ}{${plz}}
-    \\newcommand{\\ecOrt}{${ort}}
-    \\newcommand{\\ecGeschlecht}{${geschlecht === 'm' ? 0 : 1}}
-  `
+const fzDocument = readFileSync('./fz.docx')
 
-  const latexCode = `
-  \\documentclass[version=last]{scrlttr2}
-\\usepackage[ngerman]{babel}
-\\usepackage[T1]{fontenc}
-\\usepackage[utf8]{inputenc}
-\\usepackage{hyperref}
-\\usepackage{graphicx}
-\\usepackage{eso-pic}
-\\usepackage{tikz}
-\\parindent0mm
-
-\\usepackage[bottom=0em]{geometry}
-
-${settings}
-
-\\newcommand{\\ifGeschlecht}[2]{
-    \\ifnum\\ecGeschlecht=0
-        #1
-    \\else
-        #2
-    \\fi
-}
-
-
-\\makeatletter
-  \\@setplength{lochpos}{\\oddsidemargin}
-  \\@addtoplength{lochpos}{1.05in}
-\\makeatother
-
-\\renewcommand*{\\raggedsignature}{\\raggedright}
-\\usepackage{helvet}
-\\renewcommand{\\familydefault}{\\sfdefault}
-
-
-\\setkomavar{date}{}
-\\KOMAoptions{foldmarks=blmtp, firstfoot=false}
-\\setkomavar{subject}{Erweitertes Führungszeugnis}
-
-
-\\setkomavar{signature}{
-    \\begin{tikzpicture}
-         \\node[anchor=south west,inner sep=0] (Bild) at (0,0) {\\includegraphics[width=4cm]{/root/ec-api/master/tmp/unterschrift.png}};
-         \\draw[dashed] (0,1.1) -- (4,1.1);
-         \\node[anchor=south west,inner sep=0] (Bild) at (0.3,0.1) {Thomas Seeger};
-         \\begin{footnotesize}
-            \\node[anchor=south west,inner sep=0] (Bild) at (0.3,-0.45) {(EC-Nordbund)};
-         \\end{footnotesize}
-    \\end{tikzpicture}
-} 
-
-\\begin{document}
-\\begin{letter}{
-    ~~~~~\\ifGeschlecht{Herr}{Frau}\\ecName\\vspace{2.5mm}\\\\
-    ~~~~~~\\ecStrasse\\\\
-    ~~~~~~\\ecPLZ{} \\ecOrt
-}
-\\AddToShipoutPictureBG{\\includegraphics[width=\\paperwidth,height=\\paperheight]{/root/ec-api/master/tmp/hintergrund.png}}
-\\opening{Hiermit fordern wir, der EC-Nordbund,}
-\\ifGeschlecht{Herrn}{Frau}\\textbf{\\ecName} (\\ecGebDat) auf, für\\ifGeschlecht{seine}{ihre}Tätigkeit als \\textbf{\\ifGeschlecht{Mitarbeiter}{Mitarbeiterin}in unseren Kinder- und Jugendangeboten und auf unseren Freizeiten (Maßnahmen der Kinder- und Jugenderholung nach §11 SGB VIII)} bei der zuständigen Meldebehörde einen Antrag auf Ausstellung eines erweiterten Führungszeugnisses gem. §30a BZRG zu stellen und uns dieses vorzulegen. Gemäß §72a SGB VIII tragen wir als Träger der Jugendhilfe Verantwortung für die persönliche Eignung der bei uns tätigen Personen.\\\\
-
-Der EC-Nordbund ist anerkannter Träger der freien Jugendhilfe gemäß §75 SGB VIII und nimmt Aufgaben der Kinder- und Jugendhilfe im Sinne des §11 SGB VIII wahr. Wir bestätigen, dass die Voraussetzungen für die Erteilung eines erweiterten Führungszeugnisses nach §30a Abs. 1 BZRG vorliegen.\\\\
-
-Wir bitten darum, \\ecName{} Gebührenbefreiung gemäß §12 JVKostO zu gewähren, da es sich um eine ehrenamtliche Tätigkeit in unserem als gemeinnützig anerkannten Verein handelt.\\\\
-\\closing{Mit freundlichen Grüßen}
-\\end{letter}
-\\end{document}
-  `
-
-  return new Promise<string>((res, rej) => {
-    let pdf = latex(latexCode) as any
-    console.log(__dirname)
-    pdf.pipe(createWriteStream(join(__dirname, '../../tmp/output.pdf')))
-    pdf.on('error', rej)
-    pdf.on('finish', () => {
-      res(readFileSync(join(__dirname, '../../tmp/output.pdf')).toString('base64'))
-    })
+async function createFZDocument(vorname: string, nachname: string, gebDat: string, strasse: string, plz: string, ort: string, geschlecht: string): Promise<NodeJS.ReadableStream> {
+  const result = await createReport(fzDocument, {
+    vorname,
+    nachname,
+    gebDat,
+    strasse,
+    plz,
+    ort,
+    geschlecht
   })
+
+
+  return result
 }
