@@ -32,6 +32,7 @@ export default {
     'tty', 'url', 'util',
     'v8', 'vm', 'worker_threads',
     'zlib',
+    'docx-templates',
     'apollo-server-express',
     'compression',
     'cors',

@@ -1,4 +1,3 @@
-import { latex } from './latex';
 import mail from '../schema/mail';
 import { query } from '../schema/mysql';
 import { createWriteStream, readFileSync } from 'fs';
