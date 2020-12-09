@@ -281,10 +281,19 @@ export default {
           anmeldeID = anmeldeID_start + genFour() + anmeldeID_ende
         }
 
+        // TODO: check for Person in Dublikate Tabelle
+
         let persons = await query(`SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
         if (persons.length === 0) {
-          await query(`INSERT INTO personen (vorname, nachname, gebDat, geschlecht) VALUES ("${args.vorname}", "${args.nachname}", "${args.gebDat}", "${args.geschlecht}")`)
-          persons = await query(`SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
+          // check in dublikaten Table
+          let dubs = await query(`SELECT zielPersonID FROM dublikate WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
+
+          if(dubs.length === 0) {
+            await query(`INSERT INTO personen (vorname, nachname, gebDat, geschlecht) VALUES ("${args.vorname}", "${args.nachname}", "${args.gebDat}", "${args.geschlecht}")`)
+            persons = await query(`SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
+          } else {
+            persons = [{ personID: dubs[0].zielPersonID}]
+          }
         }
         const personID = persons[0].personID
 
