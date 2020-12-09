@@ -5,10 +5,10 @@ import { Readable } from "stream";
 import { join } from 'path';
 import createReport from "./generator";
 export const createFZ = (personID: number, email: string, adressID: number = -1) => {
-  createFZWithData(personID, adressID).then(file => {
+  return createFZWithData(personID, adressID).then(file => {
     query(`SELECT vorname, nachname, geschlecht FROM personen WHERE personID = ${personID}`).then(rows => {
       const p = rows[0]
-      mail(
+      return mail(
         'fz@ec-nordbund.de',
         { to: email, bcc: 'fz@ec-nordbund.de;datenschutz@ec-nordbund.de' },
         'Erweitertes Führungszeugnis',
