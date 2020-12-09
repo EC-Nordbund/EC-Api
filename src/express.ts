@@ -1,9 +1,9 @@
 import { schema } from './schema';
 import { appVersion } from './version';
 import { ApolloServer } from 'apollo-server-express';
-import * as cors from 'cors';
-import * as express from 'express';
-import * as compression from 'compression'
+import cors from 'cors';
+import express from 'express';
+import compression from 'compression'
 
 export const getApp = (dev: boolean) => {
   const apollo = new ApolloServer({ schema })

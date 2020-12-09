@@ -3,7 +3,6 @@ import { getUser } from '../../users';
 import sendMail from '../mail';
 import { query } from '../mysql';
 import { addAuth, handleAllowed } from '../sonstiges';
-import { writeFileSync } from 'fs';
 import {
   GraphQLBoolean,
   GraphQLFloat,
