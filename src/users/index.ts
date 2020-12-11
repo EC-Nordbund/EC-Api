@@ -1,15 +1,15 @@
-import { authKey } from './authKey';
 import { user } from './user';
 import { userGroup } from './userGroup';
 import sendMail from '../schema/mail';
 import { query } from '../schema/mysql';
 import { sha3_512 } from 'js-sha3';
+import { checkToken, createToken } from './jwt';
 
 function hash(pwd: string, salt: string): string {
   return sha3_512(salt + pwd)
 }
 
-export function login(username: string, password: string): string {
+export async function login(username: string, password: string) {
   const tmpDate = new Date()
   const getUsers = users
     .filter(v => v.userName === username)
@@ -22,62 +22,28 @@ export function login(username: string, password: string): string {
     let ckUser = getUsers[0]
     let h = hash(password, ckUser.salt)
     if (h === ckUser.pwdHash) {
-      let authToken = new authKey(ckUser)
-      authKeys.push(authToken)
-      return authToken.authToken
+      return await createToken({ userID: ckUser.userID })
     } else {
       throw 'Username und Password passen nicht zusammen'
     }
   }
 }
 
-export function logout(authToken: string): boolean {
-  authKeys = authKeys.filter(v => v.authToken !== authToken)
-  return true
-}
 
-export function extend(authToken: string): boolean {
-  const tmpDate = new Date()
-  let keys = authKeys
-    .filter(v => v.authToken === authToken)
-    .filter(v => {
-      return v.ablaufTime > tmpDate
-    })
-  if (keys.length !== 1) {
-    return false
-  } else {
-    keys[0].extend()
-    return true
-  }
-}
+export async function getUser(authToken: string): Promise<user> {
+  const data = await checkToken<{ userID: number }>(authToken)
+  const usersFound = users.filter(v => v.userID === data.userID)
 
-export function getUser(authToken: string): user {
-  const tmpDate = new Date()
-  const auth = authKeys
-    .filter(v => v.authToken === authToken)
-    .filter(v => {
-      return v.ablaufTime > tmpDate
-    })[0]
-  if (auth === undefined) {
+  if(usersFound.length !== 1) {
     throw 'User not Found'
   }
-  auth.extend()
-  return auth.user
+  return usersFound[0]
 }
 
-export function userReactivation(authToken: string, pin: string) {
-  const auth = authKeys
-    .filter(v => v.authToken === authToken)[0]
-  if (auth === undefined) {
-    throw 'User not Found'
-  }
-  auth.reactivate(pin)
-  return auth.user
-}
 
 export let users: Array<user> = []
 export let userGroups: Array<userGroup> = []
-export let authKeys: Array<authKey> = []
+// export let authKeys: Array<authKey> = []
 
 async function load() {
   let saveObj = JSON.parse(await query(`SELECT * FROM save`).then(res => res[0].save));

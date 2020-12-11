@@ -5,10 +5,8 @@ import {
   deleteUser,
   getUser,
   login,
-  logout,
-  updateUser,
-  userReactivation
-  } from '../../users';
+  updateUser
+} from '../../users';
 import mail from '../mail';
 import { query } from '../mysql';
 import { addAuth, handleAllowed } from '../sonstiges';
@@ -17,17 +15,9 @@ import {
   GraphQLInt,
   GraphQLNonNull,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
 export default {
-  logOut: {
-    type: new GraphQLNonNull(GraphQLBoolean),
-    description: 'Abmelden',
-    args: addAuth(),
-    resolve(_, args) {
-      return logout(args.authToken)
-    },
-  },
   logIn: {
     type: new GraphQLNonNull(GraphQLString),
     description: 'Anmelden',
@@ -128,8 +118,8 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve(_, args) {
-      return changePWD(getUser(args.authToken).userID, args.oldPWD, args.newPWD)
+    async resolve(_, args) {
+      return changePWD((await getUser(args.authToken)).userID, args.oldPWD, args.newPWD)
     },
   },
   acceptsDSE: {
@@ -139,7 +129,7 @@ export default {
     async resolve(_, args) {
       const dse = await query(`SELECT * FROM dse WHERE guelitgAb < CURRENT_TIMESTAMP ORDER BY guelitgAb DESC LIMIT 1`).then(v => v[0])
 
-      await query(`INSERT INTO DSGVO_Person (personID, dseID) VALUES (${getUser(args.authToken).userID}, ${dse.DSEID});`)
+      await query(`INSERT INTO DSGVO_Person (personID, dseID) VALUES (${(await getUser(args.authToken)).userID}, ${dse.DSEID});`)
 
       return true
     },
@@ -194,19 +184,5 @@ export default {
           Sonstiges: ${args.sonstiges}`,
       )
     },
-  },
-  reActivate: {
-    type: GraphQLBoolean,
-    args: {
-      authToken: {
-        type: new GraphQLNonNull(GraphQLString)
-      },
-      pin: {
-        type: new GraphQLNonNull(GraphQLString)
-      }
-    },
-    resolve(_, args) {
-      return userReactivation(args.authToken, args.pin)      
-    },
-  },
+  }
 }
