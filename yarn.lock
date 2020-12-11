@@ -1678,10 +1678,22 @@ sourcemap-codec@^1.4.4:
   resolved "https://registry.yarnpkg.com/sourcemap-codec/-/sourcemap-codec-1.4.8.tgz#ea804bd94857402e6992d05a38ef1ae35a9ab4c4"
   integrity sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==
 
+sql-escape-tag@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/sql-escape-tag/-/sql-escape-tag-1.0.0.tgz#899b60aefed81e0fd28cdf1a8f60f0012f49a770"
+  integrity sha512-bZQZNedlJnV9Nq7LZnccC7s/TTB4Dj6u+wlWpaWYFiX2ZBMSvpbJ2Xx3yHyEs/LLM8++EVyfG0SdvEHz7U8sQg==
+  dependencies:
+    sqlstring "^2.3.2"
+
 sqlstring@2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.1.tgz#475393ff9e91479aea62dcaf0ca3d14983a7fb40"
   integrity sha1-R1OT/56RR5rqYtyvDKPRSYOn+0A=
+
+sqlstring@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.2.tgz#cdae7169389a1375b18e885f2e60b3e460809514"
+  integrity sha512-vF4ZbYdKS8OnoJAWBmMxCQDkiEBkGQYU7UZPtL8flbDRSNkhaXvRJ279ZtI6M+zDaQovVU4tuRgzK5fVhvFAhg==
 
 "statuses@>= 1.5.0 < 2", statuses@~1.5.0:
   version "1.5.0"

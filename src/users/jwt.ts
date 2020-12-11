@@ -47,4 +47,12 @@ export function checkToken<T = any>(token: string) {
   });
 }
 
-(async () => { console.log(await checkToken(await createToken({ 'test': 123 }))); console.log(await createToken({ 'test': 123 })) })()
+export async function checkAuth(authToken: string): Promise<boolean> {
+  return !! await checkToken(authToken)
+}
+
+export async function checkAuthThrow(authToken: string) {
+  if (!await checkAuth(authToken)) {
+    throw 'Not allowed'
+  }
+}

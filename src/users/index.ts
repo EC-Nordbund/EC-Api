@@ -34,7 +34,7 @@ export async function getUser(authToken: string): Promise<user> {
   const data = await checkToken<{ userID: number }>(authToken)
   const usersFound = users.filter(v => v.userID === data.userID)
 
-  if(usersFound.length !== 1) {
+  if (usersFound.length !== 1) {
     throw 'User not Found'
   }
   return usersFound[0]
@@ -82,13 +82,7 @@ async function save() {
 
 setInterval(save, 60 * 60 * 1000)
 
-export function deleteUser(userID: number) {
-  users = users.filter(v => v.userID !== userID)
-  save()
-}
-export function addUser(personID: number, username: string, email: string, gueltigBis: string, userGroupID: number) {
-  throw 'Not implemented';
-}
+
 export function updateUser(userID: number, gueltigBis: string, userGroupID: number) {
   let u = users.filter(v => v.userID === userID)[0]
   u.ablaufDatum = gueltigBis
