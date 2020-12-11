@@ -117,7 +117,7 @@ export default {
         'automated@ec-nordbund.de',
         { to: "2pi_r2@gmx.de; BirgitHerbert@t-online.de; an-gela@gmx.net; referent@ec-nordbund.de" },
         `Neue Abmeldung`,
-        `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`,
+        `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`,
       )
     }, 'anmeldungAbmelden'),
   },
@@ -501,7 +501,7 @@ export default {
               'automated@ec-nordbund.de',
               { to: vData.informAnmeldecenter },
               `Neue Anmeldung bei Veranstaltung ${vData.bezeichnung}`,
-              `<h1>Neue Anmeldung</h1><p>Es gibt eine Anmeldung mit der AnmeldeID: ${anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/anmeldungen/${anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`,
+              `<h1>Neue Anmeldung</h1><p>Es gibt eine Anmeldung mit der AnmeldeID: ${anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`,
             )
           }
 
