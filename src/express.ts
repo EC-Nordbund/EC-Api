@@ -10,6 +10,9 @@ export const getApp = (dev: boolean) => {
   const app = express()
     .use(compression())
     .use(cors())
+    .use('/time', (req, res) => {
+      res.end(`{"time": ${new Date().getTime()}}`)
+    })
     .use('/check', (req, res) => {
       res.end('{online: true}')
     })
