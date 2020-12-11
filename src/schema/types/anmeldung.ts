@@ -65,19 +65,7 @@ export const _anmeldung = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLInt),
     },
     bisherBezahlt: {
-      type: new GraphQLNonNull(GraphQLFloat),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'finanzen',
-          })
-        ) {
-          return parent.bisherBezahlt
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLFloat)
     },
     anmeldeZeitpunkt: {
       type: new GraphQLNonNull(timeStamp),
@@ -86,214 +74,46 @@ export const _anmeldung = new GraphQLObjectType({
       type: timeStamp,
     },
     abmeldeGebuehr: {
-      type: GraphQLInt,
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'finanzen',
-          })
-        ) {
-          return parent.abmeldeGebuehr
-        } else {
-          return null
-        }
-      },
+      type: GraphQLInt
     },
     wegDerAbmeldung: {
-      type: GraphQLString,
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'abmeldung',
-          })
-        ) {
-          return parent.wegDerAbmeldung
-        } else {
-          return null
-        }
-      },
+      type: GraphQLString
     },
     rueckbezahlt: {
-      type: GraphQLFloat,
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'finanzen',
-          })
-        ) {
-          return parent.rueckbezahlt
-        } else {
-          return null
-        }
-      },
+      type: GraphQLFloat
     },
     kommentarAbmeldung: {
-      type: GraphQLString,
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'abmeldung',
-          })
-        ) {
-          return parent.kommentarAbmeldung
-        } else {
-          return null
-        }
-      },
+      type: GraphQLString
     },
     vegetarisch: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'bemerkungen',
-          })
-        ) {
-          return parent.vegetarisch
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     lebensmittelAllergien: {
-      type: new GraphQLNonNull(GraphQLString),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'bemerkungen',
-          })
-        ) {
-          return parent.lebensmittelAllergien
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLString)
     },
     gesundheitsinformationen: {
-      type: new GraphQLNonNull(GraphQLString),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'bemerkungen',
-          })
-        ) {
-          return parent.gesundheitsinformationen
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLString)
     },
     bemerkungen: {
-      type: new GraphQLNonNull(GraphQLString),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'bemerkungen',
-          })
-        ) {
-          return parent.bemerkungen
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLString)
     },
     radfahren: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'erlaubnisse',
-          })
-        ) {
-          return parent.radfahren
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     fahrgemeinschaften: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'erlaubnisse',
-          })
-        ) {
-          return parent.fahrgemeinschaften
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     klettern: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'erlaubnisse',
-          })
-        ) {
-          return parent.klettern
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     sichEntfernen: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'erlaubnisse',
-          })
-        ) {
-          return parent.sichEntfernen
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     bootFahren: {
-      type: new GraphQLNonNull(GraphQLBoolean),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'erlaubnisse',
-          })
-        ) {
-          return parent.bootFahren
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     schwimmen: {
-      type: new GraphQLNonNull(GraphQLInt),
-      resolve(parent, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'anmeldungen',
-            field: 'erlaubnisse',
-          })
-        ) {
-          return parent.schwimmen
-        } else {
-          return null
-        }
-      },
+      type: new GraphQLNonNull(GraphQLInt)
     },
     DSGVO_einverstaendnis: {
       type: new GraphQLNonNull(timeStamp),

@@ -1,14 +1,10 @@
 import { versions } from '../../nichtErlaubteVersionen';
 import {
-  addUser,
   changePWD,
-  deleteUser,
   getUser,
-  login,
-  updateUser
+  login
 } from '../../users';
 import mail from '../mail';
-import { query } from '../mysql';
 import { addAuth, handleAllowed } from '../sonstiges';
 import {
   GraphQLBoolean,
@@ -42,69 +38,6 @@ export default {
       return login(args.username, args.password)
     },
   },
-  addUser: {
-    type: GraphQLBoolean,
-    description: 'Benutzer hinzufügen',
-    args: addAuth({
-      username: {
-        description: 'Benutzername',
-        type: new GraphQLNonNull(GraphQLString),
-      },
-      email: {
-        description: 'E-Mail an die das Passwort gesendet wird',
-        type: new GraphQLNonNull(GraphQLString),
-      },
-      personID: {
-        description: 'Person die dem User zugeordnet wird',
-        type: new GraphQLNonNull(GraphQLInt),
-      },
-      userGroupID: {
-        description: 'ID der Benutzergruppe (Rechte).',
-        type: new GraphQLNonNull(GraphQLInt),
-      },
-      ablaufDatum: {
-        description: 'Zeitpunkt an dem der User ungültig wird',
-        type: new GraphQLNonNull(GraphQLString),
-      },
-    }),
-    resolve: handleAllowed((_, args) => {
-      return addUser(args.personID, args.username, args.email, args.ablaufDatum, args.userGroupID)
-    }, 'editUser'),
-  },
-  editUser: {
-    type: GraphQLBoolean,
-    description: 'Benutzer editieren',
-    args: addAuth({
-      userID: {
-        description: 'Welcher Benutzer soll editiert werden',
-        type: new GraphQLNonNull(GraphQLInt),
-      },
-      userGroupID: {
-        description: 'ID der neuen Benutzergruppe',
-        type: new GraphQLNonNull(GraphQLInt),
-      },
-      ablaufDatum: {
-        description: 'Von Zeitpunkt an dem der User ungültig wird',
-        type: new GraphQLNonNull(GraphQLString),
-      },
-    }),
-    resolve: handleAllowed((_, args) => {
-      return updateUser(args.userID, args.ablaufDatum, args.userGroupID)
-    }, 'editUser'),
-  },
-  deleteUser: {
-    type: GraphQLBoolean,
-    description: 'Benutzer löschen',
-    args: addAuth({
-      userID: {
-        description: 'ID des Benutzer',
-        type: new GraphQLNonNull(GraphQLInt),
-      },
-    }),
-    resolve: handleAllowed((_, args) => {
-      return deleteUser(args.userID)
-    }, 'editUser'),
-  },
   passwordWechseln: {
     type: GraphQLBoolean,
     description: 'Passwort wechseln',
@@ -121,31 +54,6 @@ export default {
     async resolve(_, args) {
       return changePWD((await getUser(args.authToken)).userID, args.oldPWD, args.newPWD)
     },
-  },
-  acceptsDSE: {
-    type: GraphQLBoolean,
-    description: 'Datenschutzhinweise akzeptieren',
-    args: addAuth(),
-    async resolve(_, args) {
-      const dse = await query(`SELECT * FROM dse WHERE guelitgAb < CURRENT_TIMESTAMP ORDER BY guelitgAb DESC LIMIT 1`).then(v => v[0])
-
-      await query(`INSERT INTO DSGVO_Person (personID, dseID) VALUES (${(await getUser(args.authToken)).userID}, ${dse.DSEID});`)
-
-      return true
-    },
-  },
-  addDSE: {
-    type: GraphQLBoolean,
-    description: 'Neue Datenschutz',
-    args: addAuth({
-      text: {
-        description: 'HTML der Datenschutzhinweise',
-        type: new GraphQLNonNull(GraphQLString),
-      },
-    }),
-    resolve: handleAllowed((_, args) => {
-      return query(`INSERT INTO dse (text) VALUES ("${args.text}")`).then(v => true)
-    }, 'editDSE'),
   },
   feedback: {
     type: GraphQLBoolean,

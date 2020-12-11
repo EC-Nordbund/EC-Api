@@ -2,7 +2,7 @@ import { createFZ } from '../../serienbrief/fz';
 import { getUser } from '../../users';
 import sendMail from '../mail';
 import { query } from '../mysql';
-import { addAuth, handleAllowed } from '../sonstiges';
+import { addAuth, handleAllowed, checkAuth } from '../sonstiges';
 import {
   GraphQLBoolean,
   GraphQLFloat,
@@ -10,8 +10,9 @@ import {
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 import { sha3_512 } from 'js-sha3';
+import { checkToken } from '../../users/jwt';
 
 const wpTokens: Array<string> = [process.env.WP_TOKEN || '']
 
@@ -37,8 +38,7 @@ export default {
     }),
     resolve: handleAllowed((_, args) => {
       return query(
-        `UPDATE anmeldungen SET vegetarisch = ${args.vegetarisch}, lebensmittelAllergien="${args.lebensmittelAllergien}", gesundheitsinformationen="${args.gesundheitsinformationen}", bemerkungen="${
-          args.bemerkungen
+        `UPDATE anmeldungen SET vegetarisch = ${args.vegetarisch}, lebensmittelAllergien="${args.lebensmittelAllergien}", gesundheitsinformationen="${args.gesundheitsinformationen}", bemerkungen="${args.bemerkungen
         }" WHERE anmeldeID="${args.anmeldeID}"`,
       )
     }, 'anmeldungBesonderheiten'),
@@ -109,8 +109,7 @@ export default {
     }),
     resolve: handleAllowed((_, args) => {
       query(
-        `UPDATE anmeldungen SET wartelistenPlatz=-1,abmeldeZeitpunkt=CURRENT_TIMESTAMP,abmeldeGebuehr=${args.gebuehr},wegDerAbmeldung="${args.weg}", kommentarAbmeldung="${args.kommentar}" WHERE anmeldeID = "${
-          args.anmeldeID
+        `UPDATE anmeldungen SET wartelistenPlatz=-1,abmeldeZeitpunkt=CURRENT_TIMESTAMP,abmeldeGebuehr=${args.gebuehr},wegDerAbmeldung="${args.weg}", kommentarAbmeldung="${args.kommentar}" WHERE anmeldeID = "${args.anmeldeID
         }"`,
       )
       sendMail(
@@ -138,8 +137,7 @@ export default {
               if (v.hatGWarteliste) {
                 query(`UPDATE anmeldungen SET wartelistenPlatz=0 WHERE anmeldeID="${args.anmeldeID}"`).then(v => {
                   query(
-                    `UPDATE anmeldungen SET wartelistenPlatz=wartelistenPlatz-1 WHERE wartelistenPlatz > ${
-                      r.wartelistenPlatz
+                    `UPDATE anmeldungen SET wartelistenPlatz=wartelistenPlatz-1 WHERE wartelistenPlatz > ${r.wartelistenPlatz
                     } AND personen.personID = anmeldungen.personID AND personen.geschlecht = "${r.geschlecht}"`,
                   )
                 })
@@ -246,7 +244,7 @@ export default {
       if (args.isWP) {
         allowed = wpTokens.indexOf(args.token) !== -1
       } else {
-        allowed = getUser(args.token).userGroup.mutationRechte.indexOf('anmelden') !== -1
+        allowed = await checkToken(args.token)
       }
 
       if (allowed) {
@@ -287,11 +285,11 @@ export default {
           // check in dublikaten Table
           let dubs = await query(`SELECT zielPersonID FROM dublikate WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
 
-          if(dubs.length === 0) {
+          if (dubs.length === 0) {
             await query(`INSERT INTO personen (vorname, nachname, gebDat, geschlecht) VALUES ("${args.vorname}", "${args.nachname}", "${args.gebDat}", "${args.geschlecht}")`)
             persons = await query(`SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
           } else {
-            persons = [{ personID: dubs[0].zielPersonID}]
+            persons = [{ personID: dubs[0].zielPersonID }]
           }
         }
         const personID = persons[0].personID
@@ -328,13 +326,11 @@ export default {
           let wartelistenplatz = 0
           if (args.position === 1) {
             const maxWListPlatz: Array<any> = await query(
-              `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS maxWlistPos FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${
-                args.veranstaltungsID
+              `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS maxWlistPos FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID
               } GROUP BY personen.geschlecht`,
             )
             const anzahlPersonen: Array<any> = await query(
-              `SELECT COUNT(personen.personID) AS anzahlPersonen, personen.geschlecht AS geschlecht FROM personen, anmeldungen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${
-                args.veranstaltungsID
+              `SELECT COUNT(personen.personID) AS anzahlPersonen, personen.geschlecht AS geschlecht FROM personen, anmeldungen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID
               } AND anmeldungen.wartelistenPlatz = 0 GROUP BY personen.geschlecht`,
             )
 
@@ -522,7 +518,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function(_, args) {
+    resolve: handleAllowed(async function (_, args) {
       await query(`UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`)
       return true
     }, 'anmeldungBesonderheiten'),
@@ -534,7 +530,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function(_, args) {
+    resolve: handleAllowed(async function (_, args) {
       await query(`UPDATE anmeldungen SET infoBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`)
       return true
     }, 'anmeldungBesonderheiten'),

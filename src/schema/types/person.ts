@@ -97,31 +97,13 @@ export const _person = new GraphQLObjectType({
     fzs: {
       type: new GraphQLList(fz),
       resolve(parent: any, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'personen',
-            field: 'fz',
-          })
-        ) {
-          return query(`SELECT * FROM fz WHERE personID = ${parent.personID}`)
-        } else {
-          return []
-        }
+        return query(`SELECT * FROM fz WHERE personID = ${parent.personID}`)
       },
     },
     fzAntraege: {
       type: new GraphQLList(fzAntrag),
       resolve(parent: any, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'personen',
-            field: 'fzAntrag',
-          })
-        ) {
-          return query(`SELECT * FROM fzAntrag WHERE personID = ${parent.personID}`)
-        } else {
-          return []
-        }
+        return query(`SELECT * FROM fzAntrag WHERE personID = ${parent.personID}`)
       },
     },
     datumDesLetztenFZ: {
@@ -165,36 +147,15 @@ export const _person = new GraphQLObjectType({
     ecKreis: {
       type: ecKreis,
       resolve(parent: any, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'personen',
-            field: 'ecKreis',
-          })
-        ) {
-          if (parent.ecKreis === null) {
-            return null
-          } else {
-            return query(`SELECT * FROM ecKreis WHERE ecKreisID = ${parent.ecKreis}`).then(rows => rows[0])
-          }
-        } else {
+        if (parent.ecKreis === null) {
           return null
+        } else {
+          return query(`SELECT * FROM ecKreis WHERE ecKreisID = ${parent.ecKreis}`).then(rows => rows[0])
         }
       },
     },
     ecMitglied: {
-      type: new GraphQLNonNull(GraphQLInt),
-      resolve(parent: any, args, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'personen',
-            field: 'ecMitglied',
-          })
-        ) {
-          return parent.ecMitglied
-        } else {
-          return -1
-        }
-      },
+      type: new GraphQLNonNull(GraphQLInt)
     },
     juleica: {
       type: new GraphQLList(juleica),
@@ -211,21 +172,12 @@ export const _person = new GraphQLObjectType({
     ak: {
       type: new GraphQLList(personAK),
       resolve(parent: any, _, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'personen',
-            field: 'ak',
-          })
-        ) {
-          return query(`SELECT akID FROM akPerson WHERE personID = ${parent.personID} GROUP BY akID`).then(v =>
-            v.map(el => ({
-              akID: el.akID,
-              personID: parent.personID,
-            })),
-          )
-        } else {
-          return []
-        }
+        return query(`SELECT akID FROM akPerson WHERE personID = ${parent.personID} GROUP BY akID`).then(v =>
+          v.map(el => ({
+            akID: el.akID,
+            personID: parent.personID,
+          })),
+        )
       },
     },
     bisherigeRollen: {

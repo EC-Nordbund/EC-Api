@@ -7,7 +7,7 @@ import {
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
 export const _ak = new GraphQLObjectType({
   name: 'ak',
@@ -21,20 +21,11 @@ export const _ak = new GraphQLObjectType({
     personen: {
       type: new GraphQLList(personAK),
       async resolve(parent, _, context: { user: user }) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'personen',
-            field: 'ak',
-          })
-        ) {
-          const persons = await query(`SELECT personID FROM akPerson WHERE akID = ${parent.akID} GROUP BY personID`)
-          return persons.map(person => ({
-            personID: person.personID,
-            akID: parent.akID,
-          }))
-        } else {
-          return []
-        }
+        const persons = await query(`SELECT personID FROM akPerson WHERE akID = ${parent.akID} GROUP BY personID`)
+        return persons.map(person => ({
+          personID: person.personID,
+          akID: parent.akID,
+        }))
       },
     },
   }),

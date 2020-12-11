@@ -1,11 +1,6 @@
 import { userGroup } from './userGroup';
 import { userGroups } from '.';
 
-interface fieldAlowed {
-  table: string
-  field: string
-}
-
 export class user {
   public userGroup: userGroup
 
@@ -50,40 +45,6 @@ export class user {
         }
       )
     }
-  }
-  public checkAlowedFileds(
-    args: fieldAlowed | Array<fieldAlowed>
-  ): boolean {
-    // return true
-    if (args instanceof Array) {
-      return this._checkAlowedFileds(args)
-    } else {
-      return this._checkAlowedFileds([args])
-    }
-  }
-  private _checkAlowedFileds(
-    args: Array<fieldAlowed>
-  ): boolean {
-    args.map(singleCheck => {
-      return (
-        this.userGroup.fieldAccess.filter(value => {
-          if (
-            value.field !== '*' &&
-            value.field !== singleCheck.field
-          ) {
-            return false
-          }
-          if (
-            value.table !== '*' &&
-            value.table !== singleCheck.table
-          ) {
-            return false
-          }
-          return true
-        }).length > 0
-      )
-    })
-    return true
   }
 }
 export default user

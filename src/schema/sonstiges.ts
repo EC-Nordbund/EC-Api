@@ -5,7 +5,8 @@ import {
   GraphQLNonNull,
   GraphQLResolveInfo,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
+import { checkToken } from "../users/jwt";
 
 export function addAuth(args: GraphQLFieldConfigArgumentMap = {}): GraphQLFieldConfigArgumentMap {
   args.authToken = {
@@ -16,24 +17,21 @@ export function addAuth(args: GraphQLFieldConfigArgumentMap = {}): GraphQLFieldC
 }
 
 export function handleAuth(cb: GraphQLFieldResolver<any, any>): GraphQLFieldResolver<any, any> {
-  return function(parent: any, args: any, context: any, info: GraphQLResolveInfo) {
-    context.user = getUser(args.authToken)
+  return async function (parent: any, args: any, context: any, info: GraphQLResolveInfo) {
+    context.user = await getUser(args.authToken)
     return cb(parent, args, context, info)
   }
 }
 
 export function handleAllowed(cb: GraphQLFieldResolver<any, any>, queryName: string): GraphQLFieldResolver<any, any> {
-  return function(parent: any, args: any, context: any, info: GraphQLResolveInfo) {
-    const myUserGroup = getUser(args.authToken).userGroup
-
-    if (myUserGroup.mutationRechte.indexOf(queryName) !== -1) {
+  return async function (parent: any, args: any, context: any, info: GraphQLResolveInfo) {
+    if (await checkToken(args.authToken)) {
       return cb(parent, args, context, info)
-    } else {
-      throw 'Not allowed'
     }
+    throw 'Not allowed'
   }
 }
 
-export function checkAuth(authToken: string): boolean {
-  return getUser(authToken) !== undefined
+export async function checkAuth(authToken: string): Promise<boolean> {
+  return !! await checkToken(authToken)
 }

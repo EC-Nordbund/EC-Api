@@ -21,8 +21,7 @@ export const _vorte = new GraphQLObjectType({
       type: new GraphQLList(veranstaltung),
       resolve(parent) {
         return query(
-          `SELECT * FROM veranstaltungen WHERE veranstaltungsort = ${
-            parent.vOrtID
+          `SELECT * FROM veranstaltungen WHERE veranstaltungsort = ${parent.vOrtID
           } `
         )
       }
@@ -30,20 +29,12 @@ export const _vorte = new GraphQLObjectType({
     organisation: {
       type: organisation,
       resolve(parent, _, context) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'vOrte',
-            field: 'extended'
-          })
-        ) {
-          return query(
-            `SELECT * FROM organisationen WHERE organisationsID = ${
-              parent.organisitationID
-            }`
-          ).then(v => v[0])
-        } else {
-          return null
-        }
+
+        return query(
+          `SELECT * FROM organisationen WHERE organisationsID = ${parent.organisitationID
+          }`
+        ).then(v => v[0])
+
       }
     },
     bezeichnung: {
@@ -62,98 +53,22 @@ export const _vorte = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLString)
     },
     notizen: {
-      type: GraphQLString,
-      resolve(parent, _, context) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'vOrte',
-            field: 'extended'
-          })
-        ) {
-          return parent.notizen
-        } else {
-          return null
-        }
-      }
+      type: GraphQLString
     },
     anzahl_max: {
-      type: GraphQLInt,
-      resolve(parent, _, context) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'vOrte',
-            field: 'extended'
-          })
-        ) {
-          return parent.anzahl_max
-        } else {
-          return null
-        }
-      }
+      type: GraphQLInt
     },
     anzahl_min: {
-      type: GraphQLInt,
-      resolve(parent, _, context) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'vOrte',
-            field: 'extended'
-          })
-        ) {
-          return parent.anzahl_min
-        } else {
-          return null
-        }
-      }
+      type: GraphQLInt
     },
     vollverpflegung: {
-      type: GraphQLBoolean,
-      resolve(parent, _, context) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'vOrte',
-            field: 'extended'
-          })
-        ) {
-          return parent.vollverpflegung
-        } else {
-          return null
-        }
-      }
+      type: GraphQLBoolean
     },
     selbstversorger: {
-      type: GraphQLBoolean,
-      resolve(parent, _, context) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'vOrte',
-            field: 'extended'
-          })
-        ) {
-          return parent.selbstversorger
-        } else {
-          return null
-        }
-      }
+      type: GraphQLBoolean
     },
     kontakte: {
-      type: new GraphQLList(vortKontakt),
-      resolve(parent, _, context) {
-        if (
-          context.user.checkAlowedFileds({
-            table: 'vOrte',
-            field: 'extended'
-          })
-        ) {
-          return query(
-            `SELECT * FROM vOrtKontakt WHERE vOrt=${
-              parent.vOrtID
-            }`
-          )
-        } else {
-          return []
-        }
-      }
+      type: new GraphQLList(vortKontakt)
     }
   })
 })
