@@ -1414,10 +1414,10 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-promise-mysql@^4.1.4:
-  version "4.1.4"
-  resolved "https://registry.yarnpkg.com/promise-mysql/-/promise-mysql-4.1.4.tgz#34327cab0c246068ae92ec9e8a7b7d142ed0ec84"
-  integrity sha512-gsO1+DsQvtEXG8X9jkN0Z5rwkDg0DrE/9MsVpv8djoid/cZbfA9djgzxDyXdMuPwXGxL3p+BRiEnCG3w0FoG2A==
+promise-mysql@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/promise-mysql/-/promise-mysql-5.0.1.tgz#db1a48451f39350c1a73de2004c8c9b61d011530"
+  integrity sha512-Xg+4oyRrZ8ow+jUqFYjyRhPLsSIQPop3H9XPGa8DZ3fu0/kroQb4wvn8V9TJFIYGr8WKCiFRukqCvrUP+zDtkQ==
   dependencies:
     "@types/bluebird" "^3.5.26"
     "@types/mysql" "^2.15.2"
