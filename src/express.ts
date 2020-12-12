@@ -1,6 +1,7 @@
 import { schema } from './schema';
 import { appVersion } from './version';
 import { ApolloServer } from 'apollo-server-express';
+import { json } from "body-parser";
 import cors from 'cors';
 import express from 'express';
 import compression from 'compression'
@@ -25,6 +26,7 @@ export const getApp = (dev: boolean) => {
     .use('/version', (req, res) => {
       res.end(`{"version": "${appVersion}"}`)
     })
+    .use('/api-v4', json())
     .use('/api-v4', async (req, res, next) => {
       const authToken = req.headers.authorization
 
