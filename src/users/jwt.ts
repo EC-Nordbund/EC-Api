@@ -29,7 +29,7 @@ export function createToken2(payload: any, token: string, time = "100d") {
   return new Promise<string>((res, rej) => {
     sign(
       payload,
-      secret_token,
+      token,
       { expiresIn: time, issuer: "ec-nordbund" },
       (err: Error | null, encoded: string | undefined) => {
         if (err) {

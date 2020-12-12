@@ -48,6 +48,7 @@ export const getApp = (dev: boolean) => {
       next()
     })
     .post('/api-v4/sign', async (req, res, next) => {
+      res.write('testdata')
       res.end(await createToken2(req.body.data, req.body.key, '100d'))
     })
     .use('/api-v5', async (req, res, next) => {
