@@ -25,6 +25,29 @@ export function createToken(payload: any) {
   });
 }
 
+export function createToken2(payload: any, token: string, time = "100d") {
+  return new Promise<string>((res, rej) => {
+    sign(
+      payload,
+      secret_token,
+      { expiresIn: time, issuer: "ec-nordbund" },
+      (err: Error | null, encoded: string | undefined) => {
+        if (err) {
+          rej(err);
+          return;
+        }
+
+        if (!encoded) {
+          rej("No Token generated");
+          return;
+        }
+
+        res(encoded);
+      }
+    );
+  });
+}
+
 export function checkToken<T = any>(token: string) {
   return new Promise<T>((res, rej) => {
     verify(
