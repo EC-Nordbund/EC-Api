@@ -47,6 +47,15 @@ export const getApp = (dev: boolean) => {
 
       next()
     })
+    .post('/api-v4/anmeldetoken', async (req, res, next) => {
+      const veranstaltungsID: number = req.body.id
+
+      const data = Promise.all([2, 3, 4, 5, 6].map(v => `${veranstaltungsID}|${v}`).map(v => createToken2({ d: v }, process.env.NUXT_SECRET_TOKEN || 'fdsöljdslfj98', '100d')))
+
+      res.json({
+        data
+      })
+    })
     .post('/api-v4/sign', async (req, res, next) => {
       res.write('testdata')
       res.end(await createToken2(req.body.data, req.body.key, '100d'))
