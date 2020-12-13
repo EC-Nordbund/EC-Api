@@ -50,7 +50,8 @@ export const getApp = (dev: boolean) => {
     .post('/api-v4/anmeldetoken', async (req, res, next) => {
       const veranstaltungsID: number = req.body.id
 
-      const data = Promise.all([2, 3, 4, 5, 6].map(v => `${veranstaltungsID}|${v}`).map(v => createToken2({ d: v }, process.env.NUXT_SECRET_TOKEN || 'fdsöljdslfj98', '100d')))
+      const data = await Promise.all([2, 3, 4, 5, 6].map(v => `${veranstaltungsID}|${v}`).map(v => createToken2({ d: v }, process.env.NUXT_SECRET_TOKEN || 'fdsöljdslfj98', '100d')))
+      console.log(data)
 
       res.json({
         data
