@@ -492,7 +492,7 @@ export default {
               ${args.bootFahren},
               "${args.extra_json}"
             )`)
-          if (vData.informAnmeldecenter) {
+          if (vData.informAnmeldecenter && args.position === 1) {
             sendMail(
               'automated@ec-nordbund.de',
               { to: vData.informAnmeldecenter },
