@@ -278,8 +278,6 @@ export default {
           anmeldeID = anmeldeID_start + genFour(args.geschlecht === 'm') + anmeldeID_ende
         }
 
-        // TODO: check for Person in Dublikate Tabelle
-
         let persons = await query(`SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
         if (persons.length === 0) {
           // check in dublikaten Table
@@ -438,8 +436,8 @@ export default {
             }
 
             if (generateFlag) {
-              createFZ(personID, args.eMail, adressID)
-              await query(`INSERT INTO fzAntrag(personID) VALUES (${personID})`)
+              await createFZ(personID, args.eMail, adressID)
+              await query(`INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'auto Veranstaltung ${args.veranstaltungsID}')`)
             }
           }
           await Promise.all([
