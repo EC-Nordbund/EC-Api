@@ -266,16 +266,16 @@ export default {
             .substr(2, 2)
         const anmeldeID_ende = args.position
 
-        let genFour = () => {
-          return Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString()
+        let genFour = (m) => {
+          return Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString() + (2 * Math.floor(Math.random() * 5) + (m ? 1 : 0)).toString()
         }
         let checkAnmeldeID = (id: string) => {
           return query(`SELECT anmeldeID FROM anmeldungen WHERE anmeldeID = '${id}'`).then(v => v.length === 0)
         }
 
-        let anmeldeID = anmeldeID_start + genFour() + anmeldeID_ende
+        let anmeldeID = anmeldeID_start + genFour(args.geschlecht === 'm') + anmeldeID_ende
         while (!checkAnmeldeID(anmeldeID)) {
-          anmeldeID = anmeldeID_start + genFour() + anmeldeID_ende
+          anmeldeID = anmeldeID_start + genFour(args.geschlecht === 'm') + anmeldeID_ende
         }
 
         // TODO: check for Person in Dublikate Tabelle
