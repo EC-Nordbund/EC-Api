@@ -1,5 +1,5 @@
 import { query } from "../mysql";
-import { addAuth, handleAllowed } from "../sonstiges";
+import { addAuth, handleAuth } from "../sonstiges";
 import {
   GraphQLBoolean,
   GraphQLInt,
@@ -17,7 +17,7 @@ export default {
         description: "ID der benutzen Adresse",
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE adressen SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${args.adressID}`
       );
@@ -32,7 +32,7 @@ export default {
         description: "ID der benutzen Adresse",
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE adressen SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${args.adressID}`
       );
@@ -47,7 +47,7 @@ export default {
         description: "ID der benutzen Email",
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE eMails SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${args.emailID}`
       );
@@ -62,7 +62,7 @@ export default {
         description: "ID der benutzen Email",
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE eMails SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${args.emailID}`
       );
@@ -77,7 +77,7 @@ export default {
         description: "ID der benutzen Telfonnummer",
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE telefone SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${args.telefonID}`
       );
@@ -92,7 +92,7 @@ export default {
         description: "ID der benutzen Telfonnummer",
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE telefone SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${args.telefonID}`
       );
@@ -115,7 +115,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
         query(
           `INSERT INTO adressen (personID, strasse, plz, ort) VALUES (${args.personID}, '${args.strasse}', '${args.plz}', '${args.ort}')`
@@ -143,7 +143,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
         query(
           `INSERT INTO eMails (personID, eMail) VALUES (${args.personID}, '${args.email}')`
@@ -171,7 +171,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
         query(
           `INSERT INTO telefone (personID, telefon) VALUES (${args.personID}, '${args.telefon}')`
@@ -205,7 +205,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE adressen SET strasse = '${args.strasse}', plz = '${args.plz}', ort = '${args.ort}' WHERE adressID = ${args.adressID}`
       ).then((v) => {
@@ -224,7 +224,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE eMails SET eMail = '${args.email}' WHERE eMailID=${args.emailID}`
       ).then((v) => {
@@ -243,7 +243,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE telefone SET telefon = '${args.telefon}' WHERE telefonID=${args.telefonID}`
       ).then((v) => true);
@@ -257,7 +257,7 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`DELETE FROM adressen WHERE adressID = ${args.adressID}`);
     }, "deleteKontakt"),
   },
@@ -269,7 +269,7 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`DELETE FROM eMails WHERE eMailID = ${args.emailID}`);
     }, "deleteKontakt"),
   },
@@ -281,7 +281,7 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`DELETE FROM telefone WHERE telefonID = ${args.telefonID}`);
     }, "deleteKontakt"),
   },
@@ -296,7 +296,7 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed(async (_, args) => {
+    resolve: handleAuth(async (_, args) => {
       await query(
         `UPDATE anmeldungen SET adressID = ${args.adressID_richtig} WHERE adressID = ${args.adressID_falsch}`
       );
@@ -314,7 +314,7 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed(async (_, args) => {
+    resolve: handleAuth(async (_, args) => {
       await query(
         `UPDATE anmeldungen SET telefonID = ${args.telefonID_richtig} WHERE telefonID = ${args.telefonID_falsch}`
       );

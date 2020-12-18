@@ -1,5 +1,5 @@
 import { query } from '../mysql';
-import { addAuth, handleAllowed } from '../sonstiges';
+import { addAuth, handleAuth } from '../sonstiges';
 import { GraphQLBoolean, GraphQLNonNull, GraphQLString } from 'graphql';
 
 export default {
@@ -16,7 +16,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`INSERT INTO alertWidget (content, von) VALUES ('${args.msg}', '${args.von}');`)
         .then(v => true)
         .catch(err => {

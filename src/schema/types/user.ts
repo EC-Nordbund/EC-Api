@@ -1,4 +1,4 @@
-import { person, date, userGroup } from '.'
+import { person, date } from '.'
 import {
   GraphQLObjectType,
   GraphQLNonNull,
@@ -32,9 +32,6 @@ export const _user = new GraphQLObjectType({
       resolve(_) {
         return new Date(_.ablaufDatum)
       }
-    },
-    userGroup: {
-      type: new GraphQLNonNull(userGroup)
     }
   })
 })

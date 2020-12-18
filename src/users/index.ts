@@ -1,105 +1,47 @@
-import { user } from './user';
-import { userGroup } from './userGroup';
-import sendMail from '../schema/mail';
 import { query } from '../schema/mysql';
 import { sha3_512 } from 'js-sha3';
 import { checkToken, createToken } from './jwt';
+import { sql } from "sql-escape-tag";
 
 function hash(pwd: string, salt: string): string {
   return sha3_512(salt + pwd)
 }
 
 export async function login(username: string, password: string) {
-  const tmpDate = new Date()
-  const getUsers = users
-    .filter(v => v.userName === username)
-    .filter(user => {
-      return tmpDate <= new Date(user.ablaufDatum)
+  const users = await query(sql`SELECT * FROM users WHERE ablauf_datum > NOW() AND username = ${username}`)
+
+  if (users.length !== 1) {
+    throw new Error("Nutzername und Passwort passen nicht zusammen!");
+  }
+
+  if (hash(password, users[0].salt) === users[0].password) {
+    return createToken({
+      userID: users[0].user_id,
+      username: users[0].username,
+      personID: users[0].person_id,
+      ablaufDatum: users[0].ablauf_datum,
     })
-  if (getUsers.length !== 1) {
-    throw 'Username und Password passen nicht zusammen'
   } else {
-    let ckUser = getUsers[0]
-    let h = hash(password, ckUser.salt)
-    if (h === ckUser.pwdHash) {
-      return await createToken({ userID: ckUser.userID })
-    } else {
-      throw 'Username und Password passen nicht zusammen'
-    }
+    throw new Error("Nutzername und Passwort passen nicht zusammen!");
   }
 }
 
+export async function changePWD(authToken: string, oldPWD: string, newPWD: string): Promise<boolean> {
+  try {
+    // Check is Authorized
+    const data = await checkToken(authToken)
+    // Altes Passwort überprüfen
+    await login(data.username, oldPWD)
 
-export async function getUser(authToken: string): Promise<user> {
-  const data = await checkToken<{ userID: number }>(authToken)
-  const usersFound = users.filter(v => v.userID === data.userID)
-
-  if (usersFound.length !== 1) {
-    throw 'User not Found'
-  }
-  return usersFound[0]
-}
-
-
-export let users: Array<user> = []
-export let userGroups: Array<userGroup> = []
-// export let authKeys: Array<authKey> = []
-
-async function load() {
-  let saveObj = JSON.parse(await query(`SELECT * FROM save`).then(res => res[0].save));
-  console.log(saveObj)
-
-  saveObj.userGroups.map(JSON.parse).forEach(v => {
-    userGroups.push(new userGroup(v.userGroupID, v.bezeichnung, v.mutationRechte, v.fieldAccess))
-  })
-
-  saveObj.users.map(JSON.parse).forEach(v => {
-    users.push(new user(v.userID, v.personID, v.userName, v.pwdHash, v.salt, v.ablaufDatum, v.userGroupID, v.pin))
-  })
-}
-
-async function save() {
-  const saveObj = {
-    users: users.map(user => user.toSave()),
-    userGroups: userGroups.map(group => group.toSave()),
-  }
-
-  query(`UPDATE save SET save = '${JSON.stringify(saveObj).split('\\').join('\\\\\\')}'`);
-
-  const saveObj2 = {
-    users: users.map(user => JSON.parse(user.toSave(true))),
-    userGroups: userGroups.map(group => group.toSave()),
-  }
-
-  // Logge status to DB
-  query(`INSERT INTO userLogging (JSON) VALUES ('${JSON.stringify(saveObj2)}');`).catch(console.log)
-}
-
-(async () => {
-  await load()
-  await save()
-})();
-
-setInterval(save, 60 * 60 * 1000)
-
-
-export function updateUser(userID: number, gueltigBis: string, userGroupID: number) {
-  let u = users.filter(v => v.userID === userID)[0]
-  u.ablaufDatum = gueltigBis
-  u.userGroupID = userGroupID
-  save()
-}
-
-export function changePWD(userID: number, oldPWD: string, newPWD: string): boolean {
-  let u = users.filter(v => v.userID === userID)[0]
-  let oldHash = hash(oldPWD, u.salt)
-  if (oldHash === u.pwdHash) {
-    const nSalt = sha3_512(`${u.pwdHash}${oldPWD}${Math.random()}${new Date().toISOString()}${newPWD}kjsfksjd`)
+    // Create Pseudo-Random Salt
+    const nSalt = sha3_512(`${Math.random()}${oldPWD}${Math.random()}${new Date().toISOString()}${newPWD}kjsfksjd`)
+    // Neuer Hash
     const nHsh = hash(newPWD, nSalt)
-    u.salt = nSalt
-    u.pwdHash = nHsh
+
+    await query(sql`UPDATE users SET password = ${nHsh}, salt = ${nSalt} WHERE username = ${data.username}`)
+
     return true
-  } else {
-    return false
+  } catch (err) {
+    throw new Error("Beim ändern des Passworts ist ein Fehler aufgetreten!");
   }
 }

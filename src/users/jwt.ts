@@ -1,6 +1,6 @@
 import { sign, verify } from "jsonwebtoken";
 
-const secret_token = process.env.JWT_SECRET || "dsfsöldfjjöldsf";
+const secret_token = process.env.JWT_SECRET!;
 
 export function createToken(payload: any) {
   return new Promise<string>((res, rej) => {
@@ -68,14 +68,4 @@ export function checkToken<T = any>(token: string) {
       }
     );
   });
-}
-
-export async function checkAuth(authToken: string): Promise<boolean> {
-  return !! await checkToken(authToken)
-}
-
-export async function checkAuthThrow(authToken: string) {
-  if (!await checkAuth(authToken)) {
-    throw 'Not allowed'
-  }
 }

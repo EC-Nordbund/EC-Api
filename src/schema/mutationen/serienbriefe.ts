@@ -1,5 +1,5 @@
 import { query } from '../mysql';
-import { addAuth, handleAllowed } from '../sonstiges';
+import { addAuth, handleAuth } from '../sonstiges';
 
 import {
   GraphQLBoolean,
@@ -23,7 +23,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`INSERT INTO serienbriefe(bezeichnung, docxDocument, geschlechterspizifischeAttribute) VALUES ("${args.bezeichnung}","${args.docx}","${args.geschlecht}")`)
     }, 'serienbrief'),
   },
@@ -43,7 +43,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`UPDATE serienbriefe SET bezeichnung="${args.bezeichnung}", docxDocument="${args.docx}", geschlechterspizifischeAttribute="${args.geschlecht}"`)
     }, 'serienbrief'),
   },

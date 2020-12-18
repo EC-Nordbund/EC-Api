@@ -1,6 +1,6 @@
 import { createFZ } from "../../serienbrief/fz";
 import { query } from "../mysql";
-import { addAuth, handleAllowed } from "../sonstiges";
+import { addAuth, handleAuth } from "../sonstiges";
 
 import {
   GraphQLBoolean,
@@ -30,7 +30,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
         query(
           `UPDATE personen SET vorname = '${args.vorname}', nachname = '${args.nachname}', gebDat = '${args.gebDat}', geschlecht = '${args.geschlecht}' WHERE personID = ${args.personID}`
@@ -59,7 +59,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
         query(
           `INSERT INTO personen (vorname, nachname, gebDat, geschlecht) VALUES ('${args.vorname}', '${args.nachname}', '${args.gebDat}', '${args.geschlecht}')`
@@ -99,7 +99,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       query(
         `INSERT INTO fz (personID, gesehenAm, gesehenVon, kommentar, fzVon) VALUES (${args.personID}, '${args.gesehenAm}', ${args.gesehenVon}, '${args.kommentar}', '${args.fzVon}')`
       ).then((v) => {
@@ -117,7 +117,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async (_, args) => {
+    resolve: handleAuth(async (_, args) => {
       await createFZ(args.personID, args.email);
       await query(`INSERT INTO fzAntrag (personID) VALUES (${args.personID})`);
     }, "addFZAntrag"),
@@ -150,17 +150,14 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       query(
-        `UPDATE personen SET juLeiCaNr="${args.juLeiCaNr}",ecKreis=${
-          args.ecKreis ? args.ecKreis : null
-        },ecMitglied=${args.ecMitglied}, Fuehrerschein=${
-          args.Fuehrerschein
-        },Rettungsschwimmer=${args.Rettungsschwimmer},ErsteHilfe=${
-          args.ErsteHilfe
+        `UPDATE personen SET juLeiCaNr="${args.juLeiCaNr}",ecKreis=${args.ecKreis ? args.ecKreis : null
+        },ecMitglied=${args.ecMitglied}, Fuehrerschein=${args.Fuehrerschein
+        },Rettungsschwimmer=${args.Rettungsschwimmer},ErsteHilfe=${args.ErsteHilfe
         },Notizen="${args.notizen}" WHERE personID=${args.personID}`
       );
-    }, "editPersonSonstiges"),
+    }),
   },
   updateAKStatus: {
     type: GraphQLBoolean,
@@ -178,11 +175,11 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       query(
         `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID}, ${args.date}, ${args.status})`
       );
-    }, "updateAKStatus"),
+    }),
   },
   mergePersons: {
     type: GraphQLBoolean,
@@ -195,10 +192,10 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed(async (_, args: any) => {
+    resolve: handleAuth(async (_, args: any) => {
       await mergePersonen(args);
       return true;
-    }, "mergePersonen"),
+    }),
   },
 };
 

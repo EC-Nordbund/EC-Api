@@ -8,5 +8,6 @@ export const versions: Array<string> = [
   '0.2.0',
   '0.2.1',
   '1.0.0-beta.0',
-  '2.1.0'
+  '2.1.0',
+  '3.0.0'
 ]

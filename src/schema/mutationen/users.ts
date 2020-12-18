@@ -1,7 +1,7 @@
 import { versions } from "../../nichtErlaubteVersionen";
-import { changePWD, getUser, login } from "../../users";
+import { changePWD, login } from "../../users";
 import mail from "../mail";
-import { addAuth, handleAllowed } from "../sonstiges";
+import { addAuth } from "../sonstiges";
 import {
   GraphQLBoolean,
   GraphQLInt,
@@ -49,10 +49,11 @@ export default {
     }),
     async resolve(_, args) {
       return changePWD(
-        (await getUser(args.authToken)).userID,
+        args.authToken,
         args.oldPWD,
         args.newPWD
       );
+      // throw new Error("Aktuell leider nicht Möglich");
     },
   },
   feedback: {

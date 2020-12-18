@@ -2,7 +2,7 @@ import { createFZ } from '../../serienbrief/fz';
 import { getUser } from '../../users';
 import sendMail from '../mail';
 import { query } from '../mysql';
-import { addAuth, handleAllowed, checkAuth } from '../sonstiges';
+import { addAuth, handleAuth, checkAuth } from '../sonstiges';
 import {
   GraphQLBoolean,
   GraphQLFloat,
@@ -36,7 +36,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `UPDATE anmeldungen SET vegetarisch = ${args.vegetarisch}, lebensmittelAllergien="${args.lebensmittelAllergien}", gesundheitsinformationen="${args.gesundheitsinformationen}", bemerkungen="${args.bemerkungen
         }" WHERE anmeldeID="${args.anmeldeID}"`,
@@ -53,7 +53,7 @@ export default {
         type: new GraphQLNonNull(GraphQLFloat),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`UPDATE anmeldungen SET bisherBezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`)
     }, 'anmeldungFinanzen'),
   },
@@ -67,7 +67,7 @@ export default {
         type: new GraphQLNonNull(GraphQLFloat),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       query(`UPDATE anmeldungen SET rueckbezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`)
     }, 'anmeldungFinanzen'),
   },
@@ -87,7 +87,7 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       query(`UPDATE anmeldungen SET adressID=${args.adressID}, eMailID=${args.emailID}, telefonID=${args.telefonID} WHERE anmeldeID = '${args.anmeldeID}'`)
     }, 'anmeldungKontakt'),
   },
@@ -107,7 +107,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       query(
         `UPDATE anmeldungen SET wartelistenPlatz=-1,abmeldeZeitpunkt=CURRENT_TIMESTAMP,abmeldeGebuehr=${args.gebuehr},wegDerAbmeldung="${args.weg}", kommentarAbmeldung="${args.kommentar}" WHERE anmeldeID = "${args.anmeldeID
         }"`,
@@ -127,7 +127,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       query(`SELECT wartelistenPlatz, veranstaltungsID, geschlecht FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldeID = "${args.anmeldeID}"`)
         .then(row => row[0])
         .then(r => {
@@ -516,7 +516,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function (_, args) {
+    resolve: handleAuth(async function (_, args) {
       await query(`UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`)
       return true
     }, 'anmeldungBesonderheiten'),
@@ -528,7 +528,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function (_, args) {
+    resolve: handleAuth(async function (_, args) {
       await query(`UPDATE anmeldungen SET infoBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`)
       return true
     }, 'anmeldungBesonderheiten'),

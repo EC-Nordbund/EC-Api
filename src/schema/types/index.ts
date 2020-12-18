@@ -1,7 +1,6 @@
 import { _date } from './date'
 import { _timestamp } from './timeStamp'
 import { _user } from './user'
-import { _userGroup } from './userGroup'
 import { _person } from './person'
 import { _adresse } from './adresse'
 import { _email } from './email'
@@ -29,7 +28,6 @@ export const vortKontakt = _vortKontakt
 export const personAK = _personAK
 export const akStatus = _akStatus
 export const user = _user
-export const userGroup = _userGroup
 export const person = _person
 export const adresse = _adresse
 export const email = _email

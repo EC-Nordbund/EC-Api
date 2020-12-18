@@ -1,5 +1,5 @@
 import { query } from "../mysql";
-import { addAuth, handleAllowed } from "../sonstiges";
+import { addAuth, handleAuth } from "../sonstiges";
 
 import {
   GraphQLBoolean,
@@ -17,15 +17,15 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function (_, args) {
+    resolve: handleAuth(async function (_, args) {
       await query(
         `INSERT INTO ak (bezeichnung) VALUES ('${args.bezeichnung}')`
       );
-      const ak = await query(
+      const ak = (await query(
         `SELECT akID FROM ak WHERE bezeichnung = '${args.bezeichnung}'`
-      );
+      ))
       return ak[0].akID;
-    }, "addAK"),
+    }),
   },
   editAK: {
     type: GraphQLBoolean,
@@ -38,12 +38,12 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed(async function (_, args) {
+    resolve: handleAuth(async function (_, args) {
       await query(
         `UPDATE ak SET bezeichnung = '${args.bezeichnung}' WHERE akID = ${args.akID}`
       );
       return true;
-    }, "editAK"),
+    }),
   },
   updateAKStatus: {
     type: GraphQLBoolean,
@@ -61,10 +61,10 @@ export default {
         type: new GraphQLNonNull(GraphQLInt),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
         `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID}, '${args.date}', ${args.status})`
       );
-    }, "updateAKStatus"),
+    }),
   },
 };

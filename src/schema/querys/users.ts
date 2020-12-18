@@ -1,5 +1,6 @@
 import { user } from "../types";
-import { getUser } from "../../users";
+import { checkToken } from "../../users/jwt";
+// import { getUser } from "../../users";
 
 import { addAuth, handleAuth } from "../sonstiges";
 
@@ -8,8 +9,8 @@ export default {
     type: user,
     args: addAuth(),
 
-    resolve: handleAuth((_, args) => {
-      return getUser(args.authToken);
-    }),
+    resolve(_, args) {
+      return checkToken(args.authToken)
+    },
   },
 };

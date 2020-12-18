@@ -1,11 +1,11 @@
 import { query } from '../mysql';
-import { addAuth, handleAllowed } from '../sonstiges';
+import { addAuth, handleAuth } from '../sonstiges';
 import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
 
 export default {
@@ -16,7 +16,7 @@ export default {
         type: new GraphQLNonNull(GraphQLString),
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(`INSERT INTO organisationen (bezeichnung) VALUES ('${args.bezeichnung}')`)
     }, 'organisation'),
   },
@@ -54,10 +54,9 @@ export default {
         type: GraphQLString,
       },
     }),
-    resolve: handleAllowed((_, args) => {
+    resolve: handleAuth((_, args) => {
       return query(
-        `UPDATE organisationen SET bezeichnung="${args.bezeichnung}",ansprechpartner="${args.ansprechpartner}",strasse="${args.strasse}",plz="${args.plz}",ort="${args.plz}",land="${
-          args.land
+        `UPDATE organisationen SET bezeichnung="${args.bezeichnung}",ansprechpartner="${args.ansprechpartner}",strasse="${args.strasse}",plz="${args.plz}",ort="${args.plz}",land="${args.land
         }",telefon="${args.telefon}",email="${args.email}",notizen="${args.notizen}" WHERE organisationsID = ${args.organisationsID}`,
       )
     }, 'organisation'),
