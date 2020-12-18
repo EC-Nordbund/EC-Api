@@ -12,7 +12,7 @@ import { checkToken, createToken2 } from './users/jwt';
 //   setTimeout(() => { res(t) }, t)
 // })
 
-export const getApp = (dev: boolean) => {
+export const getApp = () => {
   const apollo = new ApolloServer({ schema })
   const app = express()
     .use(compression())

@@ -8,6 +8,7 @@ import {
   GraphQLNonNull,
   GraphQLString,
 } from "graphql";
+import sql from "sql-escape-tag";
 
 export default {
   editPersonStamm: {
@@ -231,7 +232,17 @@ async function mergePersonen(args: {
     `UPDATE IGNORE tagsPersonen SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
   );
   await query(
-    `UPDATE anmeldungen as a INNER JOIN telefone as e1 ON e1.telefonID = a.telefonID INNER JOIN telefone as e2 ON e1.telefon = e2.telefon SET a.telefonID = e2.telefonID WHERE e1.personID = ${args.personID_falsch} AND e2.personID = ${args.personID_richtig};`
+    sql`
+      UPDATE anmeldungen as a 
+      
+      INNER JOIN telefone as e1 ON e1.telefonID = a.telefonID 
+      INNER JOIN telefone as e2 ON e1.telefon = e2.telefon 
+      
+      SET a.telefonID = e2.telefonID 
+      
+      WHERE 
+        e1.personID = ${args.personID_falsch} AND 
+        e2.personID = ${args.personID_richtig};`
   );
   await query(
     `UPDATE anmeldungen as a INNER JOIN eMails as e1 ON e1.eMailID = a.eMailID INNER JOIN eMails as e2 ON e1.eMail = e2.eMail SET a.eMailID = e2.emailID WHERE e1.personID = ${args.personID_falsch} AND e2.personID = ${args.personID_richtig};`

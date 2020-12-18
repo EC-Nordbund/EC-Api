@@ -1,16 +1,12 @@
-import { user } from '../../users/user';
-import { query } from '../mysql';
 import {
-  GraphQLInt,
-  GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
-  import {
-    date
-    } from '.';
+import {
+  date
+} from '.';
 
 export const _juleica = new GraphQLObjectType({
   name: 'juleica',

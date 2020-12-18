@@ -1,4 +1,3 @@
-import { user } from '../../users/user';
 import { query } from '../mysql';
 import {
   adresse,
@@ -7,7 +6,7 @@ import {
   telefon,
   timeStamp,
   veranstaltung
-  } from '.';
+} from '.';
 import {
   GraphQLBoolean,
   GraphQLFloat,
@@ -15,7 +14,7 @@ import {
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString
-  } from 'graphql';
+} from 'graphql';
 
 export const _anmeldung = new GraphQLObjectType({
   name: 'anmeldung',

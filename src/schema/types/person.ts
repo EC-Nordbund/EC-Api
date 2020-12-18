@@ -1,4 +1,3 @@
-import _user, { user } from '../../users/user';
 import { query } from '../mysql';
 import {
   adresse,
@@ -90,25 +89,25 @@ export const _person = new GraphQLObjectType({
     },
     anmeldungen: {
       type: new GraphQLList(anmeldung),
-      resolve(parent: any, args, context: { user: any }) {
+      resolve(parent: any, args) {
         return query(`SELECT * FROM anmeldungen WHERE personID = ${parent.personID}`)
       },
     },
     fzs: {
       type: new GraphQLList(fz),
-      resolve(parent: any, args, context: { user: user }) {
+      resolve(parent: any, args) {
         return query(`SELECT * FROM fz WHERE personID = ${parent.personID}`)
       },
     },
     fzAntraege: {
       type: new GraphQLList(fzAntrag),
-      resolve(parent: any, args, context: { user: user }) {
+      resolve(parent: any, args) {
         return query(`SELECT * FROM fzAntrag WHERE personID = ${parent.personID}`)
       },
     },
     datumDesLetztenFZ: {
       type: date,
-      resolve(parent: any, args, context: { user: any }) {
+      resolve(parent: any, args) {
         return query(`SELECT fzVon FROM fz WHERE personID = ${parent.personID} ORDER BY gesehenAm DESC LIMIT 1`).then(rows => {
           if (rows.length === 0) {
             return null
@@ -146,7 +145,7 @@ export const _person = new GraphQLObjectType({
     },
     ecKreis: {
       type: ecKreis,
-      resolve(parent: any, args, context: { user: user }) {
+      resolve(parent: any, args) {
         if (parent.ecKreis === null) {
           return null
         } else {
@@ -159,19 +158,19 @@ export const _person = new GraphQLObjectType({
     },
     juleica: {
       type: new GraphQLList(juleica),
-      resolve(parent: any, _, context: { user: user }) {
+      resolve(parent: any, _) {
         return query(`SELECT * FROM juleica WHERE personID = ${parent.personID}`)
       },
     },
     tags: {
       type: new GraphQLList(personTag),
-      resolve(parent: any, _, context: { user: user }) {
+      resolve(parent: any, _) {
         return query(`SELECT * FROM tagsPersonen WHERE personID = ${parent.personID}`)
       },
     },
     ak: {
       type: new GraphQLList(personAK),
-      resolve(parent: any, _, context: { user: user }) {
+      resolve(parent: any, _) {
         return query(`SELECT akID FROM akPerson WHERE personID = ${parent.personID} GROUP BY akID`).then(v =>
           v.map(el => ({
             akID: el.akID,
@@ -182,7 +181,7 @@ export const _person = new GraphQLObjectType({
     },
     bisherigeRollen: {
       type: new GraphQLList(GraphQLInt),
-      resolve(parent: any, _, context: { user: user }) {
+      resolve(parent: any, _) {
         return query(`SELECT DISTINCT position FROM anmeldungen WHERE personID = ${parent.personID}`)
       },
     },

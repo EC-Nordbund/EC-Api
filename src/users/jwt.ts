@@ -2,7 +2,14 @@ import { sign, verify } from "jsonwebtoken";
 
 const secret_token = process.env.JWT_SECRET!;
 
-export function createToken(payload: any) {
+type payload = {
+  userID: number
+  username: string
+  personID: number
+  ablaufDatum: string
+}
+
+export function createToken(payload: payload) {
   return new Promise<string>((res, rej) => {
     sign(
       payload,
@@ -48,8 +55,8 @@ export function createToken2(payload: any, token: string, time = "100d") {
   });
 }
 
-export function checkToken<T = any>(token: string) {
-  return new Promise<T>((res, rej) => {
+export function checkToken(token: string) {
+  return new Promise<payload>((res, rej) => {
     verify(
       token,
       secret_token,
@@ -64,7 +71,7 @@ export function checkToken<T = any>(token: string) {
           return;
         }
 
-        res((decoded as any) as T);
+        res((decoded as any) as payload);
       }
     );
   });

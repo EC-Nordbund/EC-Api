@@ -1,4 +1,3 @@
-import { user } from '../../users/user';
 import { query } from '../mysql';
 import { personAK } from '.';
 import {
@@ -20,7 +19,7 @@ export const _ak = new GraphQLObjectType({
     },
     personen: {
       type: new GraphQLList(personAK),
-      async resolve(parent, _, context: { user: user }) {
+      async resolve(parent, _) {
         const persons = await query(`SELECT personID FROM akPerson WHERE akID = ${parent.akID} GROUP BY personID`)
         return persons.map(person => ({
           personID: person.personID,

@@ -1,8 +1,7 @@
 import { createFZ } from '../../serienbrief/fz';
-import { getUser } from '../../users';
 import sendMail from '../mail';
 import { query } from '../mysql';
-import { addAuth, handleAuth, checkAuth } from '../sonstiges';
+import { addAuth, handleAuth } from '../sonstiges';
 import {
   GraphQLBoolean,
   GraphQLFloat,
@@ -244,16 +243,10 @@ export default {
       if (args.isWP) {
         allowed = wpTokens.indexOf(args.token) !== -1
       } else {
-        allowed = await checkToken(args.token)
+        allowed = !!(await checkToken(args.token))
       }
 
       if (allowed) {
-        const j = JSON.stringify(args)
-        const h = sha3_512(j)
-        const d = new Date().toISOString()
-
-        //writeFileSync(__dirname + '/../../../log/anmel_' + h + '_' + d + '.log.json', j)
-
         const vData = await query(`SELECT * FROM veranstaltungen WHERE veranstaltungsID = ${args.veranstaltungsID}`).then(row => row[0])
 
         const anmeldeID_start =
