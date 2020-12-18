@@ -15,14 +15,16 @@ export const _user = new GraphQLObjectType({
       type: new GraphQLNonNull(GraphQLInt)
     },
     userName: {
-      type: new GraphQLNonNull(GraphQLString)
+      type: new GraphQLNonNull(GraphQLString),
+      resolve(_) {
+        return _.userName || _.username
+      }
     },
     person: {
       type: new GraphQLNonNull(person),
       resolve(_) {
         return query(
-          `SELECT * FROM personen WHERE personID = ${
-            _.personID
+          `SELECT * FROM personen WHERE personID = ${_.personID
           }`
         ).then(v => v[0])
       }
