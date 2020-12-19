@@ -1,12 +1,12 @@
-import { query } from "../mysql";
-import { addAuth, handleAuth } from "../sonstiges";
+import { query } from '../mysql'
+import { addAuth, handleAuth } from '../sonstiges'
 
 import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
   GraphQLString,
-} from "graphql";
+} from 'graphql'
 
 export default {
   addAK: {
@@ -18,13 +18,11 @@ export default {
       },
     }),
     resolve: handleAuth(async function (_, args) {
-      await query(
-        `INSERT INTO ak (bezeichnung) VALUES ('${args.bezeichnung}')`
-      );
-      const ak = (await query(
+      await query(`INSERT INTO ak (bezeichnung) VALUES ('${args.bezeichnung}')`)
+      const ak = await query(
         `SELECT akID FROM ak WHERE bezeichnung = '${args.bezeichnung}'`
-      ))
-      return ak[0].akID;
+      )
+      return ak[0].akID
     }),
   },
   editAK: {
@@ -41,8 +39,8 @@ export default {
     resolve: handleAuth(async function (_, args) {
       await query(
         `UPDATE ak SET bezeichnung = '${args.bezeichnung}' WHERE akID = ${args.akID}`
-      );
-      return true;
+      )
+      return true
     }),
   },
   updateAKStatus: {
@@ -64,7 +62,7 @@ export default {
     resolve: handleAuth((_, args) => {
       return query(
         `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID}, '${args.date}', ${args.status})`
-      );
+      )
     }),
   },
-};
+}

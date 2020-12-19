@@ -1,9 +1,9 @@
-import { GraphQLList, GraphQLNonNull, GraphQLInt } from "graphql";
+import { GraphQLList, GraphQLNonNull, GraphQLInt } from 'graphql'
 
-import { ak } from "../types";
-import { query } from "../mysql";
+import { ak } from '../types'
+import { query } from '../mysql'
 
-import { addAuth, handleAuth } from "../sonstiges";
+import { addAuth, handleAuth } from '../sonstiges'
 
 export default {
   aks: {
@@ -11,7 +11,7 @@ export default {
 
     type: new GraphQLList(ak),
     resolve: handleAuth(() => {
-      return query(`SELECT * FROM ak`);
+      return query(`SELECT * FROM ak`)
     }),
   },
   ak: {
@@ -25,7 +25,7 @@ export default {
     resolve: handleAuth((_, args) => {
       return query(`SELECT * FROM ak WHERE akID = ${args.akID}`).then(
         (res) => res[0]
-      );
+      )
     }),
   },
-};
+}

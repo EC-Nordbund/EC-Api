@@ -1,6 +1,6 @@
-import { query } from './mysql';
-import { createTransport } from 'nodemailer';
-import { Readable } from 'stream';
+import { query } from './mysql'
+import { createTransport } from 'nodemailer'
+import { Readable } from 'stream'
 
 interface empfaenger {
   to: string
@@ -13,19 +13,19 @@ export default async function sendMail(
   e: empfaenger,
   subject: string,
   body: string,
-  isHTML: boolean = true,
+  isHTML = true,
   attachments: Array<{
     content: string | Readable
     filename: string
-  }> = [],
+  }> = []
 ) {
   const smtp = createTransport({
     host: process.env.SMTP_SERVER || '',
     port: parseInt(process.env.SMTP_PORT || '1'),
     auth: {
       user: process.env.SMTP_USERNAME || '',
-      pass: process.env.SMTP_PASSWORD || ''
-    }
+      pass: process.env.SMTP_PASSWORD || '',
+    },
   })
   const mailData = {
     from,
@@ -34,13 +34,17 @@ export default async function sendMail(
     bcc: e.bcc || '',
     subject,
     ...(isHTML ? { html: body } : { text: body }),
-    attachments: attachments.map(at => ({
+    attachments: attachments.map((at) => ({
       ...at,
-      ...(typeof at.content === 'string' ? { encoding: 'base64' } : {})
+      ...(typeof at.content === 'string' ? { encoding: 'base64' } : {}),
     })),
   }
   await smtp.sendMail(mailData)
-  await query(`INSERT INTO gesendeteEmails (content) VALUES ('${JSON.stringify(mailData)}')`)
+  await query(
+    `INSERT INTO gesendeteEmails (content) VALUES ('${JSON.stringify(
+      mailData
+    )}')`
+  )
 
   return true
 }

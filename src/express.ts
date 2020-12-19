@@ -1,14 +1,14 @@
-import { schema } from './schema';
-import { appVersion } from './version';
-import { ApolloServer } from 'apollo-server-express';
-import { json } from "body-parser";
-import cors from 'cors';
-import express from 'express';
+import { schema } from './schema'
+import { appVersion } from './version'
+import { ApolloServer } from 'apollo-server-express'
+import { json } from 'body-parser'
+import cors from 'cors'
+import express from 'express'
 import compression from 'compression'
-import { createSQLContext, getSQLContext } from './schema/mysql';
-import { checkToken, createToken2 } from './users/jwt';
-import user from './new-api/user';
-// 
+import { createSQLContext, getSQLContext } from './schema/mysql'
+import { checkToken, createToken2 } from './users/jwt'
+import user from './new-api/user'
+//
 // const wait = (t) => new Promise((res, rej) => {
 //   setTimeout(() => { res(t) }, t)
 // })
@@ -51,11 +51,21 @@ export const getApp = () => {
     .post('/api-v4/anmeldetoken', async (req, res, next) => {
       const veranstaltungsID: number = req.body.id
 
-      const data = await Promise.all([2, 3, 4, 5, 6].map(v => `${veranstaltungsID}|${v}`).map(v => createToken2({ d: v }, process.env.NUXT_SECRET_TOKEN || 'fdsöljdslfj98', '100d')))
+      const data = await Promise.all(
+        [2, 3, 4, 5, 6]
+          .map((v) => `${veranstaltungsID}|${v}`)
+          .map((v) =>
+            createToken2(
+              { d: v },
+              process.env.NUXT_SECRET_TOKEN || 'fdsöljdslfj98',
+              '100d'
+            )
+          )
+      )
       console.log(data)
 
       res.json({
-        data
+        data,
       })
     })
     .post('/api-v4/sign', async (req, res, next) => {

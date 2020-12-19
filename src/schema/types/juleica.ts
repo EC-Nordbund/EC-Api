@@ -1,12 +1,6 @@
-import {
-  GraphQLNonNull,
-  GraphQLObjectType,
-  GraphQLString
-} from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql'
 
-import {
-  date
-} from '.';
+import { date } from '.'
 
 export const _juleica = new GraphQLObjectType({
   name: 'juleica',

@@ -18,9 +18,9 @@ import { _personAK } from './personAK'
 import { _organisationen } from './organisation'
 import { _vorte } from './vOrte'
 import { _vortKontakt } from './vOrtKontakt'
-import { _juleica } from './juleica';
-import { _tag } from './tag';
-import { _personTag } from './tagPerson';
+import { _juleica } from './juleica'
+import { _tag } from './tag'
+import { _personTag } from './tagPerson'
 
 export const organisation = _organisationen
 export const vorte = _vorte

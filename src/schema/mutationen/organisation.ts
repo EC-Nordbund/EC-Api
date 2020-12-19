@@ -1,12 +1,11 @@
-import { query } from '../mysql';
-import { addAuth, handleAuth } from '../sonstiges';
+import { query } from '../mysql'
+import { addAuth, handleAuth } from '../sonstiges'
 import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString
-} from 'graphql';
-
+  GraphQLString,
+} from 'graphql'
 
 export default {
   addOrganisation: {
@@ -17,7 +16,9 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      return query(`INSERT INTO organisationen (bezeichnung) VALUES ('${args.bezeichnung}')`)
+      return query(
+        `INSERT INTO organisationen (bezeichnung) VALUES ('${args.bezeichnung}')`
+      )
     }, 'organisation'),
   },
   editOrganisation: {
@@ -56,8 +57,7 @@ export default {
     }),
     resolve: handleAuth((_, args) => {
       return query(
-        `UPDATE organisationen SET bezeichnung="${args.bezeichnung}",ansprechpartner="${args.ansprechpartner}",strasse="${args.strasse}",plz="${args.plz}",ort="${args.plz}",land="${args.land
-        }",telefon="${args.telefon}",email="${args.email}",notizen="${args.notizen}" WHERE organisationsID = ${args.organisationsID}`,
+        `UPDATE organisationen SET bezeichnung="${args.bezeichnung}",ansprechpartner="${args.ansprechpartner}",strasse="${args.strasse}",plz="${args.plz}",ort="${args.plz}",land="${args.land}",telefon="${args.telefon}",email="${args.email}",notizen="${args.notizen}" WHERE organisationsID = ${args.organisationsID}`
       )
     }, 'organisation'),
   },

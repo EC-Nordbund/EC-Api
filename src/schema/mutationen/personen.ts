@@ -1,14 +1,14 @@
-import { createFZ } from "../../serienbrief/fz";
-import { query } from "../mysql";
-import { addAuth, handleAuth } from "../sonstiges";
+import { createFZ } from '../../serienbrief/fz'
+import { query } from '../mysql'
+import { addAuth, handleAuth } from '../sonstiges'
 
 import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
   GraphQLString,
-} from "graphql";
-import sql from "sql-escape-tag";
+} from 'graphql'
+import sql from 'sql-escape-tag'
 
 export default {
   editPersonStamm: {
@@ -37,12 +37,12 @@ export default {
           `UPDATE personen SET vorname = '${args.vorname}', nachname = '${args.nachname}', gebDat = '${args.gebDat}', geschlecht = '${args.geschlecht}' WHERE personID = ${args.personID}`
         )
           .then((v) => {
-            return true;
+            return true
           })
           .then(resolve)
-          .catch(reject);
-      });
-    }, "editPersonStamm"),
+          .catch(reject)
+      })
+    }, 'editPersonStamm'),
   },
   addPerson: {
     type: new GraphQLNonNull(GraphQLInt),
@@ -71,14 +71,14 @@ export default {
             )
               .then((res) => res[0].personID)
               .then((v) => {
-                return v;
+                return v
               })
               .then(resolve)
-              .catch(reject);
+              .catch(reject)
           })
-          .catch(reject);
-      });
-    }, "addPerson"),
+          .catch(reject)
+      })
+    }, 'addPerson'),
   },
   addFZ: {
     type: GraphQLBoolean,
@@ -104,9 +104,9 @@ export default {
       query(
         `INSERT INTO fz (personID, gesehenAm, gesehenVon, kommentar, fzVon) VALUES (${args.personID}, '${args.gesehenAm}', ${args.gesehenVon}, '${args.kommentar}', '${args.fzVon}')`
       ).then((v) => {
-        query(`DELETE FROM fzAntrag WHERE personID = ${args.personID}`);
-      });
-    }, "addFZ"),
+        query(`DELETE FROM fzAntrag WHERE personID = ${args.personID}`)
+      })
+    }, 'addFZ'),
   },
   addFZAntrag: {
     type: GraphQLBoolean,
@@ -119,9 +119,9 @@ export default {
       },
     }),
     resolve: handleAuth(async (_, args) => {
-      await createFZ(args.personID, args.email);
-      await query(`INSERT INTO fzAntrag (personID) VALUES (${args.personID})`);
-    }, "addFZAntrag"),
+      await createFZ(args.personID, args.email)
+      await query(`INSERT INTO fzAntrag (personID) VALUES (${args.personID})`)
+    }, 'addFZAntrag'),
   },
   editSonstiges: {
     type: GraphQLBoolean,
@@ -153,11 +153,14 @@ export default {
     }),
     resolve: handleAuth((_, args) => {
       query(
-        `UPDATE personen SET juLeiCaNr="${args.juLeiCaNr}",ecKreis=${args.ecKreis ? args.ecKreis : null
-        },ecMitglied=${args.ecMitglied}, Fuehrerschein=${args.Fuehrerschein
-        },Rettungsschwimmer=${args.Rettungsschwimmer},ErsteHilfe=${args.ErsteHilfe
+        `UPDATE personen SET juLeiCaNr="${args.juLeiCaNr}",ecKreis=${
+          args.ecKreis ? args.ecKreis : null
+        },ecMitglied=${args.ecMitglied}, Fuehrerschein=${
+          args.Fuehrerschein
+        },Rettungsschwimmer=${args.Rettungsschwimmer},ErsteHilfe=${
+          args.ErsteHilfe
         },Notizen="${args.notizen}" WHERE personID=${args.personID}`
-      );
+      )
     }),
   },
   updateAKStatus: {
@@ -179,7 +182,7 @@ export default {
     resolve: handleAuth((_, args) => {
       query(
         `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID}, ${args.date}, ${args.status})`
-      );
+      )
     }),
   },
   mergePersons: {
@@ -194,43 +197,43 @@ export default {
       },
     }),
     resolve: handleAuth(async (_, args: any) => {
-      await mergePersonen(args);
-      return true;
+      await mergePersonen(args)
+      return true
     }),
   },
-};
+}
 
 async function mergePersonen(args: {
-  personID_richtig: number;
-  personID_falsch: number;
+  personID_richtig: number
+  personID_falsch: number
 }) {
   await query(
     `UPDATE IGNORE adressen SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE akPerson SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE anmeldungen SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE eMails SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE fz SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE fzAntrag SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE telefone SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE juleica SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE IGNORE tagsPersonen SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     sql`
       UPDATE anmeldungen as a 
@@ -243,30 +246,30 @@ async function mergePersonen(args: {
       WHERE 
         e1.personID = ${args.personID_falsch} AND 
         e2.personID = ${args.personID_richtig};`
-  );
+  )
   await query(
     `UPDATE anmeldungen as a INNER JOIN eMails as e1 ON e1.eMailID = a.eMailID INNER JOIN eMails as e2 ON e1.eMail = e2.eMail SET a.eMailID = e2.emailID WHERE e1.personID = ${args.personID_falsch} AND e2.personID = ${args.personID_richtig};`
-  );
+  )
   await query(
     `UPDATE anmeldungen as a INNER JOIN adressen as e1 ON e1.adressID = a.adressID INNER JOIN adressen as e2 ON (e1.strasse = e2.strasse AND e1.strasse = e2.strasse AND e1.plz = e2.plz) SET a.adressID = e2.adressID WHERE e1.personID = ${args.personID_falsch} AND e2.personID = ${args.personID_richtig};`
-  );
+  )
   await query(
     `DELETE IGNORE FROM adressen WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `DELETE IGNORE FROM eMails WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `DELETE IGNORE FROM telefone WHERE personID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE fz SET gesehenVon = ${args.personID_richtig} WHERE gesehenVon = ${args.personID_falsch};`
-  );
+  )
   await query(
     `UPDATE dublikate SET zielPersonID = ${args.personID_richtig} WHERE zielPersonID = ${args.personID_falsch};`
-  );
+  )
   await query(
     `INSERT into dublikate SELECT vorname, nachname, gebDat, ${args.personID_richtig} AS zielPersonID FROM personen WHERE personID = ${args.personID_falsch};`
-  );
-  await query(`DELETE FROM personen WHERE personID = ${args.personID_falsch};`);
+  )
+  await query(`DELETE FROM personen WHERE personID = ${args.personID_falsch};`)
 }

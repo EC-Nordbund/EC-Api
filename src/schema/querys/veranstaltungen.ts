@@ -1,8 +1,4 @@
-import {
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLInt
-} from 'graphql'
+import { GraphQLList, GraphQLNonNull, GraphQLInt } from 'graphql'
 
 import { veranstaltung } from '../types'
 import { query } from '../mysql'
@@ -15,23 +11,21 @@ export default {
     type: new GraphQLList(veranstaltung),
     resolve: handleAuth(() => {
       return query(`SELECT * FROM veranstaltungen`)
-    })
+    }),
   },
   veranstaltung: {
     args: addAuth({
       veranstaltungsID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der Veranstaltungen'
-      }
+        description: 'ID der Veranstaltungen',
+      },
     }),
     type: veranstaltung,
     description: 'Veranstaltung mit einer bestimmten ID',
     resolve: handleAuth((_, args) => {
       return query(
-        `SELECT * FROM veranstaltungen WHERE veranstaltungsID = ${
-          args.veranstaltungsID
-        }`
-      ).then(res => res[0])
-    })
-  }
+        `SELECT * FROM veranstaltungen WHERE veranstaltungsID = ${args.veranstaltungsID}`
+      ).then((res) => res[0])
+    }),
+  },
 }

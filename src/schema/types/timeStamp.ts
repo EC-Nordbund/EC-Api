@@ -1,10 +1,6 @@
-import {
-  GraphQLObjectType,
-  GraphQLInt,
-  GraphQLString
-} from 'graphql'
+import { GraphQLObjectType, GraphQLInt, GraphQLString } from 'graphql'
 
-const gb = v => (v < 10 ? '0' + v : v)
+const gb = (v) => (v < 10 ? '0' + v : v)
 
 export const _timestamp = new GraphQLObjectType({
   name: 'TimeStampType',
@@ -17,7 +13,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      }
+      },
     },
     month: {
       type: GraphQLInt,
@@ -27,7 +23,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      }
+      },
     },
     year: {
       type: GraphQLInt,
@@ -37,7 +33,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      }
+      },
     },
     h: {
       type: GraphQLInt,
@@ -47,7 +43,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      }
+      },
     },
     min: {
       type: GraphQLInt,
@@ -57,7 +53,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      }
+      },
     },
     s: {
       type: GraphQLInt,
@@ -67,7 +63,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      }
+      },
     },
     german: {
       type: GraphQLString,
@@ -75,13 +71,13 @@ export const _timestamp = new GraphQLObjectType({
         if (val instanceof Date) {
           return `${gb(val.getDate())}.${gb(
             val.getMonth() + 1
-          )}.${val.getFullYear()} - ${gb(
-            val.getHours()
-          )}:${gb(val.getMinutes())}`
+          )}.${val.getFullYear()} - ${gb(val.getHours())}:${gb(
+            val.getMinutes()
+          )}`
         } else {
           return null
         }
-      }
-    }
-  })
+      },
+    },
+  }),
 })

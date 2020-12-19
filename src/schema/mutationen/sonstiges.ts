@@ -1,6 +1,6 @@
-import { query } from '../mysql';
-import { addAuth, handleAuth } from '../sonstiges';
-import { GraphQLBoolean, GraphQLNonNull, GraphQLString } from 'graphql';
+import { query } from '../mysql'
+import { addAuth, handleAuth } from '../sonstiges'
+import { GraphQLBoolean, GraphQLNonNull, GraphQLString } from 'graphql'
 
 export default {
   addAlert: {
@@ -17,9 +17,11 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      return query(`INSERT INTO alertWidget (content, von) VALUES ('${args.msg}', '${args.von}');`)
-        .then(v => true)
-        .catch(err => {
+      return query(
+        `INSERT INTO alertWidget (content, von) VALUES ('${args.msg}', '${args.von}');`
+      )
+        .then((v) => true)
+        .catch((err) => {
           throw err
         })
     }, 'addAlert'),

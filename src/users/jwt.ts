@@ -1,6 +1,7 @@
-import { sign, verify } from "jsonwebtoken";
+import { sign, verify } from 'jsonwebtoken'
 
-const secret_token = process.env.JWT_SECRET!;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const secret_token = process.env.JWT_SECRET!
 
 type payload = {
   userID: number
@@ -9,70 +10,70 @@ type payload = {
   ablaufDatum: string
 }
 
-export function createToken(payload: payload) {
+export function createToken(payload: payload): Promise<string> {
   return new Promise<string>((res, rej) => {
     sign(
       payload,
       secret_token,
-      { expiresIn: "13h", issuer: "ec-nordbund" },
+      { expiresIn: '13h', issuer: 'ec-nordbund' },
       (err: Error | null, encoded: string | undefined) => {
         if (err) {
-          rej(err);
-          return;
+          rej(err)
+          return
         }
 
         if (!encoded) {
-          rej("No Token generated");
-          return;
+          rej('No Token generated')
+          return
         }
 
-        res(encoded);
+        res(encoded)
       }
-    );
-  });
+    )
+  })
 }
 
-export function createToken2(payload: any, token: string, time = "100d") {
+export function createToken2(
+  payload: any,
+  token: string,
+  time = '100d'
+): Promise<string> {
   return new Promise<string>((res, rej) => {
     sign(
       payload,
       token,
-      { expiresIn: time, issuer: "ec-nordbund" },
+      { expiresIn: time, issuer: 'ec-nordbund' },
       (err: Error | null, encoded: string | undefined) => {
         if (err) {
-          rej(err);
-          return;
+          rej(err)
+          return
         }
 
         if (!encoded) {
-          rej("No Token generated");
-          return;
+          rej('No Token generated')
+          return
         }
 
-        res(encoded);
+        res(encoded)
       }
-    );
-  });
+    )
+  })
 }
 
-export function checkToken(token: string) {
+export function checkToken(token: string): Promise<payload> {
   return new Promise<payload>((res, rej) => {
-    verify(
-      token,
-      secret_token,
-      (err: Error | null, decoded: object | undefined) => {
-        if (err) {
-          rej(err);
-          return;
-        }
-
-        if (!decoded) {
-          rej("No Data provided");
-          return;
-        }
-
-        res((decoded as any) as payload);
+    verify(token, secret_token, (err: Error | null, decoded: any) => {
+      if (err) {
+        rej(err)
+        return
       }
-    );
-  });
+
+      if (!decoded) {
+        rej('No Data provided')
+        return
+      }
+
+      res(decoded)
+    })
+  })
 }

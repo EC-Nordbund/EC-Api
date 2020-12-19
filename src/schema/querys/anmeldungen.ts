@@ -4,21 +4,21 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLBoolean,
-} from "graphql";
-import { query } from "../mysql";
-import { anmeldung } from "../types";
+} from 'graphql'
+import { query } from '../mysql'
+import { anmeldung } from '../types'
 
-const wpTokens: Array<string> = [process.env.WP_TOKEN || ""];
+const wpTokens: Array<string> = [process.env.WP_TOKEN || '']
 
-import { addAuth, handleAuth } from "../sonstiges";
-import { checkToken } from "../../users/jwt";
+import { addAuth, handleAuth } from '../sonstiges'
+import { checkToken } from '../../users/jwt'
 
 export default {
   anmeldungen: {
     args: addAuth({}),
     type: new GraphQLList(anmeldung),
     resolve: handleAuth(() => {
-      return query(`SELECT * FROM anmeldungen`);
+      return query(`SELECT * FROM anmeldungen`)
     }),
   },
   anmeldung: {
@@ -31,7 +31,7 @@ export default {
     resolve: handleAuth((_, args) => {
       return query(
         `SELECT * FROM anmeldungen WHERE anmeldeID = '${args.anmeldeID}'`
-      ).then((res) => res[0]);
+      ).then((res) => res[0])
     }),
   },
   anmeldeStatus: {
@@ -45,26 +45,26 @@ export default {
       },
     }),
     async resolve(_, args) {
-      let allowed = false;
+      let allowed = false
       if (args.isWP) {
-        allowed = wpTokens.indexOf(args.authToken) !== -1;
+        allowed = wpTokens.indexOf(args.authToken) !== -1
       } else {
-        allowed = !!(await checkToken(args.authToken));
+        allowed = !!(await checkToken(args.authToken))
       }
 
       if (allowed) {
         const result = query(
           `SELECT wartelistenPlatz, abmeldeZeitpunkt FROM anmeldungen WHERE anmeldeID='${args.anmeldeID}'`
-        );
+        )
 
         if (result[0].abmeldeZeitpunkt) {
-          return -2;
+          return -2
         }
 
-        return result[0].wartelistenPlatz;
+        return result[0].wartelistenPlatz
       } else {
-        return -1;
+        return -1
       }
     },
   },
-};
+}

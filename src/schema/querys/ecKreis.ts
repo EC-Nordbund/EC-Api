@@ -1,8 +1,8 @@
-import { GraphQLList } from "graphql";
+import { GraphQLList } from 'graphql'
 
-import { ecKreis } from "../types";
-import { query } from "../mysql";
-import { addAuth, handleAuth } from "../sonstiges";
+import { ecKreis } from '../types'
+import { query } from '../mysql'
+import { addAuth, handleAuth } from '../sonstiges'
 
 export default {
   ecKreise: {
@@ -10,4 +10,4 @@ export default {
     type: new GraphQLList(ecKreis),
     resolve: handleAuth(() => query(`SELECT * FROM ecKreis`)),
   },
-};
+}

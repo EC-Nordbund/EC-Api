@@ -1,17 +1,17 @@
-import { createFZ } from '../../serienbrief/fz';
-import sendMail from '../mail';
-import { query } from '../mysql';
-import { addAuth, handleAuth } from '../sonstiges';
+import { createFZ } from '../../serienbrief/fz'
+import sendMail from '../mail'
+import { query } from '../mysql'
+import { addAuth, handleAuth } from '../sonstiges'
 import {
   GraphQLBoolean,
   GraphQLFloat,
   GraphQLInt,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLString
-} from 'graphql';
-import { sha3_512 } from 'js-sha3';
-import { checkToken } from '../../users/jwt';
+  GraphQLString,
+} from 'graphql'
+import { sha3_512 } from 'js-sha3'
+import { checkToken } from '../../users/jwt'
 
 const wpTokens: Array<string> = [process.env.WP_TOKEN || '']
 
@@ -37,8 +37,7 @@ export default {
     }),
     resolve: handleAuth((_, args) => {
       return query(
-        `UPDATE anmeldungen SET vegetarisch = ${args.vegetarisch}, lebensmittelAllergien="${args.lebensmittelAllergien}", gesundheitsinformationen="${args.gesundheitsinformationen}", bemerkungen="${args.bemerkungen
-        }" WHERE anmeldeID="${args.anmeldeID}"`,
+        `UPDATE anmeldungen SET vegetarisch = ${args.vegetarisch}, lebensmittelAllergien="${args.lebensmittelAllergien}", gesundheitsinformationen="${args.gesundheitsinformationen}", bemerkungen="${args.bemerkungen}" WHERE anmeldeID="${args.anmeldeID}"`
       )
     }, 'anmeldungBesonderheiten'),
   },
@@ -53,7 +52,9 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      return query(`UPDATE anmeldungen SET bisherBezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`)
+      return query(
+        `UPDATE anmeldungen SET bisherBezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`
+      )
     }, 'anmeldungFinanzen'),
   },
   anmeldungRueckbezahlt: {
@@ -67,7 +68,9 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      query(`UPDATE anmeldungen SET rueckbezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`)
+      query(
+        `UPDATE anmeldungen SET rueckbezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`
+      )
     }, 'anmeldungFinanzen'),
   },
   anmeldungKontakt: {
@@ -87,7 +90,9 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      query(`UPDATE anmeldungen SET adressID=${args.adressID}, eMailID=${args.emailID}, telefonID=${args.telefonID} WHERE anmeldeID = '${args.anmeldeID}'`)
+      query(
+        `UPDATE anmeldungen SET adressID=${args.adressID}, eMailID=${args.emailID}, telefonID=${args.telefonID} WHERE anmeldeID = '${args.anmeldeID}'`
+      )
     }, 'anmeldungKontakt'),
   },
   abmelden: {
@@ -108,14 +113,16 @@ export default {
     }),
     resolve: handleAuth((_, args) => {
       query(
-        `UPDATE anmeldungen SET wartelistenPlatz=-1,abmeldeZeitpunkt=CURRENT_TIMESTAMP,abmeldeGebuehr=${args.gebuehr},wegDerAbmeldung="${args.weg}", kommentarAbmeldung="${args.kommentar}" WHERE anmeldeID = "${args.anmeldeID
-        }"`,
+        `UPDATE anmeldungen SET wartelistenPlatz=-1,abmeldeZeitpunkt=CURRENT_TIMESTAMP,abmeldeGebuehr=${args.gebuehr},wegDerAbmeldung="${args.weg}", kommentarAbmeldung="${args.kommentar}" WHERE anmeldeID = "${args.anmeldeID}"`
       )
       sendMail(
         'automated@ec-nordbund.de',
-        { to: "2pi_r2@gmx.de; BirgitHerbert@t-online.de; an-gela@gmx.net; referent@ec-nordbund.de" },
+        {
+          to:
+            '2pi_r2@gmx.de; BirgitHerbert@t-online.de; an-gela@gmx.net; referent@ec-nordbund.de',
+        },
         `Neue Abmeldung`,
-        `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`,
+        `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`
       )
     }, 'anmeldungAbmelden'),
   },
@@ -127,22 +134,31 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      query(`SELECT wartelistenPlatz, veranstaltungsID, geschlecht FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldeID = "${args.anmeldeID}"`)
-        .then(row => row[0])
-        .then(r => {
-          query(`SELECT hatGWarteliste FROM veranstaltungen WHERE veranstaltungsID=${r.veranstaltungsID}`)
-            .then(row => row[0])
-            .then(v => {
+      query(
+        `SELECT wartelistenPlatz, veranstaltungsID, geschlecht FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldeID = "${args.anmeldeID}"`
+      )
+        .then((row) => row[0])
+        .then((r) => {
+          query(
+            `SELECT hatGWarteliste FROM veranstaltungen WHERE veranstaltungsID=${r.veranstaltungsID}`
+          )
+            .then((row) => row[0])
+            .then((v) => {
               if (v.hatGWarteliste) {
-                query(`UPDATE anmeldungen SET wartelistenPlatz=0 WHERE anmeldeID="${args.anmeldeID}"`).then(v => {
+                query(
+                  `UPDATE anmeldungen SET wartelistenPlatz=0 WHERE anmeldeID="${args.anmeldeID}"`
+                ).then((v) => {
                   query(
-                    `UPDATE anmeldungen SET wartelistenPlatz=wartelistenPlatz-1 WHERE wartelistenPlatz > ${r.wartelistenPlatz
-                    } AND personen.personID = anmeldungen.personID AND personen.geschlecht = "${r.geschlecht}"`,
+                    `UPDATE anmeldungen SET wartelistenPlatz=wartelistenPlatz-1 WHERE wartelistenPlatz > ${r.wartelistenPlatz} AND personen.personID = anmeldungen.personID AND personen.geschlecht = "${r.geschlecht}"`
                   )
                 })
               } else {
-                query(`UPDATE anmeldungen SET wartelistenPlatz=0 WHERE anmeldeID="${args.anmeldeID}"`).then(v => {
-                  query(`UPDATE anmeldungen SET wartelistenPlatz=wartelistenPlatz-1 WHERE wartelistenPlatz > ${r.wartelistenPlatz}`)
+                query(
+                  `UPDATE anmeldungen SET wartelistenPlatz=0 WHERE anmeldeID="${args.anmeldeID}"`
+                ).then((v) => {
+                  query(
+                    `UPDATE anmeldungen SET wartelistenPlatz=wartelistenPlatz-1 WHERE wartelistenPlatz > ${r.wartelistenPlatz}`
+                  )
                 })
               }
             })
@@ -247,66 +263,102 @@ export default {
       }
 
       if (allowed) {
-        const vData = await query(`SELECT * FROM veranstaltungen WHERE veranstaltungsID = ${args.veranstaltungsID}`).then(row => row[0])
+        const vData = await query(
+          `SELECT * FROM veranstaltungen WHERE veranstaltungsID = ${args.veranstaltungsID}`
+        ).then((row) => row[0])
 
         const anmeldeID_start =
           args.vorname.substr(0, 2) +
           args.nachname.substr(0, 2) +
           vData.kurzBezeichnung +
-          vData.begin
-            .getFullYear()
-            .toString()
-            .substr(2, 2)
+          vData.begin.getFullYear().toString().substr(2, 2)
         const anmeldeID_ende = args.position
 
-        let genFour = (m) => {
-          return Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString() + Math.floor(Math.random() * 10).toString() + (2 * Math.floor(Math.random() * 5) + (m ? 1 : 0)).toString()
+        const genFour = (m) => {
+          return (
+            Math.floor(Math.random() * 10).toString() +
+            Math.floor(Math.random() * 10).toString() +
+            Math.floor(Math.random() * 10).toString() +
+            (2 * Math.floor(Math.random() * 5) + (m ? 1 : 0)).toString()
+          )
         }
-        let checkAnmeldeID = (id: string) => {
-          return query(`SELECT anmeldeID FROM anmeldungen WHERE anmeldeID = '${id}'`).then(v => v.length === 0)
+        const checkAnmeldeID = (id: string) => {
+          return query(
+            `SELECT anmeldeID FROM anmeldungen WHERE anmeldeID = '${id}'`
+          ).then((v) => v.length === 0)
         }
 
-        let anmeldeID = anmeldeID_start + genFour(args.geschlecht === 'm') + anmeldeID_ende
+        let anmeldeID =
+          anmeldeID_start + genFour(args.geschlecht === 'm') + anmeldeID_ende
         while (!checkAnmeldeID(anmeldeID)) {
-          anmeldeID = anmeldeID_start + genFour(args.geschlecht === 'm') + anmeldeID_ende
+          anmeldeID =
+            anmeldeID_start + genFour(args.geschlecht === 'm') + anmeldeID_ende
         }
 
-        let persons = await query(`SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
+        let persons = await query(
+          `SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`
+        )
         if (persons.length === 0) {
           // check in dublikaten Table
-          let dubs = await query(`SELECT zielPersonID FROM dublikate WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
+          const dubs = await query(
+            `SELECT zielPersonID FROM dublikate WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`
+          )
 
           if (dubs.length === 0) {
-            await query(`INSERT INTO personen (vorname, nachname, gebDat, geschlecht) VALUES ("${args.vorname}", "${args.nachname}", "${args.gebDat}", "${args.geschlecht}")`)
-            persons = await query(`SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`)
+            await query(
+              `INSERT INTO personen (vorname, nachname, gebDat, geschlecht) VALUES ("${args.vorname}", "${args.nachname}", "${args.gebDat}", "${args.geschlecht}")`
+            )
+            persons = await query(
+              `SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`
+            )
           } else {
             persons = [{ personID: dubs[0].zielPersonID }]
           }
         }
         const personID = persons[0].personID
 
-        let eMails = await query(`SELECT eMailID FROM eMails WHERE eMail="${args.eMail}" AND personID=${personID}`)
+        let eMails = await query(
+          `SELECT eMailID FROM eMails WHERE eMail="${args.eMail}" AND personID=${personID}`
+        )
         if (eMails.length === 0) {
-          await query(`INSERT INTO eMails(eMail, personID) VALUES ("${args.eMail}",${personID})`)
-          eMails = await query(`SELECT eMailID FROM eMails WHERE eMail="${args.eMail}" AND personID=${personID}`)
+          await query(
+            `INSERT INTO eMails(eMail, personID) VALUES ("${args.eMail}",${personID})`
+          )
+          eMails = await query(
+            `SELECT eMailID FROM eMails WHERE eMail="${args.eMail}" AND personID=${personID}`
+          )
         }
         const eMailID = eMails[0].eMailID
 
-        let telefone = await query(`SELECT telefonID FROM telefone WHERE telefon="${args.telefon}" AND personID=${personID}`)
+        let telefone = await query(
+          `SELECT telefonID FROM telefone WHERE telefon="${args.telefon}" AND personID=${personID}`
+        )
         if (telefone.length === 0) {
-          await query(`INSERT INTO telefone(telefon, personID) VALUES ("${args.telefon}",${personID})`)
-          telefone = await query(`SELECT telefonID FROM telefone WHERE telefon="${args.telefon}" AND personID=${personID}`)
+          await query(
+            `INSERT INTO telefone(telefon, personID) VALUES ("${args.telefon}",${personID})`
+          )
+          telefone = await query(
+            `SELECT telefonID FROM telefone WHERE telefon="${args.telefon}" AND personID=${personID}`
+          )
         }
         const telefonID = telefone[0].telefonID
 
-        let adressen = await query(`SELECT adressID FROM adressen WHERE personID=${personID} AND strasse="${args.strasse}" AND plz="${args.plz}" AND ort="${args.ort}"`)
+        let adressen = await query(
+          `SELECT adressID FROM adressen WHERE personID=${personID} AND strasse="${args.strasse}" AND plz="${args.plz}" AND ort="${args.ort}"`
+        )
         if (adressen.length === 0) {
-          await query(`INSERT INTO adressen (personID, strasse, plz, ort) VALUES (${personID},"${args.strasse}","${args.plz}","${args.ort}")`)
-          adressen = await query(`SELECT adressID FROM adressen WHERE personID=${personID} AND strasse="${args.strasse}" AND plz="${args.plz}" AND ort="${args.ort}"`)
+          await query(
+            `INSERT INTO adressen (personID, strasse, plz, ort) VALUES (${personID},"${args.strasse}","${args.plz}","${args.ort}")`
+          )
+          adressen = await query(
+            `SELECT adressID FROM adressen WHERE personID=${personID} AND strasse="${args.strasse}" AND plz="${args.plz}" AND ort="${args.ort}"`
+          )
         }
         const adressID = adressen[0].adressID
 
-        const vorhandeneAnmeldungen = await query(`SELECT anmeldeID FROM anmeldungen WHERE personID=${personID} AND veranstaltungsID=${args.veranstaltungsID}`)
+        const vorhandeneAnmeldungen = await query(
+          `SELECT anmeldeID FROM anmeldungen WHERE personID=${personID} AND veranstaltungsID=${args.veranstaltungsID}`
+        )
 
         if (vorhandeneAnmeldungen.length > 0) {
           return {
@@ -317,12 +369,10 @@ export default {
           let wartelistenplatz = 0
           if (args.position === 1) {
             const maxWListPlatz: Array<any> = await query(
-              `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS maxWlistPos FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID
-              } GROUP BY personen.geschlecht`,
+              `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS maxWlistPos FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} GROUP BY personen.geschlecht`
             )
             const anzahlPersonen: Array<any> = await query(
-              `SELECT COUNT(personen.personID) AS anzahlPersonen, personen.geschlecht AS geschlecht FROM personen, anmeldungen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID
-              } AND anmeldungen.wartelistenPlatz = 0 GROUP BY personen.geschlecht`,
+              `SELECT COUNT(personen.personID) AS anzahlPersonen, personen.geschlecht AS geschlecht FROM personen, anmeldungen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} AND anmeldungen.wartelistenPlatz = 0 GROUP BY personen.geschlecht`
             )
 
             let maxWlistMännlich = 0
@@ -330,7 +380,7 @@ export default {
             let anzahlMännlich = 0
             let anzahlWeiblich = 0
 
-            maxWListPlatz.forEach(per => {
+            maxWListPlatz.forEach((per) => {
               switch (per.geschlecht) {
                 case 'm':
                   maxWlistMännlich = per.maxWlistPos
@@ -343,7 +393,7 @@ export default {
 
             const maxWlistGesamt = Math.max(maxWlistMännlich, maxWlistWeiblich)
 
-            anzahlPersonen.forEach(per => {
+            anzahlPersonen.forEach((per) => {
               switch (per.geschlecht) {
                 case 'm':
                   anzahlMännlich = per.anzahlPersonen
@@ -414,13 +464,19 @@ export default {
               wann = vData.ende
             }
 
-            const fzData = await query(`SELECT fzVon FROM fz WHERE personID = ${personID} ORDER BY fzVon DESC LIMIT 1`)
+            const fzData = await query(
+              `SELECT fzVon FROM fz WHERE personID = ${personID} ORDER BY fzVon DESC LIMIT 1`
+            )
 
             if (fzData.length === 0) {
               generateFlag = true
             } else {
               const fzVon = fzData[0].fzVon
-              const wannArr = [wann.getFullYear(), wann.getMonth() + 1, wann.getDate()]
+              const wannArr = [
+                wann.getFullYear(),
+                wann.getMonth() + 1,
+                wann.getDate(),
+              ]
               wannArr[0] -= 5
               const fzMinDate = new Date(wannArr.join('-'))
               if (fzMinDate > fzVon) {
@@ -430,14 +486,24 @@ export default {
 
             if (generateFlag) {
               await createFZ(personID, args.eMail, adressID)
-              await query(`INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'auto Veranstaltung ${args.veranstaltungsID}')`)
+              await query(
+                `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'auto Veranstaltung ${args.veranstaltungsID}')`
+              )
             }
           }
           await Promise.all([
-            query(`UPDATE adressen SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${adressID}`),
-            query(`UPDATE eMails SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${eMailID}`),
-            query(`UPDATE telefone SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${telefonID}`),
-            query(`UPDATE personen SET letzteAenderung=CURRENT_TIMESTAMP WHERE personID=${personID}`),
+            query(
+              `UPDATE adressen SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${adressID}`
+            ),
+            query(
+              `UPDATE eMails SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${eMailID}`
+            ),
+            query(
+              `UPDATE telefone SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${telefonID}`
+            ),
+            query(
+              `UPDATE personen SET letzteAenderung=CURRENT_TIMESTAMP WHERE personID=${personID}`
+            ),
           ])
           await query(`
             INSERT INTO anmeldungen(
@@ -488,7 +554,7 @@ export default {
               'automated@ec-nordbund.de',
               { to: vData.informAnmeldecenter },
               `Neue Anmeldung bei Veranstaltung ${vData.bezeichnung}`,
-              `<h1>Neue Anmeldung</h1><p>Es gibt eine Anmeldung mit der AnmeldeID: ${anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`,
+              `<h1>Neue Anmeldung</h1><p>Es gibt eine Anmeldung mit der AnmeldeID: ${anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`
             )
           }
 
@@ -510,7 +576,9 @@ export default {
       },
     }),
     resolve: handleAuth(async function (_, args) {
-      await query(`UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`)
+      await query(
+        `UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`
+      )
       return true
     }, 'anmeldungBesonderheiten'),
   },
@@ -522,7 +590,9 @@ export default {
       },
     }),
     resolve: handleAuth(async function (_, args) {
-      await query(`UPDATE anmeldungen SET infoBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`)
+      await query(
+        `UPDATE anmeldungen SET infoBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`
+      )
       return true
     }, 'anmeldungBesonderheiten'),
   },

@@ -1,8 +1,8 @@
-import { user } from "../types";
-import { checkToken } from "../../users/jwt";
+import { user } from '../types'
+import { checkToken } from '../../users/jwt'
 // import { getUser } from "../../users";
 
-import { addAuth, handleAuth } from "../sonstiges";
+import { addAuth, handleAuth } from '../sonstiges'
 
 export default {
   getMyUserData: {
@@ -13,4 +13,4 @@ export default {
       return checkToken(args.authToken)
     },
   },
-};
+}

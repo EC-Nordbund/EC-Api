@@ -1,13 +1,12 @@
-import { query } from '../mysql';
-import { addAuth, handleAuth } from '../sonstiges';
+import { query } from '../mysql'
+import { addAuth, handleAuth } from '../sonstiges'
 
 import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString
-} from 'graphql';
-
+  GraphQLString,
+} from 'graphql'
 
 export default {
   serienbriefAdd: {
@@ -24,7 +23,9 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      return query(`INSERT INTO serienbriefe(bezeichnung, docxDocument, geschlechterspizifischeAttribute) VALUES ("${args.bezeichnung}","${args.docx}","${args.geschlecht}")`)
+      return query(
+        `INSERT INTO serienbriefe(bezeichnung, docxDocument, geschlechterspizifischeAttribute) VALUES ("${args.bezeichnung}","${args.docx}","${args.geschlecht}")`
+      )
     }, 'serienbrief'),
   },
   serienbriefEdit: {
@@ -44,7 +45,9 @@ export default {
       },
     }),
     resolve: handleAuth((_, args) => {
-      return query(`UPDATE serienbriefe SET bezeichnung="${args.bezeichnung}", docxDocument="${args.docx}", geschlechterspizifischeAttribute="${args.geschlecht}"`)
+      return query(
+        `UPDATE serienbriefe SET bezeichnung="${args.bezeichnung}", docxDocument="${args.docx}", geschlechterspizifischeAttribute="${args.geschlecht}"`
+      )
     }, 'serienbrief'),
   },
 }

@@ -1,6 +1,6 @@
-import { query } from '../mysql';
-import { ak, date, person } from '.';
-import { GraphQLInt, GraphQLNonNull, GraphQLObjectType } from 'graphql';
+import { query } from '../mysql'
+import { ak, date, person } from '.'
+import { GraphQLInt, GraphQLNonNull, GraphQLObjectType } from 'graphql'
 
 export const _akStatus = new GraphQLObjectType({
   name: 'akStatus',
@@ -11,7 +11,9 @@ export const _akStatus = new GraphQLObjectType({
     person: {
       type: new GraphQLNonNull(person),
       async resolve(parent) {
-        const person = await query(`SELECT * FROM personen WHERE personID = ${parent.personID}`)
+        const person = await query(
+          `SELECT * FROM personen WHERE personID = ${parent.personID}`
+        )
         return person[0]
       },
     },
