@@ -18,7 +18,7 @@ export async function query(sql: string, uid: number = -1) {
   const connection = await pool.getConnection()
   const result = await connection.query(sql)
 
-  connection.release()
+  connection.release();
 
 
   return result
@@ -38,25 +38,11 @@ export async function getMySQL(to = 10) {
 
   const connection = await pool.getConnection()
 
-  const con = (sql, uid = -1) => {
-    console.log(`${uid}: '${sql}'`)
-    return connection.query(sql)
-  }
-
   const timer = setTimeout(() => {
-    con.release()
+    connection.release()
   }, to * 1000);
 
-  let released = false
-
-  con.release = () => {
-    if (!released) return
-    released = true
-    clearTimeout(timer)
-    connection.release()
-  }
-
-  return con
+  return connection
 }
 
 type NoPromise<T> = T extends Promise<infer U> ? U : T

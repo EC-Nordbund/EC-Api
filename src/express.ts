@@ -7,6 +7,7 @@ import express from 'express';
 import compression from 'compression'
 import { createSQLContext, getSQLContext } from './schema/mysql';
 import { checkToken, createToken2 } from './users/jwt';
+import user from './new-api/user';
 // 
 // const wait = (t) => new Promise((res, rej) => {
 //   setTimeout(() => { res(t) }, t)
@@ -61,6 +62,7 @@ export const getApp = () => {
       res.write('testdata')
       res.end(await createToken2(req.body.data, req.body.key, '100d'))
     })
+    .use('/api-v5', json())
     .use('/api-v5', async (req, res, next) => {
       const authToken = req.headers.authorization
 
@@ -86,6 +88,8 @@ export const getApp = () => {
     .use('/api-v5', async (req, res, next) => {
       getSQLContext(req).release()
     })
+
+  user(app, '/v6/user')
 
   apollo.applyMiddleware({ app, path: '/graphql' })
 
