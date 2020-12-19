@@ -18,7 +18,7 @@ export default (app: Express): void => {
 
       if (versions.includes(req.body.version)) {
         throw new ecError(
-          'Benutze Version der Verwaltung ist veraltet und wird nicht unterstützt!',
+          'Version der Verwaltung ist veraltet und wird nicht unterstützt!',
           406
         )
       }
