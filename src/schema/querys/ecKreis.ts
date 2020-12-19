@@ -8,6 +8,6 @@ export default {
   ecKreise: {
     args: addAuth({}),
     type: new GraphQLList(ecKreis),
-    resolve: handleAuth(() => query(`SELECT * FROM ecKreis`)),
-  },
+    resolve: handleAuth(() => query(`SELECT * FROM ecKreis`))
+  }
 }

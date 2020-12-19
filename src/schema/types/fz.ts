@@ -4,14 +4,14 @@ import {
   GraphQLInt,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export const _fz = new GraphQLObjectType({
   name: 'fz',
   fields: () => ({
     fzID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     gesehenVon: {
       type: new GraphQLNonNull(person),
@@ -20,16 +20,16 @@ export const _fz = new GraphQLObjectType({
           `SELECT * FROM personen WHERE personID = ${parent.gesehenVon}`
         )
         return person[0]
-      },
+      }
     },
     fzVon: {
-      type: new GraphQLNonNull(date),
+      type: new GraphQLNonNull(date)
     },
     gesehenAm: {
-      type: new GraphQLNonNull(date),
+      type: new GraphQLNonNull(date)
     },
     kommentar: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
-  }),
+      type: new GraphQLNonNull(GraphQLString)
+    }
+  })
 })

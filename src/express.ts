@@ -65,7 +65,7 @@ export const getApp = () => {
       console.log(data)
 
       res.json({
-        data,
+        data
       })
     })
     .post('/api-v4/sign', async (req, res, next) => {

@@ -3,7 +3,7 @@ import {
   GraphQLNonNull,
   GraphQLString,
   GraphQLInt,
-  GraphQLBoolean,
+  GraphQLBoolean
 } from 'graphql'
 import { query } from '../mysql'
 import { anmeldung } from '../types'
@@ -19,30 +19,30 @@ export default {
     type: new GraphQLList(anmeldung),
     resolve: handleAuth(() => {
       return query(`SELECT * FROM anmeldungen`)
-    }),
+    })
   },
   anmeldung: {
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     type: anmeldung,
     resolve: handleAuth((_, args) => {
       return query(
         `SELECT * FROM anmeldungen WHERE anmeldeID = '${args.anmeldeID}'`
       ).then((res) => res[0])
-    }),
+    })
   },
   anmeldeStatus: {
     type: new GraphQLNonNull(GraphQLInt),
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       isWP: {
-        type: new GraphQLNonNull(GraphQLBoolean),
-      },
+        type: new GraphQLNonNull(GraphQLBoolean)
+      }
     }),
     async resolve(_, args) {
       let allowed = false
@@ -65,6 +65,6 @@ export default {
       } else {
         return -1
       }
-    },
-  },
+    }
+  }
 }

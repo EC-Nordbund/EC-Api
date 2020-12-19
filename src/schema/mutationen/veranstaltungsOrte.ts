@@ -4,7 +4,7 @@ import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export default {
@@ -12,82 +12,82 @@ export default {
     type: GraphQLBoolean,
     args: addAuth({
       bezeichnung: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       strasse: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       plz: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       ort: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       land: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       organisationsID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `INSERT INTO vOrte(bezeichnung, strasse, plz, ort, land, organisitationID) VALUES("${args.bezeichnung}", "${args.strasse}", "${args.plz}", "${args.ort}", "${args.land}", "${args.organisationsID}")`
       )
-    }, 'vorte'),
+    }, 'vorte')
   },
   veranstaltungsortEditStamm: {
     type: GraphQLBoolean,
     args: addAuth({
       vOrtID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       bezeichnung: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       strasse: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       plz: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       ort: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       land: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       organisationsID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE vOrte SET bezeichnung = "${args.bezeichnung}", strasse = "${args.strasse}",  plz= "${args.plz}", ort = "${args.ort}",land  = "${args.land}", organisitationID=${args.organisationsID} WHERE vOrtID = ${args.vOrtID}`
       )
-    }, 'vorte'),
+    }, 'vorte')
   },
   veranstaltungsortEditSonstiges: {
     type: GraphQLBoolean,
     args: addAuth({
       vOrtID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       anzahl_min: {
-        type: GraphQLInt,
+        type: GraphQLInt
       },
       anzahl_max: {
-        type: GraphQLInt,
+        type: GraphQLInt
       },
       selbstversorger: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       vollverpflegung: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       notizen: {
-        type: GraphQLString,
-      },
+        type: GraphQLString
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
@@ -99,72 +99,72 @@ export default {
           args.selbstversorger
         } WHERE vOrtID = ${args.vOrtID}`
       )
-    }, 'vorte'),
+    }, 'vorte')
   },
   veranstaltungsortAddKontakt: {
     type: GraphQLBoolean,
     args: addAuth({
       vOrtID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       ansprechpartner: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       typ: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       telefon: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       email: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `INSERT INTO vOrtKontakt (vOrt, ansprechpartner, typ, telefon, email) VALUES (${args.vOrtID}, "${args.ansprechpartner}", "${args.typ}", "${args.telefon}", "${args.email}")`
       )
-    }, 'vorte'),
+    }, 'vorte')
   },
   veranstaltungsortEditKontakt: {
     type: GraphQLBoolean,
     args: addAuth({
       vOrtKontaktID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       ansprechpartner: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       typ: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       telefon: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       email: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       notizen: {
-        type: GraphQLString,
-      },
+        type: GraphQLString
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE vOrtKontakt SET ansprechpartner="${args.ansprechpartner}", typ="${args.typ}", telefon="${args.telefon}", email="${args.email}", notizen="${args.notizen}" WHERE vOrtKontaktID= ${args.vOrtKontaktID}`
       )
-    }, 'vorte'),
+    }, 'vorte')
   },
   veranstaltungsortDeleteKontakt: {
     type: GraphQLBoolean,
     args: addAuth({
       vOrtKontaktID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `DELETE FROM vOrtKontakt WHERE vOrtKontaktID = ${args.vOrtKontaktID}`
       )
-    }, 'vorte'),
-  },
+    }, 'vorte')
+  }
 }

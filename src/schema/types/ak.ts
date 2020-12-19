@@ -5,17 +5,17 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export const _ak = new GraphQLObjectType({
   name: 'ak',
   fields: () => ({
     akID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     bezeichnung: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     personen: {
       type: new GraphQLList(personAK),
@@ -25,9 +25,9 @@ export const _ak = new GraphQLObjectType({
         )
         return persons.map((person) => ({
           personID: person.personID,
-          akID: parent.akID,
+          akID: parent.akID
         }))
-      },
-    },
-  }),
+      }
+    }
+  })
 })

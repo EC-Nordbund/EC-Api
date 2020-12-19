@@ -11,7 +11,7 @@ import {
   telefon,
   timeStamp,
   juleica,
-  personTag,
+  personTag
 } from '.'
 import {
   GraphQLBoolean,
@@ -19,33 +19,33 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export const _person = new GraphQLObjectType({
   name: 'person',
   fields: () => ({
     personID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     vorname: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     nachname: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     gebDat: {
-      type: new GraphQLNonNull(date),
+      type: new GraphQLNonNull(date)
     },
     geschlecht: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     alter: {
       type: new GraphQLNonNull(GraphQLInt),
       args: {
         wann: {
-          type: GraphQLString,
-        },
+          type: GraphQLString
+        }
       },
       resolve(parent: { gebDat: Date }, args) {
         if (args.wann === null) {
@@ -69,7 +69,7 @@ export const _person = new GraphQLObjectType({
         } else {
           return tmpDate
         }
-      },
+      }
     },
     adressen: {
       type: new GraphQLList(adresse),
@@ -77,13 +77,13 @@ export const _person = new GraphQLObjectType({
         return query(
           `SELECT * FROM adressen WHERE personID = ${parent.personID}`
         )
-      },
+      }
     },
     emails: {
       type: new GraphQLList(email),
       resolve(parent: any) {
         return query(`SELECT * FROM eMails WHERE personID = ${parent.personID}`)
-      },
+      }
     },
     telefone: {
       type: new GraphQLList(telefon),
@@ -91,7 +91,7 @@ export const _person = new GraphQLObjectType({
         return query(
           `SELECT * FROM telefone WHERE personID = ${parent.personID}`
         )
-      },
+      }
     },
     anmeldungen: {
       type: new GraphQLList(anmeldung),
@@ -99,13 +99,13 @@ export const _person = new GraphQLObjectType({
         return query(
           `SELECT * FROM anmeldungen WHERE personID = ${parent.personID}`
         )
-      },
+      }
     },
     fzs: {
       type: new GraphQLList(fz),
       resolve(parent: any, args) {
         return query(`SELECT * FROM fz WHERE personID = ${parent.personID}`)
-      },
+      }
     },
     fzAntraege: {
       type: new GraphQLList(fzAntrag),
@@ -113,7 +113,7 @@ export const _person = new GraphQLObjectType({
         return query(
           `SELECT * FROM fzAntrag WHERE personID = ${parent.personID}`
         )
-      },
+      }
     },
     datumDesLetztenFZ: {
       type: date,
@@ -127,14 +127,14 @@ export const _person = new GraphQLObjectType({
             return rows[0].fzVon
           }
         })
-      },
+      }
     },
     hatFZ: {
       type: new GraphQLNonNull(GraphQLBoolean),
       args: {
         wann: {
-          type: GraphQLString,
-        },
+          type: GraphQLString
+        }
       },
       resolve(parent: any, args) {
         if (args.wann === null) {
@@ -157,7 +157,7 @@ export const _person = new GraphQLObjectType({
             wannArr[0] -= 5
             return fzDate > new Date(wannArr.join('-'))
           })
-      },
+      }
     },
     ecKreis: {
       type: ecKreis,
@@ -169,10 +169,10 @@ export const _person = new GraphQLObjectType({
             `SELECT * FROM ecKreis WHERE ecKreisID = ${parent.ecKreis}`
           ).then((rows) => rows[0])
         }
-      },
+      }
     },
     ecMitglied: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     juleica: {
       type: new GraphQLList(juleica),
@@ -180,7 +180,7 @@ export const _person = new GraphQLObjectType({
         return query(
           `SELECT * FROM juleica WHERE personID = ${parent.personID}`
         )
-      },
+      }
     },
     tags: {
       type: new GraphQLList(personTag),
@@ -188,7 +188,7 @@ export const _person = new GraphQLObjectType({
         return query(
           `SELECT * FROM tagsPersonen WHERE personID = ${parent.personID}`
         )
-      },
+      }
     },
     ak: {
       type: new GraphQLList(personAK),
@@ -198,10 +198,10 @@ export const _person = new GraphQLObjectType({
         ).then((v) =>
           v.map((el) => ({
             akID: el.akID,
-            personID: parent.personID,
+            personID: parent.personID
           }))
         )
-      },
+      }
     },
     bisherigeRollen: {
       type: new GraphQLList(GraphQLInt),
@@ -209,16 +209,16 @@ export const _person = new GraphQLObjectType({
         return query(
           `SELECT DISTINCT position FROM anmeldungen WHERE personID = ${parent.personID}`
         )
-      },
+      }
     },
     Notizen: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     erstellt: {
-      type: new GraphQLNonNull(timeStamp),
+      type: new GraphQLNonNull(timeStamp)
     },
     letzteAenderung: {
-      type: new GraphQLNonNull(timeStamp),
-    },
-  }),
+      type: new GraphQLNonNull(timeStamp)
+    }
+  })
 })

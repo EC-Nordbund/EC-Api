@@ -6,10 +6,10 @@ export const _juleica = new GraphQLObjectType({
   name: 'juleica',
   fields: () => ({
     juleicanummer: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     gueltig_bis: {
-      type: date,
-    },
-  }),
+      type: date
+    }
+  })
 })

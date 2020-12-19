@@ -6,7 +6,7 @@ import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 import sql from 'sql-escape-tag'
 
@@ -16,20 +16,20 @@ export default {
 
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       vorname: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       nachname: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       gebDat: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       geschlecht: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
@@ -42,23 +42,23 @@ export default {
           .then(resolve)
           .catch(reject)
       })
-    }, 'editPersonStamm'),
+    }, 'editPersonStamm')
   },
   addPerson: {
     type: new GraphQLNonNull(GraphQLInt),
     args: addAuth({
       vorname: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       nachname: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       gebDat: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       geschlecht: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
@@ -78,27 +78,27 @@ export default {
           })
           .catch(reject)
       })
-    }, 'addPerson'),
+    }, 'addPerson')
   },
   addFZ: {
     type: GraphQLBoolean,
 
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       gesehenAm: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       fzVon: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       gesehenVon: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       kommentar: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       query(
@@ -106,50 +106,50 @@ export default {
       ).then((v) => {
         query(`DELETE FROM fzAntrag WHERE personID = ${args.personID}`)
       })
-    }, 'addFZ'),
+    }, 'addFZ')
   },
   addFZAntrag: {
     type: GraphQLBoolean,
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       email: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth(async (_, args) => {
       await createFZ(args.personID, args.email)
       await query(`INSERT INTO fzAntrag (personID) VALUES (${args.personID})`)
-    }, 'addFZAntrag'),
+    }, 'addFZAntrag')
   },
   editSonstiges: {
     type: GraphQLBoolean,
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       juLeiCaNr: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       ecMitglied: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       ecKreis: {
-        type: GraphQLInt,
+        type: GraphQLInt
       },
       Fuehrerschein: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       Rettungsschwimmer: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       ErsteHilfe: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       notizen: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       query(
@@ -161,46 +161,46 @@ export default {
           args.ErsteHilfe
         },Notizen="${args.notizen}" WHERE personID=${args.personID}`
       )
-    }),
+    })
   },
   updateAKStatus: {
     type: GraphQLBoolean,
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       akID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       date: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       status: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       query(
         `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID}, ${args.date}, ${args.status})`
       )
-    }),
+    })
   },
   mergePersons: {
     type: GraphQLBoolean,
 
     args: addAuth({
       personID_richtig: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       personID_falsch: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth(async (_, args: any) => {
       await mergePersonen(args)
       return true
-    }),
-  },
+    })
+  }
 }
 
 async function mergePersonen(args: {

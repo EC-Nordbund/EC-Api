@@ -6,20 +6,20 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export const _organisationen = new GraphQLObjectType({
   name: 'oraType',
   fields: () => ({
     organisationsID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     bezeichnung: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     ansprechpartner: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     vOrte: {
       type: new GraphQLList(vorte),
@@ -27,28 +27,28 @@ export const _organisationen = new GraphQLObjectType({
         return await query(
           `SELECT * FROM vOrte WHERE organisitationID = ${parent.organisationsID}`
         )
-      },
+      }
     },
     strasse: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     plz: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     ort: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     land: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     telefon: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     email: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     notizen: {
-      type: GraphQLString,
-    },
-  }),
+      type: GraphQLString
+    }
+  })
 })

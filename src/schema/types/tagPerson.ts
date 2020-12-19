@@ -12,7 +12,7 @@ export const _personTag = new GraphQLObjectType({
         return query(`SELECT * FROM tag WHERE tagID = ${parent.tagID}`).then(
           (v) => v[0]
         )
-      },
+      }
     },
     person: {
       type: person,
@@ -20,10 +20,10 @@ export const _personTag = new GraphQLObjectType({
         return query(
           `SELECT * FROM personen WHERE personID = ${parent.personID}`
         ).then((v) => v[0])
-      },
+      }
     },
     notiz: {
-      type: new GraphQLNonNull(GraphQLString),
-    },
-  }),
+      type: new GraphQLNonNull(GraphQLString)
+    }
+  })
 })

@@ -4,7 +4,7 @@ import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export default {
@@ -12,53 +12,53 @@ export default {
     type: GraphQLBoolean,
     args: addAuth({
       bezeichnung: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `INSERT INTO organisationen (bezeichnung) VALUES ('${args.bezeichnung}')`
       )
-    }, 'organisation'),
+    }, 'organisation')
   },
   editOrganisation: {
     type: GraphQLBoolean,
     args: addAuth({
       organisationsID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       bezeichnung: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       ansprechpartner: {
-        type: GraphQLString,
+        type: GraphQLString
       },
       strasse: {
-        type: GraphQLString,
+        type: GraphQLString
       },
       plz: {
-        type: GraphQLString,
+        type: GraphQLString
       },
       ort: {
-        type: GraphQLString,
+        type: GraphQLString
       },
       land: {
-        type: GraphQLString,
+        type: GraphQLString
       },
       telefon: {
-        type: GraphQLString,
+        type: GraphQLString
       },
       email: {
-        type: GraphQLString,
+        type: GraphQLString
       },
       notizen: {
-        type: GraphQLString,
-      },
+        type: GraphQLString
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE organisationen SET bezeichnung="${args.bezeichnung}",ansprechpartner="${args.ansprechpartner}",strasse="${args.strasse}",plz="${args.plz}",ort="${args.plz}",land="${args.land}",telefon="${args.telefon}",email="${args.email}",notizen="${args.notizen}" WHERE organisationsID = ${args.organisationsID}`
       )
-    }, 'organisation'),
-  },
+    }, 'organisation')
+  }
 }

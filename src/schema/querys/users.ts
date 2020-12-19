@@ -11,6 +11,6 @@ export default {
 
     resolve(_, args) {
       return checkToken(args.authToken)
-    },
-  },
+    }
+  }
 }

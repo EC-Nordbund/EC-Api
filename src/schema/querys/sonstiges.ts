@@ -2,7 +2,7 @@ import {
   GraphQLList,
   GraphQLString,
   GraphQLBoolean,
-  GraphQLNonNull,
+  GraphQLNonNull
 } from 'graphql'
 
 import { alert } from '../types'
@@ -14,6 +14,6 @@ export default {
     description: 'Gibt liste der Letzten 10 Alerts aus.',
     resolve() {
       return query('SELECT * from alertWidget ORDER BY alertID DESC LIMIT 10')
-    },
-  },
+    }
+  }
 }

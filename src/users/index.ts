@@ -33,7 +33,7 @@ export async function login(
       userID: users[0].user_id,
       username: users[0].username,
       personID: users[0].person_id,
-      ablaufDatum: users[0].ablauf_datum,
+      ablaufDatum: users[0].ablauf_datum
     })
   } else {
     throw new Error('Nutzername und Passwort passen nicht zusammen!')

@@ -36,8 +36,8 @@ export const schema = new GraphQLSchema({
       ...anmeldungsQuery,
       ...usersQuery,
       ...vOrteQuery,
-      ...orgaQuery,
-    },
+      ...orgaQuery
+    }
   }),
   mutation: new GraphQLObjectType({
     name: 'mutationRoot',
@@ -52,7 +52,7 @@ export const schema = new GraphQLSchema({
       ...veranstaltungenMutationen,
       ...vOrteMutationen,
       ...anmeldeMutationen,
-      ...serienBriefMutationen,
-    },
-  }),
+      ...serienBriefMutationen
+    }
+  })
 })

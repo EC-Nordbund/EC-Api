@@ -3,7 +3,7 @@ import {
   GraphQLObjectType,
   GraphQLInt,
   GraphQLBoolean,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 import { timeStamp } from '.'
 
@@ -11,16 +11,16 @@ export const _email = new GraphQLObjectType({
   name: 'email',
   fields: () => ({
     eMailID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     eMail: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     isOld: {
-      type: new GraphQLNonNull(GraphQLBoolean),
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     lastUsed: {
-      type: new GraphQLNonNull(timeStamp),
-    },
-  }),
+      type: new GraphQLNonNull(timeStamp)
+    }
+  })
 })

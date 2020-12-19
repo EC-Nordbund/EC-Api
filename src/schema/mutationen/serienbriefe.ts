@@ -5,7 +5,7 @@ import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export default {
@@ -13,41 +13,41 @@ export default {
     type: GraphQLBoolean,
     args: addAuth({
       bezeichnung: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       docx: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       geschlecht: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `INSERT INTO serienbriefe(bezeichnung, docxDocument, geschlechterspizifischeAttribute) VALUES ("${args.bezeichnung}","${args.docx}","${args.geschlecht}")`
       )
-    }, 'serienbrief'),
+    }, 'serienbrief')
   },
   serienbriefEdit: {
     type: GraphQLBoolean,
     args: addAuth({
       sbID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       bezeichnung: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       docx: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       geschlecht: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE serienbriefe SET bezeichnung="${args.bezeichnung}", docxDocument="${args.docx}", geschlechterspizifischeAttribute="${args.geschlecht}"`
       )
-    }, 'serienbrief'),
-  },
+    }, 'serienbrief')
+  }
 }

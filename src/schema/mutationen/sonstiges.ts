@@ -9,12 +9,12 @@ export default {
     args: addAuth({
       msg: {
         description: 'Nachricht die angezeigt werden soll',
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       von: {
         description: 'Autor der Nachricht',
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
@@ -24,6 +24,6 @@ export default {
         .catch((err) => {
           throw err
         })
-    }, 'addAlert'),
-  },
+    }, 'addAlert')
+  }
 }

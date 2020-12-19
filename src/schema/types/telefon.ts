@@ -3,7 +3,7 @@ import {
   GraphQLObjectType,
   GraphQLInt,
   GraphQLString,
-  GraphQLBoolean,
+  GraphQLBoolean
 } from 'graphql'
 import { timeStamp } from '.'
 
@@ -13,17 +13,17 @@ export const _telefon = new GraphQLObjectType({
   fields: () => ({
     telefonID: {
       description: 'ID der Telefonnummer',
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     telefon: {
       description: 'Telefonnummer',
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     isOld: {
-      type: new GraphQLNonNull(GraphQLBoolean),
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     lastUsed: {
-      type: new GraphQLNonNull(timeStamp),
-    },
-  }),
+      type: new GraphQLNonNull(timeStamp)
+    }
+  })
 })

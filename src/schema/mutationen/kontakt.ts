@@ -4,7 +4,7 @@ import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export default {
@@ -14,14 +14,14 @@ export default {
     args: addAuth({
       adressID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der benutzen Adresse',
-      },
+        description: 'ID der benutzen Adresse'
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE adressen SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${args.adressID}`
       )
-    }, 'oldStatusKontakt'),
+    }, 'oldStatusKontakt')
   },
   markAdressAsOld: {
     type: GraphQLBoolean,
@@ -29,14 +29,14 @@ export default {
     args: addAuth({
       adressID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der benutzen Adresse',
-      },
+        description: 'ID der benutzen Adresse'
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE adressen SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${args.adressID}`
       )
-    }, 'oldStatusKontakt'),
+    }, 'oldStatusKontakt')
   },
   useEmail: {
     type: GraphQLBoolean,
@@ -44,14 +44,14 @@ export default {
     args: addAuth({
       emailID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der benutzen Email',
-      },
+        description: 'ID der benutzen Email'
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE eMails SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${args.emailID}`
       )
-    }, 'oldStatusKontakt'),
+    }, 'oldStatusKontakt')
   },
   markEmailAsOld: {
     type: GraphQLBoolean,
@@ -59,14 +59,14 @@ export default {
     args: addAuth({
       emailID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der benutzen Email',
-      },
+        description: 'ID der benutzen Email'
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE eMails SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${args.emailID}`
       )
-    }, 'oldStatusKontakt'),
+    }, 'oldStatusKontakt')
   },
   useTelefon: {
     type: GraphQLBoolean,
@@ -74,14 +74,14 @@ export default {
     args: addAuth({
       telefonID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der benutzen Telfonnummer',
-      },
+        description: 'ID der benutzen Telfonnummer'
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE telefone SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${args.telefonID}`
       )
-    }, 'oldStatusKontakt'),
+    }, 'oldStatusKontakt')
   },
   markTelefonAsOld: {
     type: GraphQLBoolean,
@@ -89,31 +89,31 @@ export default {
     args: addAuth({
       telefonID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der benutzen Telfonnummer',
-      },
+        description: 'ID der benutzen Telfonnummer'
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE telefone SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${args.telefonID}`
       )
-    }, 'oldStatusKontakt'),
+    }, 'oldStatusKontakt')
   },
   addAdresse: {
     type: new GraphQLNonNull(GraphQLInt),
 
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       strasse: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       plz: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       ort: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
@@ -130,18 +130,18 @@ export default {
           })
           .catch(reject)
       })
-    }, 'addKontakt'),
+    }, 'addKontakt')
   },
   addEmail: {
     type: new GraphQLNonNull(GraphQLInt),
 
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       email: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
@@ -158,18 +158,18 @@ export default {
           })
           .catch(reject)
       })
-    }, 'addKontakt'),
+    }, 'addKontakt')
   },
   addTelefon: {
     type: new GraphQLNonNull(GraphQLInt),
 
     args: addAuth({
       personID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       telefon: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return new Promise((resolve, reject) => {
@@ -186,24 +186,24 @@ export default {
           })
           .catch(reject)
       })
-    }, 'addKontakt'),
+    }, 'addKontakt')
   },
   editAdresse: {
     type: GraphQLBoolean,
 
     args: addAuth({
       adressID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       strasse: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       plz: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       ort: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
@@ -211,18 +211,18 @@ export default {
       ).then((v) => {
         return true
       })
-    }, 'editKontakt'),
+    }, 'editKontakt')
   },
   editEmail: {
     type: new GraphQLNonNull(GraphQLInt),
 
     args: addAuth({
       emailID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       email: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
@@ -230,95 +230,95 @@ export default {
       ).then((v) => {
         return true
       })
-    }, 'editKontakt'),
+    }, 'editKontakt')
   },
   editTelefon: {
     type: new GraphQLNonNull(GraphQLInt),
 
     args: addAuth({
       telefonID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       telefon: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE telefone SET telefon = '${args.telefon}' WHERE telefonID=${args.telefonID}`
       ).then((v) => true)
-    }, 'editKontakt'),
+    }, 'editKontakt')
   },
   deleteAdresse: {
     type: GraphQLBoolean,
     description: 'Löschen einer Adresse',
     args: addAuth({
       adressID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(`DELETE FROM adressen WHERE adressID = ${args.adressID}`)
-    }, 'deleteKontakt'),
+    }, 'deleteKontakt')
   },
   deleteEMail: {
     type: GraphQLBoolean,
     description: 'Löschen einer Adresse',
     args: addAuth({
       emailID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(`DELETE FROM eMails WHERE eMailID = ${args.emailID}`)
-    }, 'deleteKontakt'),
+    }, 'deleteKontakt')
   },
   deleteTelefon: {
     type: GraphQLBoolean,
     description: 'Löschen einer Adresse',
     args: addAuth({
       telefonID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(`DELETE FROM telefone WHERE telefonID = ${args.telefonID}`)
-    }, 'deleteKontakt'),
+    }, 'deleteKontakt')
   },
   mergeAdresse: {
     type: GraphQLBoolean,
 
     args: addAuth({
       adressID_richtig: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       adressID_falsch: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth(async (_, args) => {
       await query(
         `UPDATE anmeldungen SET adressID = ${args.adressID_richtig} WHERE adressID = ${args.adressID_falsch}`
       )
       await query(`DELETE adresse WHERE adressID = ${args.adressID_falsch}`)
-    }, 'mergePersonen'),
+    }, 'mergePersonen')
   },
   mergeTelefon: {
     type: GraphQLBoolean,
 
     args: addAuth({
       telefonID_richtig: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       telefonID_falsch: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth(async (_, args) => {
       await query(
         `UPDATE anmeldungen SET telefonID = ${args.telefonID_richtig} WHERE telefonID = ${args.telefonID_falsch}`
       )
       await query(`DELETE telefone WHERE telefonID = ${args.telefonID_falsch}`)
-    }, 'mergePersonen'),
-  },
+    }, 'mergePersonen')
+  }
 }

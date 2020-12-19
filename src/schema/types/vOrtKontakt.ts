@@ -2,29 +2,29 @@ import {
   GraphQLNonNull,
   GraphQLString,
   GraphQLInt,
-  GraphQLObjectType,
+  GraphQLObjectType
 } from 'graphql'
 
 export const _vortKontakt = new GraphQLObjectType({
   name: 'vOrtKontakt',
   fields: () => ({
     vOrtKontaktID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     ansprechpartner: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     typ: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     telefon: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     email: {
-      type: GraphQLString,
+      type: GraphQLString
     },
     notizen: {
-      type: GraphQLString,
-    },
-  }),
+      type: GraphQLString
+    }
+  })
 })

@@ -3,7 +3,7 @@ import {
   GraphQLFieldResolver,
   GraphQLNonNull,
   GraphQLResolveInfo,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 import { checkToken } from '../users/jwt'
 
@@ -12,7 +12,7 @@ export function addAuth(
 ): GraphQLFieldConfigArgumentMap {
   args.authToken = {
     type: new GraphQLNonNull(GraphQLString),
-    description: 'Authentifizierungs-Token',
+    description: 'Authentifizierungs-Token'
   }
   return args
 }

@@ -107,7 +107,7 @@ async function createFZDocument(
     plz,
     ort,
     geschlecht,
-    date: new Date().toISOString().split('T')[0].split('-').reverse().join('.'),
+    date: new Date().toISOString().split('T')[0].split('-').reverse().join('.')
   })
 
   return result

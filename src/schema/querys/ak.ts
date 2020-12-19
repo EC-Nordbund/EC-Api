@@ -12,13 +12,13 @@ export default {
     type: new GraphQLList(ak),
     resolve: handleAuth(() => {
       return query(`SELECT * FROM ak`)
-    }),
+    })
   },
   ak: {
     args: addAuth({
       akID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
 
     type: ak,
@@ -26,6 +26,6 @@ export default {
       return query(`SELECT * FROM ak WHERE akID = ${args.akID}`).then(
         (res) => res[0]
       )
-    }),
-  },
+    })
+  }
 }

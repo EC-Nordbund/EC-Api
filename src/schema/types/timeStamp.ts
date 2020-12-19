@@ -13,7 +13,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      },
+      }
     },
     month: {
       type: GraphQLInt,
@@ -23,7 +23,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      },
+      }
     },
     year: {
       type: GraphQLInt,
@@ -33,7 +33,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      },
+      }
     },
     h: {
       type: GraphQLInt,
@@ -43,7 +43,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      },
+      }
     },
     min: {
       type: GraphQLInt,
@@ -53,7 +53,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      },
+      }
     },
     s: {
       type: GraphQLInt,
@@ -63,7 +63,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      },
+      }
     },
     german: {
       type: GraphQLString,
@@ -77,7 +77,7 @@ export const _timestamp = new GraphQLObjectType({
         } else {
           return null
         }
-      },
-    },
-  }),
+      }
+    }
+  })
 })

@@ -24,8 +24,8 @@ export default async function sendMail(
     port: parseInt(process.env.SMTP_PORT || '1'),
     auth: {
       user: process.env.SMTP_USERNAME || '',
-      pass: process.env.SMTP_PASSWORD || '',
-    },
+      pass: process.env.SMTP_PASSWORD || ''
+    }
   })
   const mailData = {
     from,
@@ -36,8 +36,8 @@ export default async function sendMail(
     ...(isHTML ? { html: body } : { text: body }),
     attachments: attachments.map((at) => ({
       ...at,
-      ...(typeof at.content === 'string' ? { encoding: 'base64' } : {}),
-    })),
+      ...(typeof at.content === 'string' ? { encoding: 'base64' } : {})
+    }))
   }
   await smtp.sendMail(mailData)
   await query(

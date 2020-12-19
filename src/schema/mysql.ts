@@ -10,7 +10,7 @@ export async function query(sql: string, uid = -1) {
       database: process.env.DB_DB || '',
       user: process.env.DB_USERNAME || '',
       password: process.env.DB_PASSWORT || '',
-      connectionLimit: 18,
+      connectionLimit: 18
     })
   }
   console.log(`${uid}: '${sql}'`)
@@ -30,7 +30,7 @@ export async function getMySQL(to = 10) {
       database: process.env.DB_DB || '',
       user: process.env.DB_USERNAME || '',
       password: process.env.DB_PASSWORT || '',
-      connectionLimit: 18,
+      connectionLimit: 18
     })
   }
 

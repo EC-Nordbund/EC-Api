@@ -6,7 +6,7 @@ import {
   GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 
 export default {
@@ -16,23 +16,23 @@ export default {
     args: {
       username: {
         description: 'Benutzername',
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       password: {
         description: 'Passwort',
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       version: {
         description: 'Version der APP',
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     },
     resolve(_, args) {
       if (versions.includes(args.version)) {
         throw 'Version nicht erlaubt'
       }
       return login(args.username, args.password)
-    },
+    }
   },
   passwordWechseln: {
     type: GraphQLBoolean,
@@ -40,37 +40,37 @@ export default {
     args: addAuth({
       oldPWD: {
         description: 'Altes Passwort',
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       newPWD: {
         description: 'Neues Passwort',
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     async resolve(_, args) {
       return changePWD(args.authToken, args.oldPWD, args.newPWD)
       // throw new Error("Aktuell leider nicht Möglich");
-    },
+    }
   },
   feedback: {
     type: GraphQLBoolean,
 
     args: {
       gesamt: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       handhabung: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       funktionswunsch: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       bug: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       sonstiges: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     },
     resolve(_, args) {
       return mail(
@@ -83,6 +83,6 @@ export default {
           Bug: ${args.bug}<br/>
           Sonstiges: ${args.sonstiges}`
       )
-    },
-  },
+    }
+  }
 }

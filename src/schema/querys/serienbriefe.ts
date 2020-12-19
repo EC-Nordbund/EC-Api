@@ -11,14 +11,14 @@ export default {
     type: new GraphQLList(serienbrief),
     resolve: handleAuth(() => {
       return query(`SELECT * FROM serienbriefe`)
-    }),
+    })
   },
   serienbrief: {
     args: addAuth({
       sbID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der serienbriefen',
-      },
+        description: 'ID der serienbriefen'
+      }
     }),
     type: serienbrief,
     description: 'serienbrief mit einer bestimmten ID',
@@ -26,6 +26,6 @@ export default {
       return query(`SELECT * FROM serienbriefe WHERE sbID = ${args.sbID}`).then(
         (res) => res[0]
       )
-    }),
-  },
+    })
+  }
 }

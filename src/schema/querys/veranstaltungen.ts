@@ -11,14 +11,14 @@ export default {
     type: new GraphQLList(veranstaltung),
     resolve: handleAuth(() => {
       return query(`SELECT * FROM veranstaltungen`)
-    }),
+    })
   },
   veranstaltung: {
     args: addAuth({
       veranstaltungsID: {
         type: new GraphQLNonNull(GraphQLInt),
-        description: 'ID der Veranstaltungen',
-      },
+        description: 'ID der Veranstaltungen'
+      }
     }),
     type: veranstaltung,
     description: 'Veranstaltung mit einer bestimmten ID',
@@ -26,6 +26,6 @@ export default {
       return query(
         `SELECT * FROM veranstaltungen WHERE veranstaltungsID = ${args.veranstaltungsID}`
       ).then((res) => res[0])
-    }),
-  },
+    })
+  }
 }

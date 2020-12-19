@@ -2,7 +2,7 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLInt,
-  GraphQLObjectType,
+  GraphQLObjectType
 } from 'graphql'
 
 import { person } from '../types'
@@ -16,22 +16,22 @@ export default {
     type: new GraphQLList(person),
     resolve: handleAuth(() => {
       return query(`SELECT * FROM personen`)
-    }),
+    })
   },
   person: {
     description: 'Returnt gewählte Person anhand der genannten ID',
     args: addAuth({
       personID: {
         description: 'ID der abgefragten Person.',
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     type: person,
     resolve: handleAuth((_, args) => {
       return query(
         `SELECT * FROM personen WHERE personID = ${args.personID}`
       ).then((res) => res[0])
-    }),
+    })
   },
   moeglicheDublikate: {
     args: addAuth(),
@@ -40,12 +40,12 @@ export default {
         name: 'dublikate',
         fields: {
           personA: {
-            type: person,
+            type: person
           },
           personB: {
-            type: person,
-          },
-        },
+            type: person
+          }
+        }
       })
     ),
     resolve: handleAuth((_, args) => {
@@ -53,6 +53,6 @@ export default {
       // remove all nodubs
       // Order Persons
       return []
-    }),
-  },
+    })
+  }
 }

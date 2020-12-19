@@ -2,7 +2,7 @@ import {
   GraphQLObjectType,
   GraphQLNonNull,
   GraphQLInt,
-  GraphQLList,
+  GraphQLList
 } from 'graphql'
 import { ak, akStatus, person } from '.'
 
@@ -17,7 +17,7 @@ export const _personAK = new GraphQLObjectType({
         return query(`SELECT * FROM ak WHERE akID = ${parent.akID}`).then(
           (v) => v[0]
         )
-      },
+      }
     },
     person: {
       type: person,
@@ -25,7 +25,7 @@ export const _personAK = new GraphQLObjectType({
         return query(
           `SELECT * FROM personen WHERE personID = ${parent.personID}`
         ).then((v) => v[0])
-      },
+      }
     },
     currentStatus: {
       type: new GraphQLNonNull(GraphQLInt),
@@ -33,7 +33,7 @@ export const _personAK = new GraphQLObjectType({
         return query(
           `SELECT neuerStatus FROM akPerson WHERE akID = ${parent.akID} AND personID = ${parent.personID} ORDER BY date DESC LIMIT 1`
         ).then((v) => v[0].neuerStatus)
-      },
+      }
     },
     allUpdates: {
       type: new GraphQLList(akStatus),
@@ -41,7 +41,7 @@ export const _personAK = new GraphQLObjectType({
         return query(
           `SELECT * FROM akPerson WHERE akID = ${parent.akID} AND personID = ${parent.personID}`
         )
-      },
-    },
-  }),
+      }
+    }
+  })
 })

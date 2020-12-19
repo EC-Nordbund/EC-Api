@@ -3,7 +3,7 @@ import {
   GraphQLInt,
   GraphQLNonNull,
   GraphQLString,
-  GraphQLBoolean,
+  GraphQLBoolean
 } from 'graphql'
 
 import { timeStamp } from '.'
@@ -12,22 +12,22 @@ export const _adresse = new GraphQLObjectType({
   name: 'adresse',
   fields: () => ({
     adressID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     strasse: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     plz: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     ort: {
-      type: new GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString)
     },
     isOld: {
-      type: new GraphQLNonNull(GraphQLBoolean),
+      type: new GraphQLNonNull(GraphQLBoolean)
     },
     lastUsed: {
-      type: new GraphQLNonNull(timeStamp),
-    },
-  }),
+      type: new GraphQLNonNull(timeStamp)
+    }
+  })
 })

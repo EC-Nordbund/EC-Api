@@ -6,7 +6,7 @@ export const _akStatus = new GraphQLObjectType({
   name: 'akStatus',
   fields: () => ({
     akPersonID: {
-      type: new GraphQLNonNull(GraphQLInt),
+      type: new GraphQLNonNull(GraphQLInt)
     },
     person: {
       type: new GraphQLNonNull(person),
@@ -15,20 +15,20 @@ export const _akStatus = new GraphQLObjectType({
           `SELECT * FROM personen WHERE personID = ${parent.personID}`
         )
         return person[0]
-      },
+      }
     },
     ak: {
       type: new GraphQLNonNull(ak),
       async resolve(parent) {
         const ak = await query(`SELECT * FROM ak WHERE akID = ${parent.akID}`)
         return ak[0]
-      },
+      }
     },
     date: {
-      type: new GraphQLNonNull(date),
+      type: new GraphQLNonNull(date)
     },
     neuerStatus: {
-      type: new GraphQLNonNull(GraphQLInt),
-    },
-  }),
+      type: new GraphQLNonNull(GraphQLInt)
+    }
+  })
 })

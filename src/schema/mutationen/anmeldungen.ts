@@ -8,7 +8,7 @@ import {
   GraphQLInt,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLString,
+  GraphQLString
 } from 'graphql'
 import { sha3_512 } from 'js-sha3'
 import { checkToken } from '../../users/jwt'
@@ -20,96 +20,96 @@ export default {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       vegetarisch: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       lebensmittelAllergien: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       gesundheitsinformationen: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       bemerkungen: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE anmeldungen SET vegetarisch = ${args.vegetarisch}, lebensmittelAllergien="${args.lebensmittelAllergien}", gesundheitsinformationen="${args.gesundheitsinformationen}", bemerkungen="${args.bemerkungen}" WHERE anmeldeID="${args.anmeldeID}"`
       )
-    }, 'anmeldungBesonderheiten'),
+    }, 'anmeldungBesonderheiten')
   },
   anmeldungBezahlt: {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       betrag: {
-        type: new GraphQLNonNull(GraphQLFloat),
-      },
+        type: new GraphQLNonNull(GraphQLFloat)
+      }
     }),
     resolve: handleAuth((_, args) => {
       return query(
         `UPDATE anmeldungen SET bisherBezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`
       )
-    }, 'anmeldungFinanzen'),
+    }, 'anmeldungFinanzen')
   },
   anmeldungRueckbezahlt: {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       betrag: {
-        type: new GraphQLNonNull(GraphQLFloat),
-      },
+        type: new GraphQLNonNull(GraphQLFloat)
+      }
     }),
     resolve: handleAuth((_, args) => {
       query(
         `UPDATE anmeldungen SET rueckbezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`
       )
-    }, 'anmeldungFinanzen'),
+    }, 'anmeldungFinanzen')
   },
   anmeldungKontakt: {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       adressID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       emailID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       telefonID: {
-        type: new GraphQLNonNull(GraphQLInt),
-      },
+        type: new GraphQLNonNull(GraphQLInt)
+      }
     }),
     resolve: handleAuth((_, args) => {
       query(
         `UPDATE anmeldungen SET adressID=${args.adressID}, eMailID=${args.emailID}, telefonID=${args.telefonID} WHERE anmeldeID = '${args.anmeldeID}'`
       )
-    }, 'anmeldungKontakt'),
+    }, 'anmeldungKontakt')
   },
   abmelden: {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       gebuehr: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       weg: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       kommentar: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       query(
@@ -119,19 +119,19 @@ export default {
         'automated@ec-nordbund.de',
         {
           to:
-            '2pi_r2@gmx.de; BirgitHerbert@t-online.de; an-gela@gmx.net; referent@ec-nordbund.de',
+            '2pi_r2@gmx.de; BirgitHerbert@t-online.de; an-gela@gmx.net; referent@ec-nordbund.de'
         },
         `Neue Abmeldung`,
         `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`
       )
-    }, 'anmeldungAbmelden'),
+    }, 'anmeldungAbmelden')
   },
   nachruecken: {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth((_, args) => {
       query(
@@ -163,96 +163,96 @@ export default {
               }
             })
         })
-    }, 'anmeldungWarteliste'),
+    }, 'anmeldungWarteliste')
   },
   anmelden: {
     type: new GraphQLObjectType({
       name: 'anmeldeReturn',
       fields: {
         status: {
-          type: new GraphQLNonNull(GraphQLInt),
+          type: new GraphQLNonNull(GraphQLInt)
         },
         anmeldeID: {
-          type: GraphQLString,
-        },
-      },
+          type: GraphQLString
+        }
+      }
     }),
     args: {
       isWP: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       token: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       vorname: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       nachname: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       gebDat: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       geschlecht: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       position: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       veranstaltungsID: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       eMail: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       telefon: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       strasse: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       plz: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       ort: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       anmeldeZeitpunkt: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       vegetarisch: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       lebensmittelAllergien: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       gesundheitsinformationen: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       bemerkungen: {
-        type: new GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString)
       },
       radfahren: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       schwimmen: {
-        type: new GraphQLNonNull(GraphQLInt),
+        type: new GraphQLNonNull(GraphQLInt)
       },
       fahrgemeinschaften: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       klettern: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       sichEntfernen: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       bootFahren: {
-        type: new GraphQLNonNull(GraphQLBoolean),
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       extra_json: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     },
     async resolve(_, args) {
       let allowed = false
@@ -363,7 +363,7 @@ export default {
         if (vorhandeneAnmeldungen.length > 0) {
           return {
             status: -2,
-            anmeldeID: vorhandeneAnmeldungen[0].anmeldeID,
+            anmeldeID: vorhandeneAnmeldungen[0].anmeldeID
           }
         } else {
           let wartelistenplatz = 0
@@ -475,7 +475,7 @@ export default {
               const wannArr = [
                 wann.getFullYear(),
                 wann.getMonth() + 1,
-                wann.getDate(),
+                wann.getDate()
               ]
               wannArr[0] -= 5
               const fzMinDate = new Date(wannArr.join('-'))
@@ -503,7 +503,7 @@ export default {
             ),
             query(
               `UPDATE personen SET letzteAenderung=CURRENT_TIMESTAMP WHERE personID=${personID}`
-            ),
+            )
           ])
           await query(`
             INSERT INTO anmeldungen(
@@ -560,40 +560,40 @@ export default {
 
           return {
             status: wartelistenplatz,
-            anmeldeID: anmeldeID,
+            anmeldeID: anmeldeID
           }
         }
       } else {
         return { status: -1 }
       }
-    },
+    }
   },
   anmeldungBestaetigungsbrief: {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth(async function (_, args) {
       await query(
         `UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`
       )
       return true
-    }, 'anmeldungBesonderheiten'),
+    }, 'anmeldungBesonderheiten')
   },
   anmeldunginfobrief: {
     type: GraphQLBoolean,
     args: addAuth({
       anmeldeID: {
-        type: new GraphQLNonNull(GraphQLString),
-      },
+        type: new GraphQLNonNull(GraphQLString)
+      }
     }),
     resolve: handleAuth(async function (_, args) {
       await query(
         `UPDATE anmeldungen SET infoBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`
       )
       return true
-    }, 'anmeldungBesonderheiten'),
-  },
+    }, 'anmeldungBesonderheiten')
+  }
 }
