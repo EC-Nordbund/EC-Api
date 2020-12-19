@@ -1,9 +1,8 @@
-import { Request } from 'express'
-import { createPool, Pool } from 'promise-mysql'
+import { createPool, Pool, PoolConnection } from 'promise-mysql'
 
 let pool: Pool | null = null
 
-export async function query(sql: string, uid = -1) {
+export async function query<T = any>(sql: string, uid = -1): Promise<T[]> {
   if (!pool) {
     pool = await createPool({
       host: process.env.DB_HOST || '',
@@ -23,7 +22,7 @@ export async function query(sql: string, uid = -1) {
   return result
 }
 
-export async function getMySQL(to = 10) {
+export async function getMySQL(to = 10): Promise<PoolConnection> {
   if (!pool) {
     pool = await createPool({
       host: process.env.DB_HOST || '',
@@ -36,28 +35,9 @@ export async function getMySQL(to = 10) {
 
   const connection = await pool.getConnection()
 
-  const timer = setTimeout(() => {
+  setTimeout(() => {
     connection.release()
   }, to * 1000)
 
   return connection
-}
-
-type NoPromise<T> = T extends Promise<infer U> ? U : T
-
-const connections = new WeakMap<
-  Request,
-  NoPromise<ReturnType<typeof getMySQL>>
->()
-
-export async function createSQLContext(req: Request) {
-  const con = await getMySQL()
-
-  connections.set(req, con)
-
-  return con
-}
-
-export function getSQLContext(req: Request) {
-  return connections.get(req)!
 }

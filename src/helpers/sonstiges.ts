@@ -5,7 +5,7 @@ import {
   GraphQLResolveInfo,
   GraphQLString
 } from 'graphql'
-import { checkToken } from '../users/jwt'
+import { checkToken } from './jwt'
 
 export function addAuth(
   args: GraphQLFieldConfigArgumentMap = {}
@@ -19,6 +19,7 @@ export function addAuth(
 
 export function handleAuth(
   cb: GraphQLFieldResolver<any, any>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _?: string
 ): GraphQLFieldResolver<any, any> {
   return async function (

@@ -33,33 +33,6 @@ export function createToken(payload: payload): Promise<string> {
   })
 }
 
-export function createToken2(
-  payload: any,
-  token: string,
-  time = '100d'
-): Promise<string> {
-  return new Promise<string>((res, rej) => {
-    sign(
-      payload,
-      token,
-      { expiresIn: time, issuer: 'ec-nordbund' },
-      (err: Error | null, encoded: string | undefined) => {
-        if (err) {
-          rej(err)
-          return
-        }
-
-        if (!encoded) {
-          rej('No Token generated')
-          return
-        }
-
-        res(encoded)
-      }
-    )
-  })
-}
-
 export function checkToken(token: string): Promise<payload> {
   return new Promise<payload>((res, rej) => {
     verify(token, secret_token, (err: Error | null, decoded: any) => {

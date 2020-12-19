@@ -1,5 +1,5 @@
-import mail from '../schema/mail'
-import { query } from '../schema/mysql'
+import mail from './mail'
+import { query } from './mysql'
 import { readFileSync } from 'fs'
 import { Readable } from 'stream'
 import createReport from './generator'

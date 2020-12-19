@@ -18,7 +18,7 @@ export default async function sendMail(
     content: string | Readable
     filename: string
   }> = []
-) {
+): Promise<true> {
   const smtp = createTransport({
     host: process.env.SMTP_SERVER || '',
     port: parseInt(process.env.SMTP_PORT || '1'),
