@@ -21,7 +21,7 @@ const app = express()
   .use('/version', (req, res) => {
     res.end(`{"version": "${appVersion}"}`)
   })
-  .use('/v4', json())
+  .use('/v6', json())
 
 user(app)
 
