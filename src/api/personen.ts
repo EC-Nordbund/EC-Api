@@ -11,9 +11,11 @@ export default (app: Express): void => {
     async (req, res) => {
       try {
         await checkAuth(req)
-        const personen = await query(
-          sql`SELECT personID, vorname, nachname, gebDat, geschlecht FROM personen`
-        )
+        const personen = (
+          await query(
+            sql`SELECT personID, vorname, nachname, gebDat, geschlecht FROM personen`
+          )
+        ).map((v) => ({ ...v, gebDat: v.gebDat.toString().split('T')[0] }))
         res.json({
           personen
         })
