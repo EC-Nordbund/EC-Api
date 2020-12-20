@@ -15,7 +15,7 @@ export default (app: Express): void => {
           await query(
             sql`SELECT personID, vorname, nachname, gebDat, geschlecht FROM personen`
           )
-        ).map((v) => ({ ...v, gebDat: v.gebDat.toString().split('T')[0] }))
+        ).map((v) => ({ ...v, gebDat: v.gebDat.toISOString().split('T')[0] }))
         res.json({
           personen
         })
