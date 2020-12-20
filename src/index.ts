@@ -6,6 +6,7 @@ import cors from 'cors'
 import express from 'express'
 import compression from 'compression'
 import user from './api/user'
+import personen from './api/personen'
 import * as http from 'http'
 
 const apollo = new ApolloServer({ schema })
@@ -24,6 +25,7 @@ const app = express()
   .use('/v6', json())
 
 user(app)
+personen(app)
 
 apollo.applyMiddleware({ app, path: '/graphql' })
 
