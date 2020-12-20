@@ -8,6 +8,7 @@ export class ecError extends Error {
 }
 
 export function errorHandler(err: unknown, res: Response): void {
+  res.contentType('text/plain')
   if (err instanceof ecError) {
     res.status(err.code).end(err.message)
   } else if (err instanceof Error) {
