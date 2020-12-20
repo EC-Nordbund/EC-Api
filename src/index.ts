@@ -7,6 +7,7 @@ import express from 'express'
 import compression from 'compression'
 import user from './api/user'
 import personen from './api/personen'
+import expressRateLimit from 'express-rate-limit'
 import * as http from 'http'
 
 const apollo = new ApolloServer({ schema })
@@ -24,6 +25,13 @@ const app = express()
   })
   .use('/v6', json())
 
+  .use(
+    '/v6',
+    expressRateLimit({
+      windowMs: 1000,
+      max: 2
+    })
+  )
 user(app)
 personen(app)
 

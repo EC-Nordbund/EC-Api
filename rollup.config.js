@@ -88,6 +88,7 @@ export default {
     'jsonwebtoken',
     'body-parser',
     'sql-escape-tag',
-    'swagger-ui-express'
+    'swagger-ui-express',
+    'express-rate-limit'
   ]
 }
