@@ -1,23 +1,72 @@
 import mail from './mail'
-import { query } from './mysql'
+import { getMySQL } from './mysql'
 import { readFileSync } from 'fs'
 import { Readable } from 'stream'
 import createReport from './generator'
-export function createFZ(
+import { ecError } from './error'
+import sql from 'sql-escape-tag'
+
+const fzDocument = readFileSync('./fz.docx')
+
+/**
+ * Erzeugt einen FZ-Antrag für eine bestimmte Person und sendet ihn per Mail an diese.
+ *
+ * @author Sebastian
+ *
+ * @param personID ID der Person
+ * @param email Email (als String)
+ * @param adressID <i>(optional)</i> ID der Adresse
+ */
+export async function createFZ(
   personID: number,
   email: string,
   adressID = -1
 ): Promise<void> {
-  return createFZWithData(personID, adressID).then((file) => {
-    query(
-      `SELECT vorname, nachname, geschlecht FROM personen WHERE personID = ${personID}`
-    ).then((rows) => {
-      const p = rows[0]
-      return mail(
-        'fz@ec-nordbund.de',
-        { to: email, bcc: 'fz@ec-nordbund.de;datenschutz@ec-nordbund.de' },
-        'Erweitertes Führungszeugnis',
-        `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
+  const con = await getMySQL(2)
+
+  // Hole Adressdaten
+  const adressen = await con.query(
+    adressID === -1
+      ? sql`SELECT strasse, plz, ort FROM adressen WHERE adressID = ${adressID}`
+      : sql`SELECT strasse, plz, ort FROM adressen WHERE personID = ${personID} AND isOld = 0 ORDER BY lastUsed LIMIT 1`
+  )
+
+  if (adressen.length === 0) {
+    throw new ecError('Keine Adresse gefunden', 404)
+  }
+
+  // Hole Personendaten
+  const personenDaten = await con.query(
+    sql`SELECT vorname, nachname, gebDat, geschlecht FROM personen WHERE personID = ${personID}`
+  )
+
+  if (personenDaten.length === 0) {
+    throw new ecError('Keine Person gefunden!', 404)
+  }
+
+  const p = personenDaten[0]
+  const a = adressen[0]
+
+  // Erzeuge Antrag-PDF
+  const file = await createReport(fzDocument, {
+    vorname: p.vorname,
+    nachname: p.nachname,
+    gebDat: `${p.gebDat.getDate()}.${
+      p.gebDat.getMonth() + 1
+    }.${p.gebDat.getFullYear()}`,
+    strasse: a.strasse,
+    plz: a.plz,
+    ort: a.ort,
+    geschlecht: p.geschlecht,
+    date: new Date().toISOString().split('T')[0].split('-').reverse().join('.')
+  })
+
+  // Sende Mail
+  await mail(
+    'fz@ec-nordbund.de',
+    { to: email, bcc: 'fz@ec-nordbund.de;datenschutz@ec-nordbund.de' },
+    'Erweitertes Führungszeugnis',
+    `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
         <p>du bist als Mitarbeiter${
           p.geschlecht === 'w' ? 'in' : ''
         } im EC-Nordbund überregional oder in deiner Gemeinschaft/Gemeinde vor Ort tätig. Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>
@@ -29,86 +78,7 @@ export function createFZ(
         Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
         <p>Entschieden für Christus grüßt</p>
         <p><b>ThomaS:-)</b></p>`,
-        true,
-        [{ content: Readable.from(file), filename: 'fzAntrag.pdf' }]
-      )
-    })
-  })
-}
-
-export function createFZWithData(
-  personID: number,
-  adressID = -1
-): Promise<NodeJS.ReadableStream> {
-  return new Promise((res, rej) => {
-    if (adressID === -1) {
-      query(
-        `SELECT adressID FROM adressen WHERE personID = ${personID} AND isOld = 0 ORDER BY lastUsed LIMIT 1`
-      ).then((row: Array<{ adressID: number }>) => {
-        if (row.length === 0) {
-          rej('Keine Gültige Adresse gefunden')
-        } else {
-          createFZWithData(personID, row[0].adressID).then(res)
-        }
-      })
-    } else {
-      query(
-        `SELECT strasse, plz, ort FROM adressen WHERE adressID = ${adressID}`
-      ).then(
-        (adressen: Array<{ strasse: string; plz: string; ort: string }>) => {
-          query(
-            `SELECT vorname, nachname, gebDat, geschlecht FROM personen WHERE personID = ${personID}`
-          ).then(
-            (
-              personen: Array<{
-                vorname: string
-                nachname: string
-                gebDat: Date
-                geschlecht: string
-              }>
-            ) => {
-              const p = personen[0]
-              const a = adressen[0]
-              createFZDocument(
-                p.vorname,
-                p.nachname,
-                `${p.gebDat.getDate()}.${
-                  p.gebDat.getMonth() + 1
-                }.${p.gebDat.getFullYear()}`,
-                a.strasse,
-                a.plz,
-                a.ort,
-                p.geschlecht
-              ).then(res)
-            }
-          )
-        }
-      )
-    }
-  })
-}
-
-const fzDocument = readFileSync('./fz.docx')
-
-async function createFZDocument(
-  vorname: string,
-  nachname: string,
-  gebDat: string,
-  strasse: string,
-  plz: string,
-  ort: string,
-  geschlecht: string
-): Promise<NodeJS.ReadableStream> {
-  const result = await createReport(fzDocument, {
-    vorname,
-    nachname,
-    gebDat,
-    strasse,
-    plz,
-    ort,
-    geschlecht,
-    date: new Date().toISOString().split('T')[0].split('-').reverse().join('.')
-  })
-
-  return result
+    true,
+    [{ content: Readable.from(file), filename: 'fzAntrag.pdf' }]
+  )
 }
