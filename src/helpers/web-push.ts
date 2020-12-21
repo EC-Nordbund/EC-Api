@@ -39,6 +39,8 @@ export async function saveSubscription(
   user_id: number
 ): Promise<void> {
   await query(
-    sql`INSERT INTO web_push (user_id, subscription) VALUES (${user_id}, ${subscription})`
+    sql`INSERT INTO web_push (user_id, subscription) VALUES (${user_id}, ${JSON.stringify(
+      subscription
+    )})`
   )
 }
