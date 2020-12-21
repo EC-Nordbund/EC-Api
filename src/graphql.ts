@@ -1249,7 +1249,7 @@ export const schema = new GraphQLSchema({
         }),
         resolve: handleAuth((_, args) => {
           return query(
-            `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID}, '${args.date}', ${args.status})`
+            `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID})`
           )
         })
       },
@@ -1335,7 +1335,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE adressen SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${args.adressID}`
           )
-        }, 'oldStatusKontakt')
+        })
       },
       markAdressAsOld: {
         type: GraphQLBoolean,
@@ -1350,7 +1350,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE adressen SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE adressID = ${args.adressID}`
           )
-        }, 'oldStatusKontakt')
+        })
       },
       useEmail: {
         type: GraphQLBoolean,
@@ -1365,7 +1365,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE eMails SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${args.emailID}`
           )
-        }, 'oldStatusKontakt')
+        })
       },
       markEmailAsOld: {
         type: GraphQLBoolean,
@@ -1380,7 +1380,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE eMails SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE eMailID = ${args.emailID}`
           )
-        }, 'oldStatusKontakt')
+        })
       },
       useTelefon: {
         type: GraphQLBoolean,
@@ -1395,7 +1395,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE telefone SET isOld=0, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${args.telefonID}`
           )
-        }, 'oldStatusKontakt')
+        })
       },
       markTelefonAsOld: {
         type: GraphQLBoolean,
@@ -1410,7 +1410,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE telefone SET isOld=1, lastUsed=CURRENT_TIMESTAMP WHERE telefonID = ${args.telefonID}`
           )
-        }, 'oldStatusKontakt')
+        })
       },
       addAdresse: {
         type: new GraphQLNonNull(GraphQLInt),
@@ -1724,7 +1724,7 @@ export const schema = new GraphQLSchema({
           await query(
             `INSERT INTO fzAntrag (personID) VALUES (${args.personID})`
           )
-        }, 'addFZAntrag')
+        })
       },
       editSonstiges: {
         type: GraphQLBoolean,
@@ -1793,7 +1793,7 @@ export const schema = new GraphQLSchema({
           return query(
             `INSERT INTO organisationen (bezeichnung) VALUES ('${args.bezeichnung}')`
           )
-        }, 'organisation')
+        })
       },
       editOrganisation: {
         type: GraphQLBoolean,
@@ -1833,7 +1833,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE organisationen SET bezeichnung="${args.bezeichnung}",ansprechpartner="${args.ansprechpartner}",strasse="${args.strasse}",plz="${args.plz}",ort="${args.plz}",land="${args.land}",telefon="${args.telefon}",email="${args.email}",notizen="${args.notizen}" WHERE organisationsID = ${args.organisationsID}`
           )
-        }, 'organisation')
+        })
       },
       veranstaltungAdd: {
         type: GraphQLBoolean,
@@ -1864,7 +1864,7 @@ export const schema = new GraphQLSchema({
         ${args.veranstaltungsortID},
         ${args.minTNAlter},
         ${args.maxTNAlter})`)
-        }, 'veranstaltungenAdd')
+        })
       },
       veranstaltungenStamm: {
         type: GraphQLBoolean,
@@ -1908,7 +1908,7 @@ export const schema = new GraphQLSchema({
               args.veranstaltungsID
             }`
           )
-        }, 'veranstaltungenStamm')
+        })
       },
       veranstaltungenPreise: {
         type: GraphQLBoolean,
@@ -1948,7 +1948,7 @@ export const schema = new GraphQLSchema({
           return query(`UPDATE veranstaltungen SET preisFruehbucher=${args.preisFruehbucher}, preisAnzahlungFruehbucher=${args.preisAnzahlungFruehbucher}, preisNormal=${args.preisNormal}, preisAnzahlungNormal=${args.preisAnzahlungNormal}, preisLastMinute=${args.preisLastMinute}, preisAnzahlungLastMinute=${args.preisAnzahlungLastMinute},
       kannVorortBezahltWerden = ${args.kannVorortBezahltWerden},
       fruehbucherBis="${args.fruehbucherBis}", lastMinuteAb="${args.lastMinuteAb}" WHERE veranstaltungsID= ${args.veranstaltungsID}`)
-        }, 'veranstaltungenPreise')
+        })
       },
       veranstaltungenWarteliste: {
         type: GraphQLBoolean,
@@ -1973,7 +1973,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE veranstaltungen SET hatGWarteliste = ${args.hatGeschlechterSpezifischeWarteliste}, anzahlPlätze=${args.anzahlPlaetze}, anzahlPlätzeWeiblich=${args.anzahlPlaetzeW}, anzahlPlätzeMännlich=${args.anzahlPlaetzeM} WHERE veranstaltungsID=${args.veranstaltungsID}`
           )
-        }, 'veranstaltungenWarteliste')
+        })
       },
       veranstaltungenTNListeZuschuesse: {
         type: GraphQLBoolean,
@@ -1989,7 +1989,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE veranstaltungen SET xlsxZuschuesse="${args.xlsx}"  WHERE veranstaltungsID=${args.veranstaltungsID}`
           )
-        }, 'veranstaltungenTNListe')
+        })
       },
       veranstaltungenTNListeLeiter: {
         type: GraphQLBoolean,
@@ -2005,7 +2005,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE veranstaltungen SET xlsxLeiter="${args.xlsx}"  WHERE veranstaltungsID=${args.veranstaltungsID}`
           )
-        }, 'veranstaltungenTNListe')
+        })
       },
       veranstaltungenTNListeMitarbeiter: {
         type: GraphQLBoolean,
@@ -2021,7 +2021,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE veranstaltungen SET xlsxMitarbeiter="${args.xlsx}"  WHERE veranstaltungsID=${args.veranstaltungsID}`
           )
-        }, 'veranstaltungenTNListe')
+        })
       },
       veranstaltungenTNListeKueche: {
         type: GraphQLBoolean,
@@ -2037,7 +2037,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE veranstaltungen SET xlsxKueche="${args.xlsx}" WHERE veranstaltungsID=${args.veranstaltungsID}`
           )
-        }, 'veranstaltungenTNListe')
+        })
       },
       veranstaltungBestaetigungsbrief: {
         type: GraphQLBoolean,
@@ -2056,7 +2056,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE veranstaltungen SET bestaetigungsBrief="${args.brief}", bestaetigungsBriefGeschlecht="${args.geschlechter}" WHERE veranstaltungsID=${args.veranstaltungsID}`
           )
-        }, 'veranstaltungenBriefe')
+        })
       },
       veranstaltunginfobrief: {
         type: GraphQLBoolean,
@@ -2075,7 +2075,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE veranstaltungen SET infoBrief="${args.brief}", infoBriefGeschlecht="${args.geschlechter}" WHERE veranstaltungsID=${args.veranstaltungsID}`
           )
-        }, 'veranstaltungenBriefe')
+        })
       },
       addVeranstaltungsort: {
         type: GraphQLBoolean,
@@ -2103,7 +2103,7 @@ export const schema = new GraphQLSchema({
           return query(
             `INSERT INTO vOrte(bezeichnung, strasse, plz, ort, land, organisitationID) VALUES("${args.bezeichnung}", "${args.strasse}", "${args.plz}", "${args.ort}", "${args.land}", "${args.organisationsID}")`
           )
-        }, 'vorte')
+        })
       },
       veranstaltungsortEditStamm: {
         type: GraphQLBoolean,
@@ -2134,7 +2134,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE vOrte SET bezeichnung = "${args.bezeichnung}", strasse = "${args.strasse}",  plz= "${args.plz}", ort = "${args.ort}",land  = "${args.land}", organisitationID=${args.organisationsID} WHERE vOrtID = ${args.vOrtID}`
           )
-        }, 'vorte')
+        })
       },
       veranstaltungsortEditSonstiges: {
         type: GraphQLBoolean,
@@ -2168,7 +2168,7 @@ export const schema = new GraphQLSchema({
               args.selbstversorger
             } WHERE vOrtID = ${args.vOrtID}`
           )
-        }, 'vorte')
+        })
       },
       veranstaltungsortAddKontakt: {
         type: GraphQLBoolean,
@@ -2193,7 +2193,7 @@ export const schema = new GraphQLSchema({
           return query(
             `INSERT INTO vOrtKontakt (vOrt, ansprechpartner, typ, telefon, email) VALUES (${args.vOrtID}, "${args.ansprechpartner}", "${args.typ}", "${args.telefon}", "${args.email}")`
           )
-        }, 'vorte')
+        })
       },
       veranstaltungsortEditKontakt: {
         type: GraphQLBoolean,
@@ -2221,7 +2221,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE vOrtKontakt SET ansprechpartner="${args.ansprechpartner}", typ="${args.typ}", telefon="${args.telefon}", email="${args.email}", notizen="${args.notizen}" WHERE vOrtKontaktID= ${args.vOrtKontaktID}`
           )
-        }, 'vorte')
+        })
       },
       veranstaltungsortDeleteKontakt: {
         type: GraphQLBoolean,
@@ -2234,7 +2234,7 @@ export const schema = new GraphQLSchema({
           return query(
             `DELETE FROM vOrtKontakt WHERE vOrtKontaktID = ${args.vOrtKontaktID}`
           )
-        }, 'vorte')
+        })
       },
       anmeldungBesonderheiten: {
         type: GraphQLBoolean,
@@ -2259,7 +2259,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE anmeldungen SET vegetarisch = ${args.vegetarisch}, lebensmittelAllergien="${args.lebensmittelAllergien}", gesundheitsinformationen="${args.gesundheitsinformationen}", bemerkungen="${args.bemerkungen}" WHERE anmeldeID="${args.anmeldeID}"`
           )
-        }, 'anmeldungBesonderheiten')
+        })
       },
       anmeldungBezahlt: {
         type: GraphQLBoolean,
@@ -2275,7 +2275,7 @@ export const schema = new GraphQLSchema({
           return query(
             `UPDATE anmeldungen SET bisherBezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`
           )
-        }, 'anmeldungFinanzen')
+        })
       },
       anmeldungRueckbezahlt: {
         type: GraphQLBoolean,
@@ -2291,7 +2291,7 @@ export const schema = new GraphQLSchema({
           query(
             `UPDATE anmeldungen SET rueckbezahlt = ${args.betrag} WHERE anmeldeID="${args.anmeldeID}"`
           )
-        }, 'anmeldungFinanzen')
+        })
       },
       anmeldungKontakt: {
         type: GraphQLBoolean,
@@ -2313,7 +2313,7 @@ export const schema = new GraphQLSchema({
           query(
             `UPDATE anmeldungen SET adressID=${args.adressID}, eMailID=${args.emailID}, telefonID=${args.telefonID} WHERE anmeldeID = '${args.anmeldeID}'`
           )
-        }, 'anmeldungKontakt')
+        })
       },
       abmelden: {
         type: GraphQLBoolean,
@@ -2344,7 +2344,7 @@ export const schema = new GraphQLSchema({
             `Neue Abmeldung`,
             `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`
           )
-        }, 'anmeldungAbmelden')
+        })
       },
       nachruecken: {
         type: GraphQLBoolean,
@@ -2383,7 +2383,7 @@ export const schema = new GraphQLSchema({
                   }
                 })
             })
-        }, 'anmeldungWarteliste')
+        })
       },
       anmelden: {
         type: new GraphQLObjectType({
@@ -2714,7 +2714,7 @@ export const schema = new GraphQLSchema({
                 if (generateFlag) {
                   await createFZ(personID, args.eMail, adressID)
                   await query(
-                    `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'auto Veranstaltung ${args.veranstaltungsID}')`
+                    `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID})`
                   )
                 }
               }
@@ -2733,49 +2733,49 @@ export const schema = new GraphQLSchema({
                 )
               ])
               await query(`
-            INSERT INTO anmeldungen(
-              anmeldeID,
-              veranstaltungsID,
-              personID,
-              position,
-              adressID,
-              eMailID,
-              telefonID,
-              wartelistenPlatz,
-              anmeldeZeitpunkt,
-              vegetarisch,
-              lebensmittelAllergien,
-              gesundheitsinformationen,
-              bemerkungen,
-              radfahren, 
-              schwimmen,
-              fahrgemeinschaften,
-              klettern,
-              sichEntfernen,
-              bootFahren,
-              extra_json
-            ) VALUES (
-              "${anmeldeID}", 
-              ${args.veranstaltungsID}, 
-              ${personID}, 
-              ${args.position}, 
-              ${adressID}, 
-              ${eMailID}, 
-              ${telefonID}, 
-              ${wartelistenplatz},
-              "${args.anmeldeZeitpunkt}",
-              ${args.vegetarisch},
-              "${args.lebensmittelAllergien}",
-              "${args.gesundheitsinformationen}",
-              "${args.bemerkungen}", 
-              ${args.radfahren},
-              ${args.schwimmen},
-              ${args.fahrgemeinschaften},
-              ${args.klettern},
-              ${args.sichEntfernen},
-              ${args.bootFahren},
-              "${args.extra_json}"
-            )`)
+                INSERT INTO anmeldungen(
+                  anmeldeID,
+                  veranstaltungsID,
+                  personID,
+                  position,
+                  adressID,
+                  eMailID,
+                  telefonID,
+                  wartelistenPlatz,
+                  anmeldeZeitpunkt,
+                  vegetarisch,
+                  lebensmittelAllergien,
+                  gesundheitsinformationen,
+                  bemerkungen,
+                  radfahren, 
+                  schwimmen,
+                  fahrgemeinschaften,
+                  klettern,
+                  sichEntfernen,
+                  bootFahren,
+                  extra_json
+                ) VALUES (
+                  "${anmeldeID}", 
+                  ${args.veranstaltungsID}, 
+                  ${personID}, 
+                  ${args.position}, 
+                  ${adressID}, 
+                  ${eMailID}, 
+                  ${telefonID}, 
+                  ${wartelistenplatz},
+                  "${args.anmeldeZeitpunkt}",
+                  ${args.vegetarisch},
+                  "${args.lebensmittelAllergien}",
+                  "${args.gesundheitsinformationen}",
+                  "${args.bemerkungen}", 
+                  ${args.radfahren},
+                  ${args.schwimmen},
+                  ${args.fahrgemeinschaften},
+                  ${args.klettern},
+                  ${args.sichEntfernen},
+                  ${args.bootFahren},
+                  "${args.extra_json}"
+                )`)
               if (vData.informAnmeldecenter && args.position === 1) {
                 sendMail(
                   'automated@ec-nordbund.de',
@@ -2807,7 +2807,7 @@ export const schema = new GraphQLSchema({
             `UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`
           )
           return true
-        }, 'anmeldungBesonderheiten')
+        })
       },
       anmeldunginfobrief: {
         type: GraphQLBoolean,
@@ -2821,43 +2821,88 @@ export const schema = new GraphQLSchema({
             `UPDATE anmeldungen SET infoBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${args.anmeldeID}'`
           )
           return true
-        }, 'anmeldungBesonderheiten')
+        })
       }
     }
   })
 })
 
+/**
+ * Zwei Personen zusammenführen
+ *
+ * @author Sebastian
+ * @param args Argumente
+ */
 async function mergePersonen(args: {
   personID_richtig: number
   personID_falsch: number
 }) {
   const con = await getMySQL()
   await con.query(
-    sql`UPDATE IGNORE adressen SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE adressen
+      SET personID = ${args.personID_richtig}
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE akPerson SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE akPerson 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE anmeldungen SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE anmeldungen 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE eMails SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE eMails 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE fz SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE fz 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE fzAntrag SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE fzAntrag 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE telefone SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE telefone 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE juleica SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE juleica 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE IGNORE tagsPersonen SET personID = ${args.personID_richtig} WHERE personID = ${args.personID_falsch};`
+    sql`
+      UPDATE IGNORE tagsPersonen 
+      SET personID = ${args.personID_richtig} 
+      WHERE personID = ${args.personID_falsch};`
+  )
+  await con.query(
+    sql`
+      UPDATE fz 
+      SET gesehenVon = ${args.personID_richtig} 
+      WHERE gesehenVon = ${args.personID_falsch};`
+  )
+  await con.query(
+    sql`
+      UPDATE dublikate 
+      SET zielPersonID = ${args.personID_richtig} 
+      WHERE zielPersonID = ${args.personID_falsch};`
   )
   await con.query(
     sql`
@@ -2873,10 +2918,34 @@ async function mergePersonen(args: {
         e2.personID = ${args.personID_richtig};`
   )
   await con.query(
-    sql`UPDATE anmeldungen as a INNER JOIN eMails as e1 ON e1.eMailID = a.eMailID INNER JOIN eMails as e2 ON e1.eMail = e2.eMail SET a.eMailID = e2.emailID WHERE e1.personID = ${args.personID_falsch} AND e2.personID = ${args.personID_richtig};`
+    sql`
+      UPDATE anmeldungen as a 
+      
+      INNER JOIN eMails as e1 ON e1.eMailID = a.eMailID 
+      INNER JOIN eMails as e2 ON e1.eMail = e2.eMail 
+      
+      SET a.eMailID = e2.emailID 
+      
+      WHERE 
+        e1.personID = ${args.personID_falsch} AND 
+        e2.personID = ${args.personID_richtig};`
   )
   await con.query(
-    sql`UPDATE anmeldungen as a INNER JOIN adressen as e1 ON e1.adressID = a.adressID INNER JOIN adressen as e2 ON (e1.strasse = e2.strasse AND e1.strasse = e2.strasse AND e1.plz = e2.plz) SET a.adressID = e2.adressID WHERE e1.personID = ${args.personID_falsch} AND e2.personID = ${args.personID_richtig};`
+    sql`
+      UPDATE anmeldungen as a 
+      
+      INNER JOIN adressen as e1 ON e1.adressID = a.adressID 
+      INNER JOIN adressen as e2 ON (
+        e1.strasse = e2.strasse AND 
+        e1.strasse = e2.strasse AND 
+        e1.plz = e2.plz
+      ) 
+      
+      SET a.adressID = e2.adressID 
+      
+      WHERE 
+        e1.personID = ${args.personID_falsch} AND 
+        e2.personID = ${args.personID_richtig};`
   )
   await con.query(
     sql`DELETE IGNORE FROM adressen WHERE personID = ${args.personID_falsch};`
@@ -2888,13 +2957,17 @@ async function mergePersonen(args: {
     sql`DELETE IGNORE FROM telefone WHERE personID = ${args.personID_falsch};`
   )
   await con.query(
-    sql`UPDATE fz SET gesehenVon = ${args.personID_richtig} WHERE gesehenVon = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`UPDATE dublikate SET zielPersonID = ${args.personID_richtig} WHERE zielPersonID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`INSERT into dublikate SELECT vorname, nachname, gebDat, ${args.personID_richtig} AS zielPersonID FROM personen WHERE personID = ${args.personID_falsch};`
+    sql`
+      INSERT into dublikate 
+      SELECT 
+        vorname, 
+        nachname, 
+        gebDat, 
+        ${args.personID_richtig} AS zielPersonID 
+      FROM 
+        personen 
+      WHERE 
+        personID = ${args.personID_falsch};`
   )
   await con.query(
     sql`DELETE FROM personen WHERE personID = ${args.personID_falsch};`

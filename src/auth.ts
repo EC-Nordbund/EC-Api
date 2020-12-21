@@ -1,8 +1,14 @@
 import { Request } from 'express'
 import { ecError } from './helpers/error'
 import { checkToken } from './helpers/jwt'
+import { payload } from './types/payload'
 
-export async function checkAuth(req: Request): Promise<void> {
+/**
+ * Testet ob ein Request mit valider Authentifizierung durchgeführt wurde.
+ * @author Sebastian
+ * @param req Request Objet
+ */
+export async function checkAuth(req: Request<any>): Promise<payload> {
   const authToken = req.headers.authorization
 
   if (!authToken) {
@@ -10,7 +16,7 @@ export async function checkAuth(req: Request): Promise<void> {
   }
 
   try {
-    await checkToken(authToken)
+    return await checkToken(authToken)
   } catch (ex) {
     throw new ecError('Keine valide Authentifizierung übermittelt!', 401)
   }

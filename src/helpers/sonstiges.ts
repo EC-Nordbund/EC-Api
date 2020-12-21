@@ -18,9 +18,9 @@ export function addAuth(
 }
 
 export function handleAuth(
-  cb: GraphQLFieldResolver<any, any>,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _?: string
+  cb: GraphQLFieldResolver<any, any>
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // _?: string
 ): GraphQLFieldResolver<any, any> {
   return async function (
     parent: any,

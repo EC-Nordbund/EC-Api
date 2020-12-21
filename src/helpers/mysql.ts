@@ -22,6 +22,7 @@ async function ensurePool() {
 /**
  * Führt eine SQL Abfrage aus und released dann die Connection
  *
+ * @author Sebastian
  * @param sql SQL Query
  * @param uid UserID (wird niregendwo umgesetzt)
  *
@@ -42,6 +43,7 @@ export async function query<T = any>(sql: string, uid = -1): Promise<T[]> {
 /**
  * Gibt eine Connection aus. Und relased sie automatisch.
  *
+ * @author Sebastian
  * @param to TimeOut zeit (default 10s)
  */
 export async function getMySQL(to = 10): Promise<PoolConnection> {

@@ -1,17 +1,8 @@
 import { sign, verify } from 'jsonwebtoken'
+import { payload } from '../types/payload'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const secret_token = process.env.JWT_SECRET!
-
-/**
- * Payload des JWT
- */
-type payload = {
-  userID: number
-  username: string
-  personID: number
-  ablaufDatum: string
-}
 
 /**
  * Erzeuge einen JWT zum Login
