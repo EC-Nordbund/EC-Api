@@ -51,9 +51,7 @@ export async function createFZ(
   const file = await createReport(fzDocument, {
     vorname: p.vorname,
     nachname: p.nachname,
-    gebDat: `${p.gebDat.getDate()}.${
-      p.gebDat.getMonth() + 1
-    }.${p.gebDat.getFullYear()}`,
+    gebDat: p.gebDat.toISOString().split('T')[0].split('-').reverse().join('.'),
     strasse: a.strasse,
     plz: a.plz,
     ort: a.ort,
