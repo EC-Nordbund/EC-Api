@@ -3,6 +3,10 @@ import { sendNotification, setVapidDetails } from 'web-push'
 import { query } from './mysql'
 
 type subscription = any
+type payload = {
+  title: string
+  body: string
+}
 
 setVapidDetails(
   'mailto:app@ec-nordbund.de',
@@ -12,13 +16,13 @@ setVapidDetails(
 
 async function createNotification(
   subscription: subscription,
-  payload: any
+  payload: payload
 ): Promise<void> {
   await sendNotification(subscription, JSON.stringify(payload))
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function sendNotificationToAll(payload: any): Promise<void> {
+export async function sendNotificationToAll(payload: payload): Promise<void> {
   const subs = await query(sql`SELECT * from web_push`)
   await Promise.all(
     subs.map((s) => createNotification(JSON.parse(s.subscription), payload))
@@ -28,7 +32,7 @@ export async function sendNotificationToAll(payload: any): Promise<void> {
 export async function sendNotificationToUser(
   user_id: number,
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  payload: any
+  payload: payload
 ): Promise<void> {
   const subs = await query(
     sql`SELECT * from web_push WHERE user_id = ${user_id}`
