@@ -20,7 +20,9 @@ async function createNotification(
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function sendNotificationToAll(payload: any): Promise<void> {
   const subs = await query(sql`SELECT * from web_push`)
-  await Promise.all(subs.map((s) => createNotification(JSON.parse(s), payload)))
+  await Promise.all(
+    subs.map((s) => createNotification(JSON.parse(s.subscription), payload))
+  )
 }
 
 export async function sendNotificationToUser(
@@ -31,7 +33,9 @@ export async function sendNotificationToUser(
   const subs = await query(
     sql`SELECT * from web_push WHERE user_id = ${user_id}`
   )
-  await Promise.all(subs.map((s) => createNotification(JSON.parse(s), payload)))
+  await Promise.all(
+    subs.map((s) => createNotification(JSON.parse(s.subscription), payload))
+  )
 }
 
 export async function saveSubscription(
