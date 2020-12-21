@@ -52,6 +52,8 @@ export default (app: Express): void => {
     '/v6/subscribe',
     async (req, res) => {
       try {
+        console.log(req.body)
+        console.log(req.body.subscription)
         const payload = await checkAuth(req)
         await saveSubscription(req.body.subscription, payload.userID)
         res.json({})
