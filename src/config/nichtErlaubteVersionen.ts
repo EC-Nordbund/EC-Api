@@ -1,3 +1,6 @@
+/**
+ * Versionen die nicht mehr unterstützt werden.
+ */
 export const versions: Array<string> = [
   '0.1.0',
   '0.1.1',
