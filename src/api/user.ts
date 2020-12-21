@@ -4,6 +4,7 @@ import { versions } from '../config/nichtErlaubteVersionen'
 import { checkAuth } from '../auth'
 import { emptyObj } from '../types/types'
 import { ecError, errorHandler } from '../helpers/error'
+import { saveSubscription, sendNotificationToAll } from '../helpers/web-push'
 
 export default (app: Express): void => {
   app.post<
@@ -45,5 +46,23 @@ export default (app: Express): void => {
         req.body.newPassword
       )
     })
+  })
+
+  app.post<emptyObj, emptyObj, { subscription: any }>(
+    '/v6/subscribe',
+    async (req, res) => {
+      try {
+        const payload = await checkAuth(req)
+        await saveSubscription(req.body.subscription, payload.userID)
+        res.json({})
+      } catch (err) {
+        errorHandler(err, res)
+      }
+    }
+  )
+
+  app.get('/v6/test', async (req, res) => {
+    await sendNotificationToAll({ text: 'Hello World!' })
+    res.end('DONE')
   })
 }
