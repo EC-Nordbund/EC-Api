@@ -64,7 +64,7 @@ export default (app: Express): void => {
   )
 
   app.get('/v6/test', async (req, res) => {
-    await sendNotificationToAll({ text: 'Hello World!' })
+    await sendNotificationToAll({ body: 'Hello World!', title: 'testing' })
     res.end('DONE')
   })
 }
