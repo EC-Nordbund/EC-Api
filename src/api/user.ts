@@ -7,6 +7,14 @@ import { ecError, errorHandler } from '../helpers/error'
 import { saveSubscription, sendNotificationToAll } from '../helpers/web-push'
 
 export default (app: Express): void => {
+  /**
+   * POST /v6/login
+   *
+   * Gibt einen Array aller Personen aus
+   *
+   * @name login
+   * @noauth
+   */
   app.post<
     emptyObj,
     { authToken: string },
@@ -32,6 +40,13 @@ export default (app: Express): void => {
     }
   })
 
+  /**
+   * POST /v6/change-password
+   *
+   * Ändert das Passwort eines Nutzers
+   *
+   * @name changePassword
+   */
   app.post<
     emptyObj,
     { status: true },
@@ -48,6 +63,13 @@ export default (app: Express): void => {
     })
   })
 
+  /**
+   * POST /v6/subscribe
+   *
+   * Speichert subscription
+   *
+   * @name subscribe
+   */
   app.post<emptyObj, emptyObj, { subscription: any }>(
     '/v6/subscribe',
     async (req, res) => {

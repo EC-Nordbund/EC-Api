@@ -7,6 +7,7 @@ import express from 'express'
 import compression from 'compression'
 import user from './api/user'
 import personen from './api/personen'
+import ak from './api/ak'
 import expressRateLimit from 'express-rate-limit'
 import * as http from 'http'
 
@@ -34,6 +35,7 @@ const app = express()
   )
 user(app)
 personen(app)
+ak(app)
 
 apollo.applyMiddleware({ app, path: '/graphql' })
 

@@ -6,6 +6,13 @@ import { query } from '../helpers/mysql'
 import sql from 'sql-escape-tag'
 
 export default (app: Express): void => {
+  /**
+   * GET /v6/personen
+   *
+   * Gibt einen Array aller Personen aus
+   *
+   * @name getPersonen
+   */
   app.get<emptyObj, { personen: Array<any> }, emptyObj>(
     '/v6/personen',
     async (req, res) => {

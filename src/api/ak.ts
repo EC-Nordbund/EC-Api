@@ -10,6 +10,8 @@ export default (app: Express): void => {
    * POST /v6/ak
    *
    * Fügt einen neuen AK hinzu
+   *
+   * @name addAK
    */
   app.post<emptyObj, { ak_id: number }, { bezeichnung: string }>(
     '/v6/ak',
@@ -36,6 +38,8 @@ export default (app: Express): void => {
    * PUT /v6/ak/:ak_id
    *
    * Ändert die Daten des angegeben AK
+   *
+   * @name editAK
    */
   app.put<{ ak_id: number }, emptyObj, { bezeichnung: string }>(
     '/v6/ak/:ak_id',
@@ -56,6 +60,8 @@ export default (app: Express): void => {
    * PUT /v6/ak/:ak_id/personen/:personen_id
    *
    * Fügt einen neunen Status für die Person und AK hinzu
+   *
+   * @name addPersonAK
    */
   app.put<
     { ak_id: number; person_id: number },
@@ -77,6 +83,8 @@ export default (app: Express): void => {
    * GET /v6/ak
    *
    * Gibt einen Array aller AK's zurück
+   *
+   * @name getAKs
    */
   app.get<emptyObj, Array<{ akID: number; bezeichnung: string }>, emptyObj>(
     '/v6/ak',
@@ -97,6 +105,8 @@ export default (app: Express): void => {
    * @todo nested properties fehlen
    *
    * Gibt den AK mit der ID ak_id zurück.
+   *
+   * @name getAK
    */
   app.get<{ ak_id: number }, { akID: number; bezeichnung: string }, emptyObj>(
     '/v6/ak/:ak_id',
