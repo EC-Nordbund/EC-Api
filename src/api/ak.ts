@@ -25,6 +25,7 @@ export default (app: Express): void => {
         const ak = await con.query(
           sql`SELECT akID FROM ak WHERE bezeichnung = ${req.body.bezeichnung}`
         )
+        con.release()
         res.json({
           ak_id: ak[0].akID
         })
