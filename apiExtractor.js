@@ -53,10 +53,10 @@ export function apiExtractor() {
             .map((v) => v.trim())
             .join('\n')}\nexport function ${/@name\s([a-zA-Z]*)/.exec(doc)?.[1] || path.replace(/\\|\/|:/g, '_')
           }(${pathParams === 'emptyObj' ? '' : `pathParams: ${pathParams}, `}${reqBody === 'emptyObj' ? '' : `bodyParams: ${reqBody}`
-          }):Promise<${resBody}> {\n  return fetch(\n    \`${nPath}\`,\n    {\n      method: '${method}',\n      headers: { 'content-type': 'application/json'${doc.indexOf('@noauth') === -1
-            ? ', authorization: getAuthToken()'
+          }):Promise<${resBody}> {\n  return fetch(\n    \`${nPath}\`,\n    {\n      method: '${method}',\n      headers: {\n        'content-type': 'application/json'${doc.indexOf('@noauth') === -1
+            ? ',\n        authorization: getAuthToken()'
             : ''
-          } }${reqBody === 'emptyObj' ? '' : ',\n      body: JSON.stringify(bodyParams)'
+          }\n      }${reqBody === 'emptyObj' ? '' : ',\n      body: JSON.stringify(bodyParams)'
           }\n    }\n  ).then(errorHandler)\n}`
         )
       } while (m)
@@ -77,7 +77,7 @@ const errorHandler = async (res: Response) => {
   return res.json()
 }
 const APIURL = 'https://api.ec-nordbund.de'
-type emptyObj = Record<string, never>\n` + apiMethods.join('\n')
+type emptyObj = Record<string, never>\n\n` + apiMethods.join('\n\n')
       })
     }
   }
