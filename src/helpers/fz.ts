@@ -26,7 +26,7 @@ export async function createFZ(
 
   // Hole Adressdaten
   const adressen = await con.query(
-    adressID === -1
+    adressID !== -1
       ? sql`SELECT strasse, plz, ort FROM adressen WHERE adressID = ${adressID}`
       : sql`SELECT strasse, plz, ort FROM adressen WHERE personID = ${personID} AND isOld = 0 ORDER BY lastUsed LIMIT 1`
   )
