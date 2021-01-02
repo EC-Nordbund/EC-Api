@@ -1782,8 +1782,8 @@ __metadata:
     compression: ^1.7.4
     cors: ^2.8.5
     docx-templates-to-pdf: ^1.2.0
-    esbuild: ^0.8.28
-    eslint: ^7.16.0
+    esbuild: ^0.8.29
+    eslint: ^7.17.0
     eslint-config-prettier: ^7.1.0
     eslint-plugin-prettier: ^3.3.0
     express: ^4.17.1
@@ -1926,12 +1926,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.8.28":
-  version: 0.8.28
-  resolution: "esbuild@npm:0.8.28"
+"esbuild@npm:^0.8.29":
+  version: 0.8.29
+  resolution: "esbuild@npm:0.8.29"
   bin:
     esbuild: bin/esbuild
-  checksum: 0872327aaf3eddffff566cb63be4eb42b2fc03010a4a7b19b22ddbd40fcf59628a148523a5eb91cab15440a421f398174e34d2ae802e7c4ef812a93e261e4043
+  checksum: 44600db4dd589bf49c3cdd390ebc3178f5c01ca8282299fda03e6723e806f2878703cc76488bf7caeeb0ac7183c526c6539d173478dd05a88d3f0a23ff132d11
   languageName: node
   linkType: hard
 
@@ -2015,9 +2015,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.16.0":
-  version: 7.16.0
-  resolution: "eslint@npm:7.16.0"
+"eslint@npm:^7.17.0":
+  version: 7.17.0
+  resolution: "eslint@npm:7.17.0"
   dependencies:
     "@babel/code-frame": ^7.0.0
     "@eslint/eslintrc": ^0.2.2
@@ -2058,7 +2058,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: facdebbce95f7812b026cae955f22863e0850584c8b4ab6daefa555f48b38a8b3d62c1857c0eeebe52218c49345853f516209b300c6747ea89d6f88ef495a56d
+  checksum: 12b09a972eb0b81fabf9c1b38b3e9ada0cc051a22ee5022e31852e7babde6fe02a0135be3027451ee02c9ff4a6f738b55205d2953f98eb16a43350ad73070b27
   languageName: node
   linkType: hard
 
