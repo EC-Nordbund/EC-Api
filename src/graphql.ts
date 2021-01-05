@@ -2612,6 +2612,16 @@ export const schema = new GraphQLSchema({
                 await query(
                   `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'ecKreis ${args.gesundheitsinformationen}')`
                 )
+
+                const ecKreisID: number = (
+                  await query(
+                    sql`SELECT ecKreisID FROM ecKreis WHERE lower(bezeichnung) = ${args.gesundheitsinformationen}`
+                  )
+                )[0].ecKreisID
+
+                await query(
+                  sql`UPDATE personen SET ecKreis = ${ecKreisID} WHERE personID = ${personID}`
+                )
               }
               return {
                 status: 0,
