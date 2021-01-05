@@ -52,11 +52,13 @@ const nodeExternals = [
 export default {
   input: './src/index.ts',
   output: {
-    file: 'dist/bundle.js',
-    format: 'cjs'
+    file: 'dist/bundle.mjs',
+    format: 'es'
   },
   plugins: [
-    comlink(),
+    comlink({
+      useModuleWorker: true
+    }),
     omt(),
     apiExtractor(),
     esbuild({
