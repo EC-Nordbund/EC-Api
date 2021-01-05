@@ -2631,13 +2631,13 @@ export const schema = new GraphQLSchema({
                       to: args.eMail,
                       bcc: 'datenschutz@ec-nordbund.de'
                     },
-                    `Du hast bereits ein FZ (PID: ${personID})`,
-                    `Moin,\nDein FZ ist vom ${fzData[0].fzVon
+                    `Du benötigst kein neues Führungszeugnis (PID: ${personID})`,
+                    `Moin,\nDein erweitertes Führungszeugnis ist vom  ${fzData[0].fzVon
                       .toISOString()
                       .split('T')[0]
                       .split('-')
                       .reverse()
-                      .join('.')} also noch gültig.`
+                      .join('.')} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`, false
                   )
                 }
               }
@@ -2796,13 +2796,13 @@ export const schema = new GraphQLSchema({
                         to: args.eMail,
                         bcc: 'datenschutz@ec-nordbund.de'
                       },
-                      `Du hast bereits ein FZ (PID: ${personID})`,
-                      `Moin,\nDein FZ ist vom ${fzData[0].fzVon
+                      `Du benötigst kein neues Führungszeugnis (PID: ${personID})`,
+                      `Moin,\nDein erweitertes Führungszeugnis ist vom  ${fzData[0].fzVon
                         .toISOString()
                         .split('T')[0]
                         .split('-')
                         .reverse()
-                        .join('.')} also noch gültig.`
+                        .join('.')} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`, false
                     )
                   }
                 }
