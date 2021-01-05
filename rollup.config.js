@@ -52,7 +52,7 @@ const nodeExternals = [
 export default {
   input: './src/index.ts',
   output: {
-    file: 'dist/bundle.mjs',
+    file: 'dist/bundle.js',
     format: 'cjs'
   },
   plugins: [
