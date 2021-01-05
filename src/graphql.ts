@@ -2788,6 +2788,23 @@ export const schema = new GraphQLSchema({
                   await query(
                     `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'veranstaltung ${args.veranstaltungsID}')`
                   )
+                } else {
+                  if (mailExisted) {
+                    sendMail(
+                      'fz@ec-nordbund.de',
+                      {
+                        to: args.eMail,
+                        bcc: 'datenschutz@ec-nordbund.de'
+                      },
+                      `Du hast bereits ein FZ (PID: ${personID})`,
+                      `Moin,\nDein FZ ist vom ${fzData[0].fzVon
+                        .toISOString()
+                        .split('T')[0]
+                        .split('-')
+                        .reverse()
+                        .join('.')} also noch gültig.`
+                    )
+                  }
                 }
               }
               await Promise.all([
