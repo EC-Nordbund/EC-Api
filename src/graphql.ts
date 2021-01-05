@@ -2581,6 +2581,8 @@ export const schema = new GraphQLSchema({
             const adressID = adressen[0].adressID
 
             if (args.veranstaltungsID === 42) {
+              console.log(args)
+              console.log('MA-Ort Anmeldung')
               let generateFlag = false
 
               const wann: Date = new Date(new Date().getTime() + 788923800)
@@ -2606,12 +2608,7 @@ export const schema = new GraphQLSchema({
               }
 
               if (generateFlag) {
-                await createFZ(
-                  personID,
-                  args.eMail,
-                  adressID,
-                  args.veranstaltungsID
-                )
+                await createFZ(personID, args.eMail, adressID, 42)
                 await query(
                   `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'ecKreis ${args.gesundheitsinformationen}')`
                 )
