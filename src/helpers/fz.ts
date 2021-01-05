@@ -60,6 +60,13 @@ export async function createFZ(
     date: new Date().toISOString().split('T')[0].split('-').reverse().join('.')
   })
 
+  /**
+   * In dieser Reihenfolge
+   *
+   * 1. Normal
+   * 2. VorOrt
+   * 3. Veranstaltung
+   */
   const text =
     veranstaltungsID === -1
       ? `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
