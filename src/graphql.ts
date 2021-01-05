@@ -2544,6 +2544,7 @@ export const schema = new GraphQLSchema({
             let eMails = await query(
               `SELECT eMailID FROM eMails WHERE eMail="${args.eMail}" AND personID=${personID}`
             )
+            const mailExisted = eMails.length !== 0
             if (eMails.length === 0) {
               await query(
                 `INSERT INTO eMails(eMail, personID) VALUES ("${args.eMail}",${personID})`
@@ -2622,6 +2623,23 @@ export const schema = new GraphQLSchema({
                 await query(
                   sql`UPDATE personen SET ecKreis = ${ecKreisID} WHERE personID = ${personID}`
                 )
+              } else {
+                if (mailExisted) {
+                  sendMail(
+                    'fz@ec-nordbund.de',
+                    {
+                      to: args.eMail,
+                      bcc: 'datenschutz@ec-nordbund.de'
+                    },
+                    `Du hast bereits ein FZ (PID: ${personID})`,
+                    `Moin,\nDein FZ ist vom ${fzData[0].fzVon
+                      .toISOString()
+                      .split('T')[0]
+                      .split('-')
+                      .reverse()
+                      .join('.')} also noch gültig.`
+                  )
+                }
               }
               return {
                 status: 0,
