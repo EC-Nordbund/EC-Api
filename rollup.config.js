@@ -53,13 +53,13 @@ export default {
   input: './src/index.ts',
   output: {
     file: 'dist/bundle.mjs',
-    format: 'es'
+    format: 'cjs'
   },
   plugins: [
-    comlink({
-      useModuleWorker: true
-    }),
-    omt(),
+    // comlink({
+    //   useModuleWorker: true
+    // }),
+    // omt(),
     apiExtractor(),
     esbuild({
       target: 'es2018'

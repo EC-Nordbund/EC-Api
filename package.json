@@ -2,7 +2,7 @@
   "name": "ec-api",
   "version": "1.0.0",
   "description": "API für EC-NB",
-  "main": "./dist/bundle.mjs",
+  "main": "./dist/bundle.js",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint src/**",
