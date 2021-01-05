@@ -2790,7 +2790,7 @@ export const schema = new GraphQLSchema({
                   )
                 } else {
                   if (mailExisted) {
-                    sendMail(
+                    await sendMail(
                       'fz@ec-nordbund.de',
                       {
                         to: args.eMail,
