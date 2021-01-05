@@ -2580,6 +2580,48 @@ export const schema = new GraphQLSchema({
             }
             const adressID = adressen[0].adressID
 
+            if (args.veranstaltungsID === 42) {
+              let generateFlag = false
+
+              const wann: Date = new Date(new Date().getTime() + 788923800)
+
+              const fzData = await query(
+                `SELECT fzVon FROM fz WHERE personID = ${personID} ORDER BY fzVon DESC LIMIT 1`
+              )
+
+              if (fzData.length === 0) {
+                generateFlag = true
+              } else {
+                const fzVon = fzData[0].fzVon
+                const wannArr = [
+                  wann.getFullYear(),
+                  wann.getMonth() + 1,
+                  wann.getDate()
+                ]
+                wannArr[0] -= 5
+                const fzMinDate = new Date(wannArr.join('-'))
+                if (fzMinDate > fzVon) {
+                  generateFlag = true
+                }
+              }
+
+              if (generateFlag) {
+                await createFZ(
+                  personID,
+                  args.eMail,
+                  adressID,
+                  args.veranstaltungsID
+                )
+                await query(
+                  `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'ecKreis ${args.gesundheitsinformationen}')`
+                )
+              }
+              return {
+                status: 0,
+                anmeldeID: personID.toString()
+              }
+            }
+
             const vorhandeneAnmeldungen = await query(
               `SELECT anmeldeID FROM anmeldungen WHERE personID=${personID} AND veranstaltungsID=${args.veranstaltungsID}`
             )
@@ -2712,7 +2754,12 @@ export const schema = new GraphQLSchema({
                 }
 
                 if (generateFlag) {
-                  await createFZ(personID, args.eMail, adressID)
+                  await createFZ(
+                    personID,
+                    args.eMail,
+                    adressID,
+                    args.veranstaltungsID
+                  )
                   await query(
                     `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'veranstaltung ${args.veranstaltungsID}')`
                   )

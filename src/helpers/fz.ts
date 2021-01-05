@@ -20,7 +20,8 @@ const fzDocument = readFileSync('./fz.docx')
 export async function createFZ(
   personID: number,
   email: string,
-  adressID = -1
+  adressID = -1,
+  veranstaltungsID = -1
 ): Promise<void> {
   const con = await getMySQL(2)
 
@@ -59,23 +60,52 @@ export async function createFZ(
     date: new Date().toISOString().split('T')[0].split('-').reverse().join('.')
   })
 
+  const text =
+    veranstaltungsID === -1
+      ? `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
+    <p>du bist als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''} 
+    im EC-Nordbund überregional oder in deiner Gemeinschaft/Gemeinde vor Ort tätig. 
+    Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>
+    Der Gesetzgeber verlangt von uns, dass wir alle fünf Jahre Einsicht in ein <u><i>aktuelles</i> erweitertes Führungszeugnis</u> nehmen müssen.<br>
+    Im Anhang findest du das Formular, mit dem Du <u>bei deiner zuständigen Meldebehörde</u> das Führungszeugnis beantragen kannst.<br>
+    Dieses Führungszeugnis musst du bei dem Verantwortlichen bei dir vor Ort oder bei mir (innerhalb von drei Monaten nach Ausstellung des Zeugnisses) vorzeigen.<br>
+    Wir hoffen, dass du Verständnis dafür hast, und entschuldigen uns für den Mehraufwand, den du dadurch hast.</p>
+    <p>P.S. Du musst das Zeugnis nur vorzeigen. Nicht abgeben. Wenn es für dich allerdings einfacher sein sollte, das Zeugnis einzuscannen und mir zuzumailen (bitte an <a href="mailto:fz@ec-nordbund.de">fz@ec-nordbund.de</a>), ist das für uns in Ordnung.<br>
+    Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
+    <p>Entschieden für Christus grüßt</p>
+    <p><b>ThomaS:-)</b></p>`
+      : veranstaltungsID === 42
+      ? `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
+    <p>du bist als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''} 
+    im EC-Nordbund überregional oder in deiner Gemeinschaft/Gemeinde vor Ort tätig. 
+    Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>
+    Der Gesetzgeber verlangt von uns, dass wir alle fünf Jahre Einsicht in ein <u><i>aktuelles</i> erweitertes Führungszeugnis</u> nehmen müssen.<br>
+    Im Anhang findest du das Formular, mit dem Du <u>bei deiner zuständigen Meldebehörde</u> das Führungszeugnis beantragen kannst.<br>
+    Dieses Führungszeugnis musst du bei dem Verantwortlichen bei dir vor Ort oder bei mir (innerhalb von drei Monaten nach Ausstellung des Zeugnisses) vorzeigen.<br>
+    Wir hoffen, dass du Verständnis dafür hast, und entschuldigen uns für den Mehraufwand, den du dadurch hast.</p>
+    <p>P.S. Du musst das Zeugnis nur vorzeigen. Nicht abgeben. Wenn es für dich allerdings einfacher sein sollte, das Zeugnis einzuscannen und mir zuzumailen (bitte an <a href="mailto:fz@ec-nordbund.de">fz@ec-nordbund.de</a>), ist das für uns in Ordnung.<br>
+    Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
+    <p>Entschieden für Christus grüßt</p>
+    <p><b>ThomaS:-)</b></p>`
+      : `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
+    <p>du bist als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''} 
+    im EC-Nordbund überregional oder in deiner Gemeinschaft/Gemeinde vor Ort tätig. 
+    Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>
+    Der Gesetzgeber verlangt von uns, dass wir alle fünf Jahre Einsicht in ein <u><i>aktuelles</i> erweitertes Führungszeugnis</u> nehmen müssen.<br>
+    Im Anhang findest du das Formular, mit dem Du <u>bei deiner zuständigen Meldebehörde</u> das Führungszeugnis beantragen kannst.<br>
+    Dieses Führungszeugnis musst du bei dem Verantwortlichen bei dir vor Ort oder bei mir (innerhalb von drei Monaten nach Ausstellung des Zeugnisses) vorzeigen.<br>
+    Wir hoffen, dass du Verständnis dafür hast, und entschuldigen uns für den Mehraufwand, den du dadurch hast.</p>
+    <p>P.S. Du musst das Zeugnis nur vorzeigen. Nicht abgeben. Wenn es für dich allerdings einfacher sein sollte, das Zeugnis einzuscannen und mir zuzumailen (bitte an <a href="mailto:fz@ec-nordbund.de">fz@ec-nordbund.de</a>), ist das für uns in Ordnung.<br>
+    Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
+    <p>Entschieden für Christus grüßt</p>
+    <p><b>ThomaS:-)</b></p>`
+
   // Sende Mail
   await mail(
     'fz@ec-nordbund.de',
     { to: email, bcc: 'fz@ec-nordbund.de;datenschutz@ec-nordbund.de' },
     'Erweitertes Führungszeugnis',
-    `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
-        <p>du bist als Mitarbeiter${
-          p.geschlecht === 'w' ? 'in' : ''
-        } im EC-Nordbund überregional oder in deiner Gemeinschaft/Gemeinde vor Ort tätig. Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>
-        Der Gesetzgeber verlangt von uns, dass wir alle fünf Jahre Einsicht in ein <u><i>aktuelles</i> erweitertes Führungszeugnis</u> nehmen müssen.<br>
-        Im Anhang findest du das Formular, mit dem Du <u>bei deiner zuständigen Meldebehörde</u> das Führungszeugnis beantragen kannst.<br>
-        Dieses Führungszeugnis musst du bei dem Verantwortlichen bei dir vor Ort oder bei mir (innerhalb von drei Monaten nach Ausstellung des Zeugnisses) vorzeigen.<br>
-        Wir hoffen, dass du Verständnis dafür hast, und entschuldigen uns für den Mehraufwand, den du dadurch hast.</p>
-        <p>P.S. Du musst das Zeugnis nur vorzeigen. Nicht abgeben. Wenn es für dich allerdings einfacher sein sollte, das Zeugnis einzuscannen und mir zuzumailen (bitte an <a href="mailto:fz@ec-nordbund.de">fz@ec-nordbund.de</a>), ist das für uns in Ordnung.<br>
-        Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
-        <p>Entschieden für Christus grüßt</p>
-        <p><b>ThomaS:-)</b></p>`,
+    text,
     true,
     [{ content: Readable.from(file), filename: 'fzAntrag.pdf' }]
   )
