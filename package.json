@@ -21,6 +21,8 @@
   "homepage": "https://github.com/EC-Nordund/EC-API#readme",
   "devDependencies": {
     "@rollup/plugin-json": "^4.1.0",
+    "@surma/rollup-plugin-comlink": "^0.3.0",
+    "@surma/rollup-plugin-off-main-thread": "^1.4.2",
     "@types/compression": "^1.7.0",
     "@types/cors": "^2.8.9",
     "@types/express": "4.17.9",

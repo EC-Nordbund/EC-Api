@@ -3,6 +3,9 @@ import esbuild from 'rollup-plugin-esbuild'
 import json from '@rollup/plugin-json'
 import { apiExtractor } from './apiExtractor'
 
+import comlink from '@surma/rollup-plugin-comlink'
+import omt from '@surma/rollup-plugin-off-main-thread'
+
 const nodeExternals = [
   'assert',
   'async_hooks',
@@ -43,9 +46,8 @@ const nodeExternals = [
   'v8',
   'vm',
   'worker_threads',
-  'zlib',
+  'zlib'
 ]
-
 
 export default {
   input: './src/index.ts',
@@ -54,6 +56,8 @@ export default {
     format: 'cjs'
   },
   plugins: [
+    comlink(),
+    omt(),
     apiExtractor(),
     esbuild({
       target: 'es2018'
@@ -81,4 +85,3 @@ export default {
     'web-push'
   ]
 }
-

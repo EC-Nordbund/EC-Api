@@ -38,6 +38,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",
           "packageDependencies": [
             ["@rollup/plugin-json", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.1.0"],
+            ["@surma/rollup-plugin-comlink", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:0.3.0"],
+            ["@surma/rollup-plugin-off-main-thread", "npm:1.4.2"],
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.9"],
             ["@types/express", "npm:4.17.9"],
@@ -379,6 +381,43 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@sindresorhus-is-npm-0.14.0-9f906ea34b-da26389d6e.zip/node_modules/@sindresorhus/is/",
           "packageDependencies": [
             ["@sindresorhus/is", "npm:0.14.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@surma/rollup-plugin-comlink", [
+        ["npm:0.3.0", {
+          "packageLocation": "./.yarn/cache/@surma-rollup-plugin-comlink-npm-0.3.0-d9cd2e666f-46c836a85a.zip/node_modules/@surma/rollup-plugin-comlink/",
+          "packageDependencies": [
+            ["@surma/rollup-plugin-comlink", "npm:0.3.0"]
+          ],
+          "linkType": "SOFT",
+        }],
+        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:0.3.0", {
+          "packageLocation": "./.yarn/$$virtual/@surma-rollup-plugin-comlink-virtual-ec8e69f772/0/cache/@surma-rollup-plugin-comlink-npm-0.3.0-d9cd2e666f-46c836a85a.zip/node_modules/@surma/rollup-plugin-comlink/",
+          "packageDependencies": [
+            ["@surma/rollup-plugin-comlink", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:0.3.0"],
+            ["@surma/rollup-plugin-off-main-thread", "npm:1.4.2"],
+            ["@types/comlink", null],
+            ["@types/surma__rollup-plugin-off-main-thread", null],
+            ["comlink", null]
+          ],
+          "packagePeers": [
+            "@surma/rollup-plugin-off-main-thread",
+            "@types/comlink",
+            "@types/surma__rollup-plugin-off-main-thread",
+            "comlink"
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["@surma/rollup-plugin-off-main-thread", [
+        ["npm:1.4.2", {
+          "packageLocation": "./.yarn/cache/@surma-rollup-plugin-off-main-thread-npm-1.4.2-2391260d57-678096f137.zip/node_modules/@surma/rollup-plugin-off-main-thread/",
+          "packageDependencies": [
+            ["@surma/rollup-plugin-off-main-thread", "npm:1.4.2"],
+            ["ejs", "npm:2.7.4"],
+            ["magic-string", "npm:0.25.7"]
           ],
           "linkType": "HARD",
         }]
@@ -2319,6 +2358,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["ec-api", "workspace:."],
             ["@rollup/plugin-json", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.1.0"],
+            ["@surma/rollup-plugin-comlink", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:0.3.0"],
+            ["@surma/rollup-plugin-off-main-thread", "npm:1.4.2"],
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.9"],
             ["@types/express", "npm:4.17.9"],
@@ -2383,6 +2424,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/ee-first-npm-1.1.1-33f8535b39-ba74f91398.zip/node_modules/ee-first/",
           "packageDependencies": [
             ["ee-first", "npm:1.1.1"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["ejs", [
+        ["npm:2.7.4", {
+          "packageLocation": "./.yarn/unplugged/ejs-npm-2.7.4-879ed38a4e/node_modules/ejs/",
+          "packageDependencies": [
+            ["ejs", "npm:2.7.4"]
           ],
           "linkType": "HARD",
         }]
@@ -4188,6 +4238,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["magic-string", [
+        ["npm:0.25.7", {
+          "packageLocation": "./.yarn/cache/magic-string-npm-0.25.7-0a0bd9c864-4b70c13eb2.zip/node_modules/magic-string/",
+          "packageDependencies": [
+            ["magic-string", "npm:0.25.7"],
+            ["sourcemap-codec", "npm:1.4.8"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["make-dir", [
         ["npm:3.1.0", {
           "packageLocation": "./.yarn/cache/make-dir-npm-3.1.0-d1d7505142-54b6f186c2.zip/node_modules/make-dir/",
@@ -5286,6 +5346,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ansi-styles", "npm:4.3.0"],
             ["astral-regex", "npm:2.0.0"],
             ["is-fullwidth-code-point", "npm:3.0.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["sourcemap-codec", [
+        ["npm:1.4.8", {
+          "packageLocation": "./.yarn/cache/sourcemap-codec-npm-1.4.8-3a1a9e60b1-4d56d1232a.zip/node_modules/sourcemap-codec/",
+          "packageDependencies": [
+            ["sourcemap-codec", "npm:1.4.8"]
           ],
           "linkType": "HARD",
         }]

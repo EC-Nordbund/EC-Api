@@ -2714,7 +2714,7 @@ export const schema = new GraphQLSchema({
                 if (generateFlag) {
                   await createFZ(personID, args.eMail, adressID)
                   await query(
-                    `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID})`
+                    `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'veranstaltung ${args.veranstaltungsID}')`
                   )
                 }
               }
