@@ -350,12 +350,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-rate-limit@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@types/express-rate-limit@npm:5.1.0"
+"@types/express-rate-limit@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "@types/express-rate-limit@npm:5.1.1"
   dependencies:
     "@types/express": "*"
-  checksum: 575b3c6d30f2317c056957d77b0001935fd20984efa157025351ecbca8e91828d062c16184879b0f36d32e69e2f94946561ad45f4cdb54dcc15e51633741936b
+  checksum: 070185ac26589df97f0fa53e5521fe4e9d5625248c415f4e3153b0823a847701a660dfdc2b6b6ce2fdb2556374170d06ca9ca6c141f7007c50c6c6c884539484
   languageName: node
   linkType: hard
 
@@ -1792,7 +1792,7 @@ __metadata:
     "@types/compression": ^1.7.0
     "@types/cors": ^2.8.9
     "@types/express": 4.17.9
-    "@types/express-rate-limit": ^5.1.0
+    "@types/express-rate-limit": ^5.1.1
     "@types/jsonwebtoken": ^8.5.0
     "@types/node": ^14.14.20
     "@types/nodemailer": ^6.4.0
