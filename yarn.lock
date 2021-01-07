@@ -533,10 +533,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^14.14.19":
-  version: 14.14.19
-  resolution: "@types/node@npm:14.14.19"
-  checksum: 218ff4a93978cf41f4dd3d6aea7555d119873b50905889b1a3f14737f1e135a688672fa1f8e02ed856922fb828703bb064f7733f7e6998173c4714a7a3ec4c4c
+"@types/node@npm:^14.14.20":
+  version: 14.14.20
+  resolution: "@types/node@npm:14.14.20"
+  checksum: 84a9fd73de978967723f951173ff4d07dca259941d3e37c7a3dbb236c09b3f2294bb2098678a806afe6fd6cac39a7d0a1d399f602378c951bd5d01ede535d570
   languageName: node
   linkType: hard
 
@@ -1794,7 +1794,7 @@ __metadata:
     "@types/express": 4.17.9
     "@types/express-rate-limit": ^5.1.0
     "@types/jsonwebtoken": ^8.5.0
-    "@types/node": ^14.14.19
+    "@types/node": ^14.14.20
     "@types/nodemailer": ^6.4.0
     "@types/web-push": ^3.3.0
     "@typescript-eslint/eslint-plugin": ^4.12.0
@@ -1804,10 +1804,10 @@ __metadata:
     compression: ^1.7.4
     cors: ^2.8.5
     docx-templates-to-pdf: ^1.2.0
-    esbuild: ^0.8.29
+    esbuild: ^0.8.31
     eslint: ^7.17.0
     eslint-config-prettier: ^7.1.0
-    eslint-plugin-prettier: ^3.3.0
+    eslint-plugin-prettier: ^3.3.1
     express: ^4.17.1
     express-rate-limit: ^5.2.3
     graphql: ^15.4.0
@@ -1815,10 +1815,10 @@ __metadata:
     js-sha3: ^0.8.0
     jsonwebtoken: ^8.5.1
     nodemailer: ^6.4.17
-    nodemon: ^2.0.6
+    nodemon: ^2.0.7
     prettier: ^2.2.1
     promise-mysql: ^5.0.1
-    rollup: ^2.35.1
+    rollup: ^2.36.1
     rollup-plugin-esbuild: ^2.6.1
     sql-escape-tag: ^1.0.0
     typescript: 4.1.3
@@ -1955,12 +1955,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.8.29":
-  version: 0.8.29
-  resolution: "esbuild@npm:0.8.29"
+"esbuild@npm:^0.8.31":
+  version: 0.8.31
+  resolution: "esbuild@npm:0.8.31"
   bin:
     esbuild: bin/esbuild
-  checksum: 44600db4dd589bf49c3cdd390ebc3178f5c01ca8282299fda03e6723e806f2878703cc76488bf7caeeb0ac7183c526c6539d173478dd05a88d3f0a23ff132d11
+  checksum: 0c74f60258705bddce6192fc833b37b00efdb47b4e6754726f6ab225d5ba46356e39bcc08ae9e866338c73e65b1c7b9518a50cf9792fbc7da3631c988f0d22ef
   languageName: node
   linkType: hard
 
@@ -1996,18 +1996,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "eslint-plugin-prettier@npm:3.3.0"
+"eslint-plugin-prettier@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "eslint-plugin-prettier@npm:3.3.1"
   dependencies:
     prettier-linter-helpers: ^1.0.0
   peerDependencies:
     eslint: ">=5.0.0"
     prettier: ">=1.13.0"
   peerDependenciesMeta:
-    eslint-plugin-prettier:
+    eslint-config-prettier:
       optional: true
-  checksum: d79ea6ed414f861d0b84818b9a3f7ac40f67998918d3a0c27e9d82f097768aeae8211f382cc5f9b059f4bdb417d098c8250ea8a552e6e18c904a961eb2b21681
+  checksum: cf35b0f0e9ef30782fe82913db92f6874181723d77f0c4613f9d69c87069f73d0dc420ef850ebc844613c00a8e87eb9762a36b7d028334c5c7b091763118347b
   languageName: node
   linkType: hard
 
@@ -3617,9 +3617,9 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"nodemon@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "nodemon@npm:2.0.6"
+"nodemon@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "nodemon@npm:2.0.7"
   dependencies:
     chokidar: ^3.2.2
     debug: ^3.2.6
@@ -3633,7 +3633,7 @@ fsevents@~2.1.2:
     update-notifier: ^4.1.0
   bin:
     nodemon: bin/nodemon.js
-  checksum: 6a4b0d6ba2c164796a2b164cd8c7e0587387b5fca224526bd1267e93b99a23071b31f51a5eecbeccd656a0ec097a194d9a123a3bc8833e148c53de9c4c3dcebd
+  checksum: e1e8acb584120579714c29d7e12b4efca2188b73ea537a560b1a66ec995dccbd8c0742af2c25f1a18df7e7bb8448477e80063824708466cda491dfc52ab6e233
   languageName: node
   linkType: hard
 
@@ -4159,9 +4159,9 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rollup@npm:^2.35.1":
-  version: 2.35.1
-  resolution: "rollup@npm:2.35.1"
+"rollup@npm:^2.36.1":
+  version: 2.36.1
+  resolution: "rollup@npm:2.36.1"
   dependencies:
     fsevents: ~2.1.2
   dependenciesMeta:
@@ -4169,7 +4169,7 @@ fsevents@~2.1.2:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 01e8b621baf3b35e1a28e3679cf9bdd4c22c2e999a895343e0b1e02dfe735f92a9fe439042e1b35c981663e9a8b75c1d707e6c27d786170febbb503b83dfed39
+  checksum: bb48730bf382d6439012a1504a8ca2f676657b472e9fbf72f726701c3091325229e1501c75088f4feebf6c9eb54cfc01353a11b50d3b0b9fa23764aaf5fca38c
   languageName: node
   linkType: hard
 
