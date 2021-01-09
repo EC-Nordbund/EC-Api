@@ -43,7 +43,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.9"],
             ["@types/express", "npm:4.17.9"],
-            ["@types/express-rate-limit", "npm:5.1.0"],
+            ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.20"],
             ["@types/nodemailer", "npm:6.4.0"],
@@ -555,10 +555,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@types/express-rate-limit", [
-        ["npm:5.1.0", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/@types-express-rate-limit-npm-5.1.0-277316eb15-575b3c6d30.zip/node_modules/@types/express-rate-limit/",
+        ["npm:5.1.1", {
+          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/@types-express-rate-limit-npm-5.1.1-49febf9040-070185ac26.zip/node_modules/@types/express-rate-limit/",
           "packageDependencies": [
-            ["@types/express-rate-limit", "npm:5.1.0"],
+            ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/express", "npm:4.17.9"]
           ],
           "linkType": "HARD",
@@ -2370,7 +2370,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.9"],
             ["@types/express", "npm:4.17.9"],
-            ["@types/express-rate-limit", "npm:5.1.0"],
+            ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.20"],
             ["@types/nodemailer", "npm:6.4.0"],
