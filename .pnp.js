@@ -42,7 +42,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@surma/rollup-plugin-off-main-thread", "npm:1.4.2"],
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.9"],
-            ["@types/express", "npm:4.17.9"],
+            ["@types/express", "npm:4.17.10"],
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.20"],
@@ -531,6 +531,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@types/express", [
+        ["npm:4.17.10", {
+          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/@types-express-npm-4.17.10-28ee3c0d90-334a238936.zip/node_modules/@types/express/",
+          "packageDependencies": [
+            ["@types/express", "npm:4.17.10"],
+            ["@types/body-parser", "npm:1.19.0"],
+            ["@types/express-serve-static-core", "npm:4.17.17"],
+            ["@types/qs", "npm:6.9.5"],
+            ["@types/serve-static", "npm:1.13.8"]
+          ],
+          "linkType": "HARD",
+        }],
         ["npm:4.17.7", {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/@types-express-npm-4.17.7-3f74d07476-99b795c60e.zip/node_modules/@types/express/",
           "packageDependencies": [
@@ -2370,7 +2381,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@surma/rollup-plugin-off-main-thread", "npm:1.4.2"],
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.9"],
-            ["@types/express", "npm:4.17.9"],
+            ["@types/express", "npm:4.17.10"],
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.20"],
