@@ -370,7 +370,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*, @types/express@npm:4.17.9":
+"@types/express@npm:*":
   version: 4.17.9
   resolution: "@types/express@npm:4.17.9"
   dependencies:
@@ -379,6 +379,18 @@ __metadata:
     "@types/qs": "*"
     "@types/serve-static": "*"
   checksum: 80cd74784e9b40495b683b6b285be58bd7515f3b86923a72483fb8a6dec15ef159e651c460a215e9ad4e9620deec7345020fe33535c4eb12d81152b74b0278d0
+  languageName: node
+  linkType: hard
+
+"@types/express@npm:4.17.10":
+  version: 4.17.10
+  resolution: "@types/express@npm:4.17.10"
+  dependencies:
+    "@types/body-parser": "*"
+    "@types/express-serve-static-core": "*"
+    "@types/qs": "*"
+    "@types/serve-static": "*"
+  checksum: 334a238936b52daf1e122e5243db3c60ad6213ec7cc83837871804a1bd2666e70882adab5eef25a0086dc5128b985a71907d8ab062e49d74ce130ce49a39bdbb
   languageName: node
   linkType: hard
 
@@ -1792,7 +1804,7 @@ __metadata:
     "@surma/rollup-plugin-off-main-thread": ^1.4.2
     "@types/compression": ^1.7.0
     "@types/cors": ^2.8.9
-    "@types/express": 4.17.9
+    "@types/express": 4.17.10
     "@types/express-rate-limit": ^5.1.1
     "@types/jsonwebtoken": ^8.5.0
     "@types/node": ^14.14.20
