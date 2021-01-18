@@ -1,3 +1,5 @@
+import { readFileSync } from 'fs'
+
 /* eslint-disable */
 const apiMethods = []
 
@@ -8,7 +10,7 @@ export function apiExtractor() {
       if (id.indexOf('src\\api') === -1) return
 
       // const reg = /app\.([a-z]*)<([\sa-zA-Z0-9:\{\},_<>;]*)>\(\s*'(.*)'/gm
-      const reg = /(\/\*\*[\s\*a-zA-Z@ÄÖÜäöü_:\/1-9']*\*\/)\s*app\.([a-z]*)<([\sa-zA-Z0-9:\{\},_<>;]*)>\(\s*'(.*)'/gm
+      const reg = /(\/\*\*[\s\*a-zA-Z@ÄÖÜäöü_:\/1-9'.]*\*\/)\s*app\.([a-z]*)<([\sa-zA-Z0-9:\{\},_<>;]*)>\(\s*'(.*)'/gm
 
       let m
       do {
@@ -47,104 +49,36 @@ export function apiExtractor() {
           )
         }
 
+
         const normalCache = /@cache/.test(doc)
+        const secureCache = /@encryptedcache/.test(doc)
 
         apiMethods.push(
-          `${doc}\n${/@name\s([a-zA-Z]*)/.exec(doc)?.[1] || path.replace(/\\|\/|:/g, '_')
-          }(${pathParams === 'emptyObj' ? '' : `pathParams: ${pathParams}, `}${reqBody === 'emptyObj' ? '' : `bodyParams: ${reqBody}`
-          }${normalCache ? `${pathParams === 'emptyObj' && reqBody === 'emptyObj' ? '' : ','}options: {noCache: boolean} = {noCache: false}` : ''}):Promise<${resBody}>{
-            ${normalCache ? `const f =` : 'return'} fetch(\`${nPath}\`,{method: '${method}',headers: {'content-type': 'application/json'${doc.indexOf('@noauth') === -1
-            ? ',authorization: this.getAuthToken()'
+          `${doc}\npublic ${/@name\s([a-zA-Z]*)/.exec(doc)?.[1] || path.replace(/\\|\/|:/g, '_')
+          }(${pathParams === 'emptyObj' ? '' : `pathParams: ${pathParams}, `} ${reqBody === 'emptyObj' ? '' : `bodyParams: ${reqBody}`
+          } ${(normalCache || secureCache)
+            ? `${pathParams === 'emptyObj' && reqBody === 'emptyObj' ? '' : ','
+            }options: {noCache: boolean} = {noCache: false}`
             : ''
-          }}${reqBody === 'emptyObj' ? '' : ',body: JSON.stringify(bodyParams)'
+          }): Promise<${resBody}>{
+        ${(normalCache || secureCache) ? `const f =` : 'return'
+          } fetch(\`${nPath}\`,{method: '${method}',headers: this.getHeaders(${doc.indexOf('@noauth') !== -1})${reqBody === 'emptyObj' ? '' : ',body: JSON.stringify(bodyParams)'
           }}).then(this.errorHandler)
-            ${normalCache ? `
-            if(options.noCache) {return f}
-            const key = JSON.stringify([\`${nPath}\`, ${pathParams === 'emptyObj' ? '' : 'pathParams,'}${reqBody === 'emptyObj' ? '' : 'bodyParams'}])
-            return this.handleCache(f, key)`: ``}
-           }`
+            ${(normalCache || secureCache)
+            ? `if(options.noCache) {return f} const key = JSON.stringify([\`${nPath}\`, '${method}', ${pathParams === 'emptyObj' ? '' : 'pathParams,'
+            }${reqBody === 'emptyObj' ? '' : 'bodyParams'}]); return this.handle${secureCache ? 'Secure' : ''}Cache(f, key)`
+            : ``
+          }}`
         )
       } while (m)
     },
     async generateBundle() {
-      const code = `import { get as idb_get, set as idb_set } from 'idb-keyval';
-import Vue from 'vue'
-
+      const code = `
+import { Base } from './api-base'
 type emptyObj = Record<string, never>
 
-export class api {
-  constructor(private url: string) {}
-
-  private getAuthToken(): string {
-    return Vue.prototype.$authToken
-  }
-
-  private async errorHandler(res: Response) {
-    if (res.status !== 200) throw await res.text()
-    return res.json()
-  }
-
-  private async handleCache(network: Promise<any>, key: string): Promise<any> {
-    return new Promise((res, rej) => {
-      const cached_val_promise = idb_get(key)
-
-      let finished = false
-
-      cached_val_promise.then(cached => {
-        if(!finished) {
-          finished = true;
-          if(cached === undefined || (cached.valid_until - (new Date()).getTime() < 0)) {
-            // Not valid cache
-            if(!navigator.onLine) {
-              // When offline use this cache even it is old.
-              res(cached.value)  
-            } else {
-              fail = 'Keine Daten Lokal gespeichert'
-              res(network)
-            }
-          } else {
-            res(cached.value)
-          }
-        }
-      })
-
-      network.then(net => {
-        if(!finished) {
-          finished = true
-          res(net)
-        }
-      })
-
-      network.then(net => {
-        idb_set(key, {
-          valid_until: (new Date().getTime()) + ${14 * 24 * 60 * 60 * 1000},
-          value: net
-        })
-      })
-
-      let fail = ''
-
-      network.catch((v) => {
-        if(fail) {
-          rej(fail + '\\n' + v)
-        }
-        fail = v
-      })
-
-      cached_val_promise.catch((v) => {
-        if(fail) {
-          rej(v + '\\n' + fail)
-        }
-        fail = v
-      })
-    })
-
-    
-
-
-  }
-
-  ${apiMethods.join('\n\n')}
+export class API extends Base {
+  ${apiMethods.join('\n\n').replace(/,\s*,/gm, ',')}
 }
 `
 
@@ -153,6 +87,13 @@ export class api {
         type: 'asset',
         fileName: 'api.ts',
         source: code
+      })
+
+      this.emitFile({
+        id: 'api-base.ts',
+        type: 'asset',
+        fileName: 'api-base.ts',
+        source: readFileSync('./api-base.ts')
       })
     }
   }

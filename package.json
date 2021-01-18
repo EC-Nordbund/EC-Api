@@ -4,7 +4,7 @@
   "description": "API für EC-NB",
   "main": "./dist/api.ts",
   "scripts": {
-    "build": "rollup -c && eslint dist/api.ts --fix",
+    "build": "rollup -c && echo linting api.ts && eslint dist/api.ts --fix",
     "lint": "eslint src/**",
     "types": "tsc -noEmit",
     "start": "node ./dist/index.js"
