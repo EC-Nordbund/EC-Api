@@ -65,8 +65,6 @@ export default {
         name: 'comlink',
         async resolveId(id, importer) {
           if (id.startsWith(importPrefix)) {
-            console.log('resolve!')
-            console.log(id, 'resolve')
             const res = await this.resolve(id.slice(importPrefix.length).split('?')[0], importer)
 
             return importPrefix + res.id + '?' + (id.split('?')[1] || '')
@@ -77,8 +75,6 @@ export default {
         },
         async load(id) {
           if (id.startsWith(importPrefix)) {
-            console.log(id, 'load')
-
             const status = id.split('?')[1]
 
             if (status === '') {

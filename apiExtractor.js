@@ -1,3 +1,5 @@
+import { ESLint } from 'eslint'
+
 /* eslint-disable */
 const apiMethods = []
 
@@ -38,7 +40,7 @@ export function apiExtractor() {
           }
         } while (n)
 
-        let nPath = "${APIURL}" + path
+        let nPath = '${this.url}' + path
 
         for (let i = 0; i < params.length; i++) {
           nPath = nPath.replace(
@@ -48,36 +50,41 @@ export function apiExtractor() {
         }
 
         apiMethods.push(
-          `${doc
-            .split('\n')
-            .map((v) => v.trim())
-            .join('\n')}\nexport function ${/@name\s([a-zA-Z]*)/.exec(doc)?.[1] || path.replace(/\\|\/|:/g, '_')
+          `${doc}\n${/@name\s([a-zA-Z]*)/.exec(doc)?.[1] || path.replace(/\\|\/|:/g, '_')
           }(${pathParams === 'emptyObj' ? '' : `pathParams: ${pathParams}, `}${reqBody === 'emptyObj' ? '' : `bodyParams: ${reqBody}`
-          }):Promise<${resBody}> {\n  return fetch(\n    \`${nPath}\`,\n    {\n      method: '${method}',\n      headers: {\n        'content-type': 'application/json'${doc.indexOf('@noauth') === -1
-            ? ',\n        authorization: getAuthToken()'
+          }):Promise<${resBody}>{return fetch(\`${nPath}\`,{method: '${method}',headers: {'content-type': 'application/json'${doc.indexOf('@noauth') === -1
+            ? ',authorization: this.getAuthToken()'
             : ''
-          }\n      }${reqBody === 'emptyObj' ? '' : ',\n      body: JSON.stringify(bodyParams)'
-          }\n    }\n  ).then(errorHandler)\n}`
+          }}${reqBody === 'emptyObj' ? '' : ',body: JSON.stringify(bodyParams)'
+          }}).then(this.errorHandler)\n  }`
         )
       } while (m)
     },
-    generateBundle() {
+    async generateBundle() {
+      const code = `import Vue from 'vue'
+
+type emptyObj = Record<string, never>\n\n
+export class api {
+  constructor(private url: string) {}
+
+  private getAuthToken(): string {
+    return Vue.prototype.$authToken
+  }
+
+  private async errorHandler(res: Response) {
+    if (res.status !== 200) throw await res.text()
+    return res.json()
+  }
+
+  ${apiMethods.join('\n\n')}
+}
+`
+
       this.emitFile({
         id: 'api.ts',
         type: 'asset',
         fileName: 'api.ts',
-        source:
-          `/* eslint-disable */
-// @ts-ignore
-import Vue from 'vue'
-// @ts-ignore
-const getAuthToken: () => string = Vue.prototype.$authToken
-const errorHandler = async (res: Response) => {
-  if (res.status !== 200) throw await res.text()
-  return res.json()
-}
-const APIURL = 'https://api.ec-nordbund.de'
-type emptyObj = Record<string, never>\n\n` + apiMethods.join('\n\n')
+        source: code
       })
     }
   }
