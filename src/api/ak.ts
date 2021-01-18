@@ -12,6 +12,7 @@ export default (app: Express): void => {
    * Fügt einen neuen AK hinzu
    *
    * @name addAK
+   * @sync
    */
   app.post<emptyObj, { ak_id: number }, { bezeichnung: string }>(
     '/v6/ak',
@@ -41,6 +42,7 @@ export default (app: Express): void => {
    * Ändert die Daten des angegeben AK
    *
    * @name editAK
+   * @sync
    */
   app.put<{ ak_id: number }, emptyObj, { bezeichnung: string }>(
     '/v6/ak/:ak_id',
@@ -63,6 +65,7 @@ export default (app: Express): void => {
    * Fügt einen neunen Status für die Person und AK hinzu
    *
    * @name addPersonAK
+   * @sync
    */
   app.put<
     { ak_id: number; person_id: number },
@@ -86,6 +89,7 @@ export default (app: Express): void => {
    * Gibt einen Array aller AK's zurück
    *
    * @name getAKs
+   * @cache
    */
   app.get<emptyObj, Array<{ akID: number; bezeichnung: string }>, emptyObj>(
     '/v6/ak',
@@ -108,6 +112,7 @@ export default (app: Express): void => {
    * Gibt den AK mit der ID ak_id zurück.
    *
    * @name getAK
+   * @encryptedcache
    */
   app.get<{ ak_id: number }, { akID: number; bezeichnung: string }, emptyObj>(
     '/v6/ak/:ak_id',

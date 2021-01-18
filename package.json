@@ -2,12 +2,12 @@
   "name": "ec-api",
   "version": "1.0.0",
   "description": "API für EC-NB",
-  "main": "./dist/index.js",
+  "main": "./dist/api.ts",
   "scripts": {
     "build": "rollup -c && eslint dist/api.ts --fix",
     "lint": "eslint src/**",
     "types": "tsc -noEmit",
-    "start": "node ."
+    "start": "node ./dist/index.js"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,3 @@
-import { ESLint } from 'eslint'
-
 /* eslint-disable */
 const apiMethods = []
 
@@ -49,21 +47,31 @@ export function apiExtractor() {
           )
         }
 
+        const normalCache = /@cache/.test(doc)
+
         apiMethods.push(
           `${doc}\n${/@name\s([a-zA-Z]*)/.exec(doc)?.[1] || path.replace(/\\|\/|:/g, '_')
           }(${pathParams === 'emptyObj' ? '' : `pathParams: ${pathParams}, `}${reqBody === 'emptyObj' ? '' : `bodyParams: ${reqBody}`
-          }):Promise<${resBody}>{return fetch(\`${nPath}\`,{method: '${method}',headers: {'content-type': 'application/json'${doc.indexOf('@noauth') === -1
+          }${normalCache ? `${pathParams === 'emptyObj' && reqBody === 'emptyObj' ? '' : ','}options: {noCache: boolean} = {noCache: false}` : ''}):Promise<${resBody}>{
+            ${normalCache ? `const f =` : 'return'} fetch(\`${nPath}\`,{method: '${method}',headers: {'content-type': 'application/json'${doc.indexOf('@noauth') === -1
             ? ',authorization: this.getAuthToken()'
             : ''
           }}${reqBody === 'emptyObj' ? '' : ',body: JSON.stringify(bodyParams)'
-          }}).then(this.errorHandler)\n  }`
+          }}).then(this.errorHandler)
+            ${normalCache ? `
+            if(options.noCache) {return f}
+            const key = JSON.stringify([\`${nPath}\`, ${pathParams === 'emptyObj' ? '' : 'pathParams,'}${reqBody === 'emptyObj' ? '' : 'bodyParams'}])
+            return this.handleCache(f, key)`: ``}
+           }`
         )
       } while (m)
     },
     async generateBundle() {
-      const code = `import Vue from 'vue'
+      const code = `import { get as idb_get, set as idb_set } from 'idb-keyval';
+import Vue from 'vue'
 
-type emptyObj = Record<string, never>\n\n
+type emptyObj = Record<string, never>
+
 export class api {
   constructor(private url: string) {}
 
@@ -74,6 +82,66 @@ export class api {
   private async errorHandler(res: Response) {
     if (res.status !== 200) throw await res.text()
     return res.json()
+  }
+
+  private async handleCache(network: Promise<any>, key: string): Promise<any> {
+    return new Promise((res, rej) => {
+      const cached_val_promise = idb_get(key)
+
+      let finished = false
+
+      cached_val_promise.then(cached => {
+        if(!finished) {
+          finished = true;
+          if(cached === undefined || (cached.valid_until - (new Date()).getTime() < 0)) {
+            // Not valid cache
+            if(!navigator.onLine) {
+              // When offline use this cache even it is old.
+              res(cached.value)  
+            } else {
+              fail = 'Keine Daten Lokal gespeichert'
+              res(network)
+            }
+          } else {
+            res(cached.value)
+          }
+        }
+      })
+
+      network.then(net => {
+        if(!finished) {
+          finished = true
+          res(net)
+        }
+      })
+
+      network.then(net => {
+        idb_set(key, {
+          valid_until: (new Date().getTime()) + ${14 * 24 * 60 * 60 * 1000},
+          value: net
+        })
+      })
+
+      let fail = ''
+
+      network.catch((v) => {
+        if(fail) {
+          rej(fail + '\\n' + v)
+        }
+        fail = v
+      })
+
+      cached_val_promise.catch((v) => {
+        if(fail) {
+          rej(v + '\\n' + fail)
+        }
+        fail = v
+      })
+    })
+
+    
+
+
   }
 
   ${apiMethods.join('\n\n')}
