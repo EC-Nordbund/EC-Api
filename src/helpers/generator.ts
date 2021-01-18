@@ -1,3 +1,3 @@
-import { createGotenberg } from 'docx-templates-to-pdf'
+import api from 'comlink:../workers/doc-gen'
 
-export default createGotenberg('http://gotenberg:3000')
+export default api.docGen
