@@ -2,6 +2,8 @@
 import { get as idb_get, set as idb_set } from 'idb-keyval'
 // @ts-expect-error no dep
 import Vue from 'vue'
+// @ts-expect-error no dep
+import { fileSave } from 'browser-nativefs'
 
 export class Base {
   constructor(protected url: string) {}
@@ -18,6 +20,20 @@ export class Base {
   protected async errorHandler(res: Response): Promise<any> {
     if (res.status !== 200) throw await res.text()
     return res.json()
+  }
+
+  protected saveFile(
+    extension: string,
+    fileName: string
+  ): (res: Response) => Promise<any> {
+    return (res: Response) => {
+      const blob = res.blob()
+      return fileSave(blob, {
+        fileName,
+        extensions: [extension],
+        description: 'Generierte Datei speichern.'
+      })
+    }
   }
 
   protected getHeaders(withAuth: boolean): Record<string, string> {

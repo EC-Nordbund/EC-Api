@@ -1,13 +1,11 @@
-/* eslint-disable */
 import esbuild from 'rollup-plugin-esbuild'
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import { apiExtractor } from './apiExtractor'
+import { apiExtractor } from './rollup-plugins/apiExtractor'
 import { terser } from "rollup-plugin-terser";
-import { writeFileSync } from 'fs'
-
-const comlinkTSD = []
+import { minifySql } from './rollup-plugins/minifySql'
+import { comlink } from './rollup-plugins/comlink'
 
 const nodeExternals = [
   'assert',
@@ -55,117 +53,23 @@ const nodeExternals = [
 export default {
   input: './src/index.ts',
   output: {
-    // file: 'dist/bundle.js',
     dir: 'dist',
     format: 'cjs'
   },
   plugins: [
+    {
+      resolveFileUrl({ relativePath }) {
+        return JSON.stringify('./dist/' + relativePath);
+      },
+    },
     resolve(),
     commonjs(),
-    (() => {
-      const importPrefix = 'comlink:'
-      return {
-        name: 'comlink',
-        async resolveId(id, importer) {
-          if (id.startsWith(importPrefix)) {
-            const res = await this.resolve(id.slice(importPrefix.length).split('?')[0], importer)
-
-            if (id.split('?').length === 1) {
-
-              const tsd = `
-declare module "${id}" {
-  const worker: import('comlink').Remote<typeof import(${JSON.stringify(res.id.split('.')[0])})>
-  export default worker
-}
-              `
-
-              comlinkTSD.push(tsd)
-            }
-
-            return importPrefix + res.id + '?' + (id.split('?')[1] || '')
-          }
-        },
-        resolveFileUrl({ relativePath }) {
-          return JSON.stringify('./dist/' + relativePath)
-        },
-        async load(id) {
-          if (id.startsWith(importPrefix)) {
-            const status = id.split('?')[1]
-
-            if (status === '') {
-              const fileID = this.emitFile({
-                type: 'chunk',
-                id: id.split('?')[0] + '?worker'
-              })
-
-              return `
-                import { Worker } from 'worker_threads';
-                import { wrap } from 'comlink'
-                import nodeEndpoint from 'comlink/dist/esm/node-adapter'
-
-                const worker = new Worker(import.meta.ROLLUP_FILE_URL_${fileID});
-
-                const api = wrap(nodeEndpoint(worker));
-
-                export default api
-              `
-            } else if (status === 'worker') {
-              return `
-                import { parentPort } from 'worker_threads'
-                import { expose } from 'comlink'
-                import nodeEndpoint from 'comlink/dist/esm/node-adapter.mjs'
-
-                import api from ${JSON.stringify(id.slice(importPrefix.length).split('?')[0])}
-                
-                expose(api, nodeEndpoint(parentPort))
-              `
-            }
-          }
-        },
-        generateBundle() {
-          writeFileSync('./src/shim-worker.d.ts', '/* eslint-disable */' + comlinkTSD.join(''))
-        }
-      }
-    })(),
+    comlink({ type: 'node' }),
     apiExtractor(),
     esbuild({
       target: 'es2018'
     }),
-    {
-      transform(code) {
-        let changed = false
-        let nCode = code
-        const reg = /sql`([\s0-9a-zA-Z'"_()$[\].{}=*,><;+-]*)`/g
-
-        // UPDATE users SET last_login = NOW() WHERE user_id = ${ users[0].user_id }
-        //  = NOW() WHERE user_id = ${ users[0].user_id }
-
-        let n
-        do {
-          n = reg.exec(code)
-
-          if (n) {
-            // console.log(n[1])
-
-
-            let sql = n[1]
-            let sql2 = ''
-
-            while (sql2.length !== sql.length) {
-              sql2 = sql;
-              sql = sql.split('\n').join(' ').split('  ').join(' ').trim()
-            }
-
-            changed = true
-            nCode = nCode.replace(n[1], sql)
-          }
-        } while (n)
-
-        if (changed) {
-          return nCode
-        }
-      }
-    },
+    minifySql(),
     json(),
     terser()
   ],
@@ -189,3 +93,4 @@ declare module "${id}" {
     'web-push'
   ]
 }
+

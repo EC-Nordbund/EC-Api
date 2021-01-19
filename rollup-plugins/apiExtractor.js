@@ -9,8 +9,7 @@ export function apiExtractor() {
     transform(code, id) {
       if (id.indexOf('src\\api') === -1) return
 
-      // const reg = /app\.([a-z]*)<([\sa-zA-Z0-9:\{\},_<>;]*)>\(\s*'(.*)'/gm
-      const reg = /(\/\*\*[\s\*a-zA-Z@ÄÖÜäöü_:\/1-9'.]*\*\/)\s*app\.([a-z]*)<([\sa-zA-Z0-9:\{\},_<>;]*)>\(\s*'(.*)'/gm
+      const reg = /(\/\*\*[\s\*a-zA-Z@ÄÖÜäöü_:\/1-9'.()${}-]*\*\/)\s*app\.([a-z]*)<([\sa-zA-Z0-9:\{\},_<>|;'"]*)>\(\s*'(.*)'/gm
 
       let m
       do {
@@ -52,6 +51,7 @@ export function apiExtractor() {
 
         const normalCache = /@cache/.test(doc)
         const secureCache = /@encryptedcache/.test(doc)
+        const rawFile = /@rawfile/.test(doc)
 
         apiMethods.push(
           `${doc}\npublic ${/@name\s([a-zA-Z]*)/.exec(doc)?.[1] || path.replace(/\\|\/|:/g, '_')
@@ -60,10 +60,10 @@ export function apiExtractor() {
             ? `${pathParams === 'emptyObj' && reqBody === 'emptyObj' ? '' : ','
             }options: {noCache: boolean} = {noCache: false}`
             : ''
-          }): Promise<${resBody}>{
+          }): Promise<${rawFile ? 'Response' : resBody}>{
         ${(normalCache || secureCache) ? `const f =` : 'return'
           } fetch(\`${nPath}\`,{method: '${method}',headers: this.getHeaders(${doc.indexOf('@noauth') !== -1})${reqBody === 'emptyObj' ? '' : ',body: JSON.stringify(bodyParams)'
-          }}).then(this.errorHandler)
+          }})${rawFile ? `.then(this.saveFile(${JSON.stringify(/@ext\s([a-z]*)/.exec(doc)?.[1] || '')},\`${(/@filename\s([a-zA-Z().0-9${}-]*)/.exec(doc)?.[1] || '')}\`))` : '.then(this.errorHandler)'}
             ${(normalCache || secureCache)
             ? `if(options.noCache) {return f} const key = JSON.stringify([\`${nPath}\`, '${method}', ${pathParams === 'emptyObj' ? '' : 'pathParams,'
             }${reqBody === 'emptyObj' ? '' : 'bodyParams'}]); return this.handle${secureCache ? 'Secure' : ''}Cache(f, key)`
