@@ -56,7 +56,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["comlink", "npm:4.3.0"],
             ["compression", "npm:1.7.4"],
             ["cors", "npm:2.8.5"],
-            ["docx-templates-to-pdf", "npm:1.2.0"],
+            ["docx-templates-to-pdf", "npm:2.0.0"],
             ["esbuild", "npm:0.8.33"],
             ["eslint", "npm:7.18.0"],
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
@@ -2435,25 +2435,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["docx-templates", [
-        ["npm:4.5.3", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/docx-templates-npm-4.5.3-a046818131-8e06ac40ef.zip/node_modules/docx-templates/",
-          "packageDependencies": [
-            ["docx-templates", "npm:4.5.3"],
-            ["jszip", "npm:3.5.0"],
-            ["sax", "npm:1.2.4"],
-            ["timm", "npm:1.7.1"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
       ["docx-templates-to-pdf", [
-        ["npm:1.2.0", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/docx-templates-to-pdf-npm-1.2.0-9d6600bc31-3b4771a497.zip/node_modules/docx-templates-to-pdf/",
+        ["npm:2.0.0", {
+          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/docx-templates-to-pdf-npm-2.0.0-78fd353a11-b7dde94c7b.zip/node_modules/docx-templates-to-pdf/",
           "packageDependencies": [
-            ["docx-templates-to-pdf", "npm:1.2.0"],
-            ["docx-templates", "npm:4.5.3"],
-            ["gotenberg-js-client", "npm:0.6.2"]
+            ["docx-templates-to-pdf", "npm:2.0.0"],
+            ["mime-db", "npm:1.45.0"]
           ],
           "linkType": "HARD",
         }]
@@ -2501,7 +2488,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["comlink", "npm:4.3.0"],
             ["compression", "npm:1.7.4"],
             ["cors", "npm:2.8.5"],
-            ["docx-templates-to-pdf", "npm:1.2.0"],
+            ["docx-templates-to-pdf", "npm:2.0.0"],
             ["esbuild", "npm:0.8.33"],
             ["eslint", "npm:7.18.0"],
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
@@ -3365,16 +3352,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["gotenberg-js-client", [
-        ["npm:0.6.2", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/gotenberg-js-client-npm-0.6.2-5fdfe7b0be-cfb30e0072.zip/node_modules/gotenberg-js-client/",
-          "packageDependencies": [
-            ["gotenberg-js-client", "npm:0.6.2"],
-            ["form-data", "npm:3.0.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
       ["graceful-fs", [
         ["npm:4.2.4", {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/graceful-fs-npm-4.2.4-734467635f-d095ee4dc6.zip/node_modules/graceful-fs/",
@@ -3700,15 +3677,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/ignore-by-default-npm-1.0.1-78ea10bc54-c5c70afd7c.zip/node_modules/ignore-by-default/",
           "packageDependencies": [
             ["ignore-by-default", "npm:1.0.1"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["immediate", [
-        ["npm:3.0.6", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/immediate-npm-3.0.6-c27588a2d3-e86d4d20e2.zip/node_modules/immediate/",
-          "packageDependencies": [
-            ["immediate", "npm:3.0.6"]
           ],
           "linkType": "HARD",
         }]
@@ -4170,19 +4138,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["jszip", [
-        ["npm:3.5.0", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/jszip-npm-3.5.0-60d9e550e7-6b5e86e710.zip/node_modules/jszip/",
-          "packageDependencies": [
-            ["jszip", "npm:3.5.0"],
-            ["lie", "npm:3.3.0"],
-            ["pako", "npm:1.0.11"],
-            ["readable-stream", "npm:2.3.7"],
-            ["set-immediate-shim", "npm:1.0.1"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
       ["jwa", [
         ["npm:1.4.1", {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/jwa-npm-1.4.1-4f19d6572c-e3a6234a3a.zip/node_modules/jwa/",
@@ -4252,16 +4207,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["levn", "npm:0.4.1"],
             ["prelude-ls", "npm:1.2.1"],
             ["type-check", "npm:0.4.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["lie", [
-        ["npm:3.3.0", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/lie-npm-3.3.0-35ddd11a4d-6c758fbea3.zip/node_modules/lie/",
-          "packageDependencies": [
-            ["lie", "npm:3.3.0"],
-            ["immediate", "npm:3.0.6"]
           ],
           "linkType": "HARD",
         }]
@@ -4880,15 +4825,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["pako", [
-        ["npm:1.0.11", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/pako-npm-1.0.11-b8f1b69d3e-71c60150b6.zip/node_modules/pako/",
-          "packageDependencies": [
-            ["pako", "npm:1.0.11"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
       ["parent-module", [
         ["npm:1.0.1", {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/parent-module-npm-1.0.1-1fae11b095-58714b9699.zip/node_modules/parent-module/",
@@ -5396,15 +5332,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
-      ["sax", [
-        ["npm:1.2.4", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/sax-npm-1.2.4-178f05f12f-9d7668d691.zip/node_modules/sax/",
-          "packageDependencies": [
-            ["sax", "npm:1.2.4"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
       ["semver", [
         ["npm:5.7.1", {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/semver-npm-5.7.1-40bcea106b-06ff0ed753.zip/node_modules/semver/",
@@ -5489,15 +5416,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/set-blocking-npm-2.0.0-49e2cffa24-0ac2403b0c.zip/node_modules/set-blocking/",
           "packageDependencies": [
             ["set-blocking", "npm:2.0.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["set-immediate-shim", [
-        ["npm:1.0.1", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/set-immediate-shim-npm-1.0.1-f1ac810b1a-be64b68001.zip/node_modules/set-immediate-shim/",
-          "packageDependencies": [
-            ["set-immediate-shim", "npm:1.0.1"]
           ],
           "linkType": "HARD",
         }]
@@ -5916,15 +5834,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/text-table-npm-0.2.0-d92a778b59-373904ce70.zip/node_modules/text-table/",
           "packageDependencies": [
             ["text-table", "npm:0.2.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["timm", [
-        ["npm:1.7.1", {
-          "packageLocation": "../../../../../tmp/renovate-cache/others/yarn/timm-npm-1.7.1-4d0984663a-fa92a6fcca.zip/node_modules/timm/",
-          "packageDependencies": [
-            ["timm", "npm:1.7.1"]
           ],
           "linkType": "HARD",
         }]
