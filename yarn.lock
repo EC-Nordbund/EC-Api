@@ -1843,24 +1843,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docx-templates-to-pdf@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "docx-templates-to-pdf@npm:1.2.0"
+"docx-templates-to-pdf@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "docx-templates-to-pdf@npm:2.0.0"
   dependencies:
-    docx-templates: ^4.5.2
-    gotenberg-js-client: ^0.6.2
-  checksum: 3b4771a4973086335537e361b9a1c69725b32e91c21174122eb96bdb8435a4bf070776f33804520fa3ea0f65408331d8ddad0001b541d9e0c9adbade73babda4
-  languageName: node
-  linkType: hard
-
-"docx-templates@npm:^4.5.2":
-  version: 4.5.3
-  resolution: "docx-templates@npm:4.5.3"
-  dependencies:
-    jszip: ^3.5.0
-    sax: 1.2.4
-    timm: ^1.6.2
-  checksum: 8e06ac40eff4ddeff4975f62046fd737a479d73ca234d3eb9bd9d278d59a2ca4c7002240fb8310e166a5155f855669098b462e3f2f5eee05c96921edfc4ee9e6
+    mime-db: ^1.45.0
+  checksum: b7dde94c7b2b744b97260a4a5bffe32c241e0bf48289bda219a04e67535f5c774616b171017eef6ea3e413866d90a9098ca3ec8211c1568d2db1281a91f32cde
   languageName: node
   linkType: hard
 
@@ -1903,7 +1891,7 @@ __metadata:
     comlink: ^4.3.0
     compression: ^1.7.4
     cors: ^2.8.5
-    docx-templates-to-pdf: ^1.2.0
+    docx-templates-to-pdf: ^2.0.0
     esbuild: ^0.8.32
     eslint: ^7.18.0
     eslint-config-prettier: ^7.1.0
@@ -2666,15 +2654,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"gotenberg-js-client@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "gotenberg-js-client@npm:0.6.2"
-  dependencies:
-    form-data: ^3.0.0
-  checksum: cfb30e0072fbbd29996ecad7cd32f93286dfc901186cd497e3eec1c36b1ab26a2c2866409d2b8e5ce0e2e7f16878f496c87234c6465dd006ff2d99cb39b004ad
-  languageName: node
-  linkType: hard
-
 "graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.2.3":
   version: 4.2.4
   resolution: "graceful-fs@npm:4.2.4"
@@ -2915,13 +2894,6 @@ fsevents@~2.1.2:
   version: 5.1.8
   resolution: "ignore@npm:5.1.8"
   checksum: b08e3d5b5d94eca13475f29a5d47d221060e9cdd7e38d7647088e29d90130669a970fecbc4cdb41b8fa295c6673740c729d3dc05dadc381f593efb42282cbf9f
-  languageName: node
-  linkType: hard
-
-"immediate@npm:~3.0.5":
-  version: 3.0.6
-  resolution: "immediate@npm:3.0.6"
-  checksum: e86d4d20e2da86f9a4629d9aee9d56dfae7d3a7ace7f569b0538f2ec2570d86b3cbdc52c546d23be2cfd28306670f44676fc833cd96d9506659b8c5ab8202ca4
   languageName: node
   linkType: hard
 
@@ -3313,18 +3285,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"jszip@npm:^3.5.0":
-  version: 3.5.0
-  resolution: "jszip@npm:3.5.0"
-  dependencies:
-    lie: ~3.3.0
-    pako: ~1.0.2
-    readable-stream: ~2.3.6
-    set-immediate-shim: ~1.0.1
-  checksum: 6b5e86e7101b2162cedb88979fbb0c9bc83522d143bc29e582b9cc2dcfe9a12be299cbfa32a58b44a51df1621633dd15b5f0f8e9625c8d4070144d80d7489393
-  languageName: node
-  linkType: hard
-
 "jwa@npm:^1.4.1":
   version: 1.4.1
   resolution: "jwa@npm:1.4.1"
@@ -3392,15 +3352,6 @@ fsevents@~2.1.2:
     prelude-ls: ^1.2.1
     type-check: ~0.4.0
   checksum: 2f6ddfb0b956f2cb6b1608253a62b0c30e7392dd3c7b4cf284dfe2889b44d8385eaa81597646e253752c312a960ccb5e4d596968e476d5f6614f4ca60e5218e9
-  languageName: node
-  linkType: hard
-
-"lie@npm:~3.3.0":
-  version: 3.3.0
-  resolution: "lie@npm:3.3.0"
-  dependencies:
-    immediate: ~3.0.5
-  checksum: 6c758fbea382ca251d8f6f32b4066b4c57b4c5d574babc7c6abf7bd20e522a54bcd364dd95d6695103b189a005fcaf9e55d7c58a6c243d4ebdd0cc803898c8bd
   languageName: node
   linkType: hard
 
@@ -3574,7 +3525,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"mime-db@npm:>= 1.43.0 < 2":
+"mime-db@npm:>= 1.43.0 < 2, mime-db@npm:^1.45.0":
   version: 1.45.0
   resolution: "mime-db@npm:1.45.0"
   checksum: 86701c54f748c72a5c05c16f881cdfa01db44a61e52f4cef3d872b5f3e4a3c4186c28df7a5fec31debc9bee42d5afc9b86ff8ff3d3eaf1440f07140b94a33d4a
@@ -3936,13 +3887,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"pako@npm:~1.0.2":
-  version: 1.0.11
-  resolution: "pako@npm:1.0.11"
-  checksum: 71c60150b68220ec52a404f3c39a4ed38f750e42452b88fe0eb2e6b5c98e91f73f706444359b097aca1e6db83ef8fef50b5a9ec100e30a606cda6da8d45e5439
-  languageName: node
-  linkType: hard
-
 "parent-module@npm:^1.0.0":
   version: 1.0.1
   resolution: "parent-module@npm:1.0.1"
@@ -4172,7 +4116,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:2.3.7, readable-stream@npm:^2.0.6, readable-stream@npm:~2.3.6":
+"readable-stream@npm:2.3.7, readable-stream@npm:^2.0.6":
   version: 2.3.7
   resolution: "readable-stream@npm:2.3.7"
   dependencies:
@@ -4379,13 +4323,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"sax@npm:1.2.4":
-  version: 1.2.4
-  resolution: "sax@npm:1.2.4"
-  checksum: 9d7668d69105e89e2c1a4b2fdc12c72e1a2f78b825f7b4a8a2ea5cdfebf70920bd17715bed55264c3b3959616a0695f8ad2d098bf6944fbd0953ee9c695dceef
-  languageName: node
-  linkType: hard
-
 "semver-diff@npm:^3.1.1":
   version: 3.1.1
   resolution: "semver-diff@npm:3.1.1"
@@ -4470,13 +4407,6 @@ fsevents@~2.1.2:
   version: 2.0.0
   resolution: "set-blocking@npm:2.0.0"
   checksum: 0ac2403b0c2d39bf452f6d5d17dfd3cb952b9113098e1231cc0614c436e2f465637e39d27cf3b93556f5c59795e9790fd7e98da784c5f9919edeba4295ffeb29
-  languageName: node
-  linkType: hard
-
-"set-immediate-shim@npm:~1.0.1":
-  version: 1.0.1
-  resolution: "set-immediate-shim@npm:1.0.1"
-  checksum: be64b6800160830fec11aee59f88c7c20f9368510059673488f4373b2d83996337757bd9bf867356120d64762e2e6347272dd83438d452247e6f19be2fac36d2
   languageName: node
   linkType: hard
 
@@ -4855,13 +4785,6 @@ fsevents@~2.1.2:
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
   checksum: 373904ce70524ba11ec7e1905c44fb92671132d5e0b0aba2fb48057161f8bf9cbf7f6178f0adf31810150cf44fb52c7b912dc722bff3fddf9688378596dbeb56
-  languageName: node
-  linkType: hard
-
-"timm@npm:^1.6.2":
-  version: 1.7.1
-  resolution: "timm@npm:1.7.1"
-  checksum: fa92a6fccadf8de911a03d6857f5ebb01da8013c8128ba2e244294b05b5102237d26beb4a025117409f50f585afebd37e9aad3dd247b62dc71503eaff3ff021f
   languageName: node
   linkType: hard
 

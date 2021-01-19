@@ -5,6 +5,9 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import { apiExtractor } from './apiExtractor'
 import { terser } from "rollup-plugin-terser";
+import { writeFileSync } from 'fs'
+
+const comlinkTSD = []
 
 const nodeExternals = [
   'assert',
@@ -67,6 +70,18 @@ export default {
           if (id.startsWith(importPrefix)) {
             const res = await this.resolve(id.slice(importPrefix.length).split('?')[0], importer)
 
+            if (id.split('?').length === 1) {
+
+              const tsd = `
+declare module "${id}" {
+  const worker: import('comlink').Remote<typeof import(${JSON.stringify(res.id.split('.')[0])})>
+  export default worker
+}
+              `
+
+              comlinkTSD.push(tsd)
+            }
+
             return importPrefix + res.id + '?' + (id.split('?')[1] || '')
           }
         },
@@ -106,6 +121,9 @@ export default {
               `
             }
           }
+        },
+        generateBundle() {
+          writeFileSync('./src/shim-worker.d.ts', '/* eslint-disable */' + comlinkTSD.join(''))
         }
       }
     })(),
@@ -166,7 +184,6 @@ export default {
     'depd',
     'jsonwebtoken',
     'body-parser',
-    'sql-escape-tag',
     'swagger-ui-express',
     'express-rate-limit',
     'web-push'

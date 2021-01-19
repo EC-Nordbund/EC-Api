@@ -1,5 +1,3 @@
-import { createGotenberg } from 'docx-templates-to-pdf'
+import { Gotenberg } from 'docx-templates-to-pdf'
 
-export default {
-  docGen: createGotenberg('http://gotenberg:3000')
-}
+export default new Gotenberg('http://gotenberg:3000')

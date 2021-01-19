@@ -6,6 +6,11 @@ import Vue from 'vue'
 export class Base {
   constructor(protected url: string) {}
 
+  protected getSecretKey(): string {
+    // TODO: cache + make api request
+    return this.getAuthToken()
+  }
+
   protected getAuthToken(): string {
     return Vue.prototype.$authToken
   }
