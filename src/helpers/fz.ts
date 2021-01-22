@@ -112,6 +112,6 @@ export async function createFZ(
     'Erweitertes Führungszeugnis',
     text,
     true,
-    [{ content: Readable.from(file), filename: 'fzAntrag.pdf' }]
+    [{ content: file as Buffer, filename: 'fzAntrag.pdf' }]
   )
 }

@@ -42,7 +42,7 @@ export default async function sendMail(
   body: string,
   isHTML = true,
   attachments: Array<{
-    content: string | Readable
+    content: string | Readable | Buffer
     filename: string
   }> = []
 ): Promise<true> {
