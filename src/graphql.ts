@@ -2586,7 +2586,7 @@ export const schema = new GraphQLSchema({
               console.log('MA-Ort Anmeldung')
               let generateFlag = false
 
-              const wann: Date = new Date(new Date().getTime() + 788923800)
+              const wann: Date = new Date(new Date().getTime() + 8000000000)
 
               const fzData = await query(
                 `SELECT fzVon FROM fz WHERE personID = ${personID} ORDER BY fzVon DESC LIMIT 1`
@@ -2637,7 +2637,10 @@ export const schema = new GraphQLSchema({
                       .split('T')[0]
                       .split('-')
                       .reverse()
-                      .join('.')} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`, false
+                      .join(
+                        '.'
+                      )} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`,
+                    false
                   )
                 }
               }
@@ -2802,7 +2805,10 @@ export const schema = new GraphQLSchema({
                         .split('T')[0]
                         .split('-')
                         .reverse()
-                        .join('.')} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`, false
+                        .join(
+                          '.'
+                        )} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`,
+                      false
                     )
                   }
                 }

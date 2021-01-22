@@ -12,6 +12,7 @@ export default (app: Express): void => {
    * Gibt einen Array aller Personen aus
    *
    * @name getPersonen
+   * @encryptedcache
    */
   app.get<emptyObj, { personen: Array<any> }, emptyObj>(
     '/v6/personen',

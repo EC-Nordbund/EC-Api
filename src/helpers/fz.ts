@@ -1,12 +1,9 @@
 import mail from './mail'
 import { getMySQL } from './mysql'
-import { readFileSync } from 'fs'
 import { Readable } from 'stream'
-import createReport from './generator'
+import worker from 'comlink:../workers/generation'
 import { ecError } from './error'
 import sql from 'sql-escape-tag'
-
-const fzDocument = readFileSync('./fz.docx')
 
 /**
  * Erzeugt einen FZ-Antrag für eine bestimmte Person und sendet ihn per Mail an diese.
@@ -49,7 +46,7 @@ export async function createFZ(
   const a = adressen[0]
 
   // Erzeuge Antrag-PDF
-  const file = await createReport(fzDocument, {
+  const file = await worker.generateDocumentPDF('./fz.docx', {
     vorname: p.vorname,
     nachname: p.nachname,
     gebDat: p.gebDat.toISOString().split('T')[0].split('-').reverse().join('.'),

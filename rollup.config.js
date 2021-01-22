@@ -1,10 +1,11 @@
-/* eslint-disable */
 import esbuild from 'rollup-plugin-esbuild'
 import json from '@rollup/plugin-json'
-import { apiExtractor } from './apiExtractor'
-
-import comlink from '@surma/rollup-plugin-comlink'
-import omt from '@surma/rollup-plugin-off-main-thread'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import { apiExtractor } from './rollup-plugins/apiExtractor'
+import { terser } from "rollup-plugin-terser";
+import { minifySql } from './rollup-plugins/minifySql'
+import { comlink } from './rollup-plugins/comlink'
 
 const nodeExternals = [
   'assert',
@@ -52,19 +53,25 @@ const nodeExternals = [
 export default {
   input: './src/index.ts',
   output: {
-    file: 'dist/bundle.js',
+    dir: 'dist',
     format: 'cjs'
   },
   plugins: [
-    // comlink({
-    //   useModuleWorker: true
-    // }),
-    // omt(),
+    {
+      resolveFileUrl({ relativePath }) {
+        return JSON.stringify('./dist/' + relativePath);
+      },
+    },
+    resolve(),
+    commonjs(),
+    comlink({ type: 'node' }),
     apiExtractor(),
     esbuild({
       target: 'es2018'
     }),
-    json()
+    minifySql(),
+    json(),
+    terser()
   ],
   external: [
     ...nodeExternals,
@@ -81,9 +88,9 @@ export default {
     'depd',
     'jsonwebtoken',
     'body-parser',
-    'sql-escape-tag',
     'swagger-ui-express',
     'express-rate-limit',
     'web-push'
   ]
 }
+
