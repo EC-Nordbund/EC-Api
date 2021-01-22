@@ -5,14 +5,14 @@ import { Response } from 'node-fetch'
 const gotenberg = new Gotenberg('http://gotenberg:3000')
 
 const toBuffer = (stream: NodeJS.ReadableStream) => {
-  return new Response(stream).buffer()
+  return new Response(stream).buffer().then((v) => v.buffer)
 }
 
 export default {
   async generateDocumentsPDF(
     filename: string,
     data: Record<string, any>[]
-  ): Promise<Buffer> {
+  ): Promise<ArrayBufferLike> {
     const file = await promises.readFile(filename)
 
     return toBuffer(await gotenberg.fillDocToPdf(file, data))
@@ -20,7 +20,7 @@ export default {
   async generateDocumentPDF(
     filename: string,
     data: Record<string, any>
-  ): Promise<Buffer> {
+  ): Promise<ArrayBufferLike> {
     const file = await promises.readFile(filename)
 
     return toBuffer(await gotenberg.fillDocToPdf(file, [data]))
