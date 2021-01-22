@@ -47,6 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.21"],
+            ["@types/node-fetch", "npm:2.5.8"],
             ["@types/nodemailer", "npm:6.4.0"],
             ["@types/web-push", "npm:3.3.0"],
             ["@typescript-eslint/eslint-plugin", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.14.0"],
@@ -67,6 +68,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["graphql-subscriptions", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:1.1.0"],
             ["js-sha3", "npm:0.8.0"],
             ["jsonwebtoken", "npm:8.5.1"],
+            ["node-fetch", "npm:2.6.1"],
             ["nodemailer", "npm:6.4.17"],
             ["nodemon", "npm:2.0.7"],
             ["prettier", "npm:2.2.1"],
@@ -800,6 +802,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-node-fetch-npm-2.5.7-fd8c51e56f-101f6e8474.zip/node_modules/@types/node-fetch/",
           "packageDependencies": [
             ["@types/node-fetch", "npm:2.5.7"],
+            ["@types/node", "npm:14.14.16"],
+            ["form-data", "npm:3.0.0"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:2.5.8", {
+          "packageLocation": "./.yarn/cache/@types-node-fetch-npm-2.5.8-d946aa06c6-608cdd6aed.zip/node_modules/@types/node-fetch/",
+          "packageDependencies": [
+            ["@types/node-fetch", "npm:2.5.8"],
             ["@types/node", "npm:14.14.16"],
             ["form-data", "npm:3.0.0"]
           ],
@@ -2479,6 +2490,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.21"],
+            ["@types/node-fetch", "npm:2.5.8"],
             ["@types/nodemailer", "npm:6.4.0"],
             ["@types/web-push", "npm:3.3.0"],
             ["@typescript-eslint/eslint-plugin", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.14.0"],
@@ -2499,6 +2511,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["graphql-subscriptions", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:1.1.0"],
             ["js-sha3", "npm:0.8.0"],
             ["jsonwebtoken", "npm:8.5.1"],
+            ["node-fetch", "npm:2.6.1"],
             ["nodemailer", "npm:6.4.17"],
             ["nodemon", "npm:2.0.7"],
             ["prettier", "npm:2.2.1"],
