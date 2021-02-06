@@ -1910,7 +1910,7 @@ __metadata:
     express: 4.17.1
     express-rate-limit: 5.2.3
     graphql: 15.5.0
-    graphql-subscriptions: 1.1.0
+    graphql-subscriptions: 1.2.0
     js-sha3: 0.8.0
     jsonwebtoken: 8.5.1
     node-fetch: 2.6.1
@@ -2686,7 +2686,18 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"graphql-subscriptions@npm:1.1.0, graphql-subscriptions@npm:^1.0.0":
+"graphql-subscriptions@npm:1.2.0":
+  version: 1.2.0
+  resolution: "graphql-subscriptions@npm:1.2.0"
+  dependencies:
+    iterall: ^1.3.0
+  peerDependencies:
+    graphql: ^0.10.5 || ^0.11.3 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
+  checksum: 09609ee8abc3f6a0d2a32bc5abd2c2140976cd840284d2a70eafbfd92dc082e1f5c5249430f231f9c922afd8c2e587633b4316cc35535020940bc7a244e8037e
+  languageName: node
+  linkType: hard
+
+"graphql-subscriptions@npm:^1.0.0":
   version: 1.1.0
   resolution: "graphql-subscriptions@npm:1.1.0"
   dependencies:
@@ -3181,7 +3192,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"iterall@npm:^1.1.3, iterall@npm:^1.2.1":
+"iterall@npm:^1.1.3, iterall@npm:^1.2.1, iterall@npm:^1.3.0":
   version: 1.3.0
   resolution: "iterall@npm:1.3.0"
   checksum: 25ae2d07cf97fc35d43fa7af814839689416b83d3ade0fec97a62c58b7b9fad5ff89dd0ede99f2d67cae2697ffa6987f0ab10876f40ae6466e802609a05b1006
