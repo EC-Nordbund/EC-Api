@@ -1249,7 +1249,7 @@ export const schema = new GraphQLSchema({
         }),
         resolve: handleAuth((_, args) => {
           return query(
-            `INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID})`
+            sql`INSERT INTO akPerson (personID, akID, date, neuerStatus) VALUES (${args.personID}, ${args.akID}, ${args.date}, ${args.status})`
           )
         })
       },
