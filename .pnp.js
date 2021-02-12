@@ -63,7 +63,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
             ["eslint-plugin-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.3.1"],
             ["express", "npm:4.17.1"],
-            ["express-rate-limit", "npm:5.2.3"],
+            ["express-rate-limit", "npm:5.2.5"],
             ["graphql", "npm:15.5.0"],
             ["graphql-subscriptions", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:1.2.0"],
             ["js-sha3", "npm:0.8.0"],
@@ -2506,7 +2506,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
             ["eslint-plugin-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.3.1"],
             ["express", "npm:4.17.1"],
-            ["express-rate-limit", "npm:5.2.3"],
+            ["express-rate-limit", "npm:5.2.5"],
             ["graphql", "npm:15.5.0"],
             ["graphql-subscriptions", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:1.2.0"],
             ["js-sha3", "npm:0.8.0"],
@@ -2971,10 +2971,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["express-rate-limit", [
-        ["npm:5.2.3", {
-          "packageLocation": "./.yarn/cache/express-rate-limit-npm-5.2.3-01189e862b-4b2c78f61a.zip/node_modules/express-rate-limit/",
+        ["npm:5.2.5", {
+          "packageLocation": "./.yarn/cache/express-rate-limit-npm-5.2.5-1f1f9ef3af-02751d688a.zip/node_modules/express-rate-limit/",
           "packageDependencies": [
-            ["express-rate-limit", "npm:5.2.3"]
+            ["express-rate-limit", "npm:5.2.5"]
           ],
           "linkType": "HARD",
         }]

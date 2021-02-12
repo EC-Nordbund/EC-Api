@@ -1908,7 +1908,7 @@ __metadata:
     eslint-config-prettier: 7.2.0
     eslint-plugin-prettier: 3.3.1
     express: 4.17.1
-    express-rate-limit: 5.2.3
+    express-rate-limit: 5.2.5
     graphql: 15.5.0
     graphql-subscriptions: 1.2.0
     js-sha3: 0.8.0
@@ -2273,10 +2273,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-rate-limit@npm:5.2.3":
-  version: 5.2.3
-  resolution: "express-rate-limit@npm:5.2.3"
-  checksum: 4b2c78f61a90963fdcdc98a4ad85b5819158a7b78062609194038d348cd3cf667c50a71e8352dc846baac2fd0d5329371bd182aa193e5ba7ce7977a9b2f643ad
+"express-rate-limit@npm:5.2.5":
+  version: 5.2.5
+  resolution: "express-rate-limit@npm:5.2.5"
+  checksum: 02751d688a2aa9872c60a6ebbc31cc175d71de54cdd2ea4b18a22a219e7353793ac18150ca83ce477f75035faf13426ddefc8f59645644ff01723e9dfbea6dc8
   languageName: node
   linkType: hard
 
