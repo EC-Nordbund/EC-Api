@@ -1921,7 +1921,7 @@ __metadata:
     nodemon: 2.0.7
     prettier: 2.2.1
     promise-mysql: 5.0.2
-    rollup: 2.38.5
+    rollup: 2.39.0
     rollup-plugin-esbuild: 2.6.1
     rollup-plugin-terser: 7.0.2
     sql-escape-tag: 1.0.0
@@ -4311,9 +4311,9 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"rollup@npm:2.38.5":
-  version: 2.38.5
-  resolution: "rollup@npm:2.38.5"
+"rollup@npm:2.39.0":
+  version: 2.39.0
+  resolution: "rollup@npm:2.39.0"
   dependencies:
     fsevents: ~2.3.1
   dependenciesMeta:
@@ -4321,7 +4321,7 @@ fsevents@~2.3.1:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: b8ccad97a04f95f2459101c9b477e27f857fba5995d936728838da3728c2295aa396198b42fd254888057974589ba70a06e00feff7c1a1db992f0280914d695b
+  checksum: b504b080e41382b1f7ff4327c970446458a10e9e083e080175435a1848df5403c10106440551276bfa2d23e56be2810ba52ec19794c74b50854ca89817e36b61
   languageName: node
   linkType: hard
 
