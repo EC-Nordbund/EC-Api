@@ -357,19 +357,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cors@npm:2.8.10":
+  version: 2.8.10
+  resolution: "@types/cors@npm:2.8.10"
+  checksum: c3f3d6feee59ff75127fec3030d55c3d5f1adfc07953facdae67c47dcd54c83c46a5e92f08afa53542ec978da38a388697d30731019798cb157c9e96c64ef6c3
+  languageName: node
+  linkType: hard
+
 "@types/cors@npm:2.8.8":
   version: 2.8.8
   resolution: "@types/cors@npm:2.8.8"
   dependencies:
     "@types/express": "*"
   checksum: 4a11dd4d1e76056b0c76e69e29347003338346cf3cf72a0aad94742fc99bf4bb540b0cc2b3f61ed4fdfd9cf979d7b40afe0816458d20a9c865e8c286b14373a4
-  languageName: node
-  linkType: hard
-
-"@types/cors@npm:2.8.9":
-  version: 2.8.9
-  resolution: "@types/cors@npm:2.8.9"
-  checksum: 903e863c91928209c66a26fdd82ccd0327ed5cded60f19683a155b1b0281e0ad38ecf61dd9f6c23fb9a03ab684e6c2d5690e13473f96d813b8a474dc23dd6c89
   languageName: node
   linkType: hard
 
@@ -1889,7 +1889,7 @@ __metadata:
     "@rollup/plugin-json": 4.1.0
     "@rollup/plugin-node-resolve": 11.1.1
     "@types/compression": 1.7.0
-    "@types/cors": 2.8.9
+    "@types/cors": 2.8.10
     "@types/eslint": 7.2.6
     "@types/express": 4.17.11
     "@types/express-rate-limit": 5.1.1
