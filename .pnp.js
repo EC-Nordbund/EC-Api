@@ -59,7 +59,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cors", "npm:2.8.5"],
             ["docx-templates-to-pdf", "npm:2.0.0"],
             ["esbuild", "npm:0.8.46"],
-            ["eslint", "npm:7.19.0"],
+            ["eslint", "npm:7.20.0"],
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
             ["eslint-plugin-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.3.1"],
             ["express", "npm:4.17.1"],
@@ -930,7 +930,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.15.0"],
             ["@typescript-eslint/scope-manager", "npm:4.15.0"],
             ["debug", "virtual:360365131be35f502cf349d7b4fecc7f30ad06d56a9b7e8b81293a2c9ff5036bf40d49f1733a2d76bd0ed210259ed49de7d6084cd9578c843c9f35624625aa49#npm:4.3.2"],
-            ["eslint", "npm:7.19.0"],
+            ["eslint", "npm:7.20.0"],
             ["functional-red-black-tree", "npm:1.0.1"],
             ["lodash", "npm:4.17.20"],
             ["regexpp", "npm:3.1.0"],
@@ -965,7 +965,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/scope-manager", "npm:4.15.0"],
             ["@typescript-eslint/types", "npm:4.15.0"],
             ["@typescript-eslint/typescript-estree", "virtual:e29fff9b49746d8d893ff4db072cc00ce06f4433862c3cccb38b76a4337559ec7d2b986a3552f5479fc1962c9cb75abe6e8fd4936b39eaaf086e6f2fc776c243#npm:4.15.0"],
-            ["eslint", "npm:7.19.0"],
+            ["eslint", "npm:7.20.0"],
             ["eslint-scope", "npm:5.1.1"],
             ["eslint-utils", "npm:2.1.0"]
           ],
@@ -993,7 +993,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/types", "npm:4.15.0"],
             ["@typescript-eslint/typescript-estree", "virtual:214af8418b618cd6197a70113be6e4c491e64bb4508df59a85eac2aac0282af27e4e213c9d36f83e9df655f9e16a7fecf589c5f4ab97bc4f8bcdfce69e870112#npm:4.15.0"],
             ["debug", "virtual:360365131be35f502cf349d7b4fecc7f30ad06d56a9b7e8b81293a2c9ff5036bf40d49f1733a2d76bd0ed210259ed49de7d6084cd9578c843c9f35624625aa49#npm:4.3.2"],
-            ["eslint", "npm:7.19.0"],
+            ["eslint", "npm:7.20.0"],
             ["typescript", "patch:typescript@npm%3A4.1.5#builtin<compat/typescript>::version=4.1.5&hash=cc6730"]
           ],
           "packagePeers": [
@@ -2515,7 +2515,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cors", "npm:2.8.5"],
             ["docx-templates-to-pdf", "npm:2.0.0"],
             ["esbuild", "npm:0.8.46"],
-            ["eslint", "npm:7.19.0"],
+            ["eslint", "npm:7.20.0"],
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
             ["eslint-plugin-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.3.1"],
             ["express", "npm:4.17.1"],
@@ -2711,10 +2711,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["eslint", [
-        ["npm:7.19.0", {
-          "packageLocation": "./.yarn/cache/eslint-npm-7.19.0-796aed1841-0461e8b2b5.zip/node_modules/eslint/",
+        ["npm:7.20.0", {
+          "packageLocation": "./.yarn/cache/eslint-npm-7.20.0-42a38efe95-1d56cabc7e.zip/node_modules/eslint/",
           "packageDependencies": [
-            ["eslint", "npm:7.19.0"],
+            ["eslint", "npm:7.20.0"],
             ["@babel/code-frame", "npm:7.12.11"],
             ["@eslint/eslintrc", "npm:0.3.0"],
             ["ajv", "npm:6.12.6"],
@@ -2727,7 +2727,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-utils", "npm:2.1.0"],
             ["eslint-visitor-keys", "npm:2.0.0"],
             ["espree", "npm:7.3.1"],
-            ["esquery", "npm:1.3.1"],
+            ["esquery", "npm:1.4.0"],
             ["esutils", "npm:2.0.3"],
             ["file-entry-cache", "npm:6.0.0"],
             ["functional-red-black-tree", "npm:1.0.1"],
@@ -2769,7 +2769,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
             ["@types/eslint", "npm:7.2.6"],
-            ["eslint", "npm:7.19.0"]
+            ["eslint", "npm:7.20.0"]
           ],
           "packagePeers": [
             "@types/eslint",
@@ -2792,7 +2792,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.3.1"],
             ["@types/eslint", "npm:7.2.6"],
             ["@types/prettier", null],
-            ["eslint", "npm:7.19.0"],
+            ["eslint", "npm:7.20.0"],
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.2.0"],
             ["prettier", "npm:2.2.1"],
             ["prettier-linter-helpers", "npm:1.0.0"]
@@ -2866,10 +2866,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["esquery", [
-        ["npm:1.3.1", {
-          "packageLocation": "./.yarn/cache/esquery-npm-1.3.1-2ba3c93f30-0aac7572bc.zip/node_modules/esquery/",
+        ["npm:1.4.0", {
+          "packageLocation": "./.yarn/cache/esquery-npm-1.4.0-f39408b1a7-3293ecc150.zip/node_modules/esquery/",
           "packageDependencies": [
-            ["esquery", "npm:1.3.1"],
+            ["esquery", "npm:1.4.0"],
             ["estraverse", "npm:5.2.0"]
           ],
           "linkType": "HARD",
