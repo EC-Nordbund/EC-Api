@@ -54,7 +54,7 @@
     "cors": "2.8.5",
     "docx-templates-to-pdf": "2.0.0",
     "express": "4.17.1",
-    "express-rate-limit": "5.2.5",
+    "express-rate-limit": "5.2.6",
     "graphql": "15.5.0",
     "graphql-subscriptions": "1.2.0",
     "js-sha3": "0.8.0",
