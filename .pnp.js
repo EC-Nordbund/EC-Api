@@ -46,7 +46,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/express", "npm:4.17.11"],
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
-            ["@types/node", "npm:14.14.28"],
+            ["@types/node", "npm:14.14.31"],
             ["@types/node-fetch", "npm:2.5.8"],
             ["@types/nodemailer", "npm:6.4.0"],
             ["@types/web-push", "npm:3.3.0"],
@@ -805,10 +805,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
           "linkType": "HARD",
         }],
-        ["npm:14.14.28", {
-          "packageLocation": "./.yarn/cache/@types-node-npm-14.14.28-f643c75c74-e750df4d5e.zip/node_modules/@types/node/",
+        ["npm:14.14.31", {
+          "packageLocation": "./.yarn/cache/@types-node-npm-14.14.31-4f1a9dff64-635dc8a089.zip/node_modules/@types/node/",
           "packageDependencies": [
-            ["@types/node", "npm:14.14.28"]
+            ["@types/node", "npm:14.14.31"]
           ],
           "linkType": "HARD",
         }]
@@ -2502,7 +2502,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/express", "npm:4.17.11"],
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
-            ["@types/node", "npm:14.14.28"],
+            ["@types/node", "npm:14.14.31"],
             ["@types/node-fetch", "npm:2.5.8"],
             ["@types/nodemailer", "npm:6.4.0"],
             ["@types/web-push", "npm:3.3.0"],
