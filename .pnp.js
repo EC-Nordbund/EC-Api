@@ -69,7 +69,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["js-sha3", "npm:0.8.0"],
             ["jsonwebtoken", "npm:8.5.1"],
             ["node-fetch", "npm:2.6.1"],
-            ["nodemailer", "npm:6.4.18"],
+            ["nodemailer", "npm:6.5.0"],
             ["nodemon", "npm:2.0.7"],
             ["prettier", "npm:2.2.1"],
             ["promise-mysql", "npm:5.0.2"],
@@ -2525,7 +2525,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["js-sha3", "npm:0.8.0"],
             ["jsonwebtoken", "npm:8.5.1"],
             ["node-fetch", "npm:2.6.1"],
-            ["nodemailer", "npm:6.4.18"],
+            ["nodemailer", "npm:6.5.0"],
             ["nodemon", "npm:2.0.7"],
             ["prettier", "npm:2.2.1"],
             ["promise-mysql", "npm:5.0.2"],
@@ -4633,10 +4633,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["nodemailer", [
-        ["npm:6.4.18", {
-          "packageLocation": "./.yarn/cache/nodemailer-npm-6.4.18-37db15ff06-56b5e39bc5.zip/node_modules/nodemailer/",
+        ["npm:6.5.0", {
+          "packageLocation": "./.yarn/cache/nodemailer-npm-6.5.0-e239ce3978-9611c14a6f.zip/node_modules/nodemailer/",
           "packageDependencies": [
-            ["nodemailer", "npm:6.4.18"]
+            ["nodemailer", "npm:6.5.0"]
           ],
           "linkType": "HARD",
         }]
