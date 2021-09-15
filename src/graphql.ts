@@ -2663,10 +2663,10 @@ export const schema = new GraphQLSchema({
               let wartelistenplatz = 0
               if (args.position === 1) {
                 const maxWListPlatz: Array<any> = await query(
-                  `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS maxWlistPos FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} GROUP BY personen.geschlecht`
+                  `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS maxWlistPos FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} AND anmeldungen.position = 1 GROUP BY personen.geschlecht`
                 )
                 const anzahlPersonen: Array<any> = await query(
-                  `SELECT COUNT(personen.personID) AS anzahlPersonen, personen.geschlecht AS geschlecht FROM personen, anmeldungen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} AND anmeldungen.wartelistenPlatz = 0 GROUP BY personen.geschlecht`
+                  `SELECT COUNT(personen.personID) AS anzahlPersonen, personen.geschlecht AS geschlecht FROM personen, anmeldungen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} AND anmeldungen.wartelistenPlatz = 0 AND anmeldungen.position = 1 GROUP BY personen.geschlecht`
                 )
 
                 let maxWlistMännlich = 0
