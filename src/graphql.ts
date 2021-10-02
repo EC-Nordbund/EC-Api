@@ -2869,7 +2869,7 @@ export const schema = new GraphQLSchema({
                   ${args.klettern},
                   ${args.sichEntfernen},
                   ${args.bootFahren},
-                  "${args.extra_json}"
+                  ${JSON.stringify(args.extra_json)}
                 )`)
               if (vData.informAnmeldecenter && args.position === 1) {
                 sendMail(
