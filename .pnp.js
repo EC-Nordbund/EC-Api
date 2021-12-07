@@ -54,7 +54,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:5.6.0"],
             ["apollo-server-express", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:2.21.0"],
             ["body-parser", "npm:1.19.0"],
-            ["comlink", "npm:4.3.0"],
+            ["comlink", "npm:4.3.1"],
             ["compression", "npm:1.7.4"],
             ["cors", "npm:2.8.5"],
             ["docx-templates-to-pdf", "npm:2.0.0"],
@@ -2085,10 +2085,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["comlink", [
-        ["npm:4.3.0", {
-          "packageLocation": "./.yarn/cache/comlink-npm-4.3.0-fe5d9eaa4f-b42a40f684.zip/node_modules/comlink/",
+        ["npm:4.3.1", {
+          "packageLocation": "./.yarn/cache/comlink-npm-4.3.1-45efe1dd36-8bb5ccc7f4.zip/node_modules/comlink/",
           "packageDependencies": [
-            ["comlink", "npm:4.3.0"]
+            ["comlink", "npm:4.3.1"]
           ],
           "linkType": "HARD",
         }]
@@ -2536,7 +2536,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@typescript-eslint/parser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:5.6.0"],
             ["apollo-server-express", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:2.21.0"],
             ["body-parser", "npm:1.19.0"],
-            ["comlink", "npm:4.3.0"],
+            ["comlink", "npm:4.3.1"],
             ["compression", "npm:1.7.4"],
             ["cors", "npm:2.8.5"],
             ["docx-templates-to-pdf", "npm:2.0.0"],
