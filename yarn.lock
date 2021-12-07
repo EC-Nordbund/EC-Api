@@ -1917,7 +1917,7 @@ __metadata:
     js-sha3: 0.8.0
     jsonwebtoken: 8.5.1
     node-fetch: 2.6.1
-    nodemailer: 6.5.0
+    nodemailer: 6.7.2
     nodemon: 2.0.7
     prettier: 2.2.1
     promise-mysql: 5.0.2
@@ -3719,10 +3719,10 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:6.5.0":
-  version: 6.5.0
-  resolution: "nodemailer@npm:6.5.0"
-  checksum: 9611c14a6f52475a0bea626fa342cf263a67d324c30b6349da099164ab66c6d63bc3d67453fe5d41ae7ab13d9a42cfb45cb5623f1a2e91135a929bada7f9bf83
+"nodemailer@npm:6.7.2":
+  version: 6.7.2
+  resolution: "nodemailer@npm:6.7.2"
+  checksum: 923ea4887abeb5aec5abf4fa95ceffaa6131a1d999173906581540b36f9df629cc467ee5dba828baac8ca3ce55ad599b288c7dd00addfc8b1bbd772fb18cdcc8
   languageName: node
   linkType: hard
 
