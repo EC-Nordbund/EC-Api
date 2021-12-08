@@ -369,12 +369,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/compression@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@types/compression@npm:1.7.0"
+"@types/compression@npm:1.7.2":
+  version: 1.7.2
+  resolution: "@types/compression@npm:1.7.2"
   dependencies:
     "@types/express": "*"
-  checksum: 8725877fb88a37d29ce4150fbaafe67ba8fff64322330bfcc2462ea8e614d0072bf97c4db1b056d6bd3371cf76bde12bd31701e1fb9b02b3fdad483692ff97e7
+  checksum: da709600089e8bd8c83f770f2451302f6727eba325a00f6f5985897ccceb7437ca2dd5d9790d8ebdb155e745aa7677dc6db1e16d45772d75643a0b1fcdced934
   languageName: node
   linkType: hard
 
@@ -1713,7 +1713,7 @@ __metadata:
     "@rollup/plugin-commonjs": 21.0.1
     "@rollup/plugin-json": 4.1.0
     "@rollup/plugin-node-resolve": 13.0.6
-    "@types/compression": 1.7.0
+    "@types/compression": 1.7.2
     "@types/cors": 2.8.12
     "@types/eslint": 7.2.6
     "@types/express": 4.17.13
