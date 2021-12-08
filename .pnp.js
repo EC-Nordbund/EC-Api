@@ -85,7 +85,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ]],
       ["@apollo/protobufjs", [
         ["npm:1.2.2", {
-          "packageLocation": "./.yarn/cache/@apollo-protobufjs-npm-1.2.2-306a5b4ea3-75940f213d.zip/node_modules/@apollo/protobufjs/",
+          "packageLocation": "./.yarn/unplugged/@apollo-protobufjs-npm-1.2.2-306a5b4ea3/node_modules/@apollo/protobufjs/",
           "packageDependencies": [
             ["@apollo/protobufjs", "npm:1.2.2"],
             ["@protobufjs/aspromise", "npm:1.1.2"],
@@ -2051,7 +2051,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ]],
       ["core-js-pure", [
         ["npm:3.19.3", {
-          "packageLocation": "./.yarn/cache/core-js-pure-npm-3.19.3-59164e0a0b-0125919292.zip/node_modules/core-js-pure/",
+          "packageLocation": "./.yarn/unplugged/core-js-pure-npm-3.19.3-59164e0a0b/node_modules/core-js-pure/",
           "packageDependencies": [
             ["core-js-pure", "npm:3.19.3"]
           ],
@@ -2464,7 +2464,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ]],
       ["esbuild", [
         ["npm:0.8.57", {
-          "packageLocation": "./.yarn/cache/esbuild-npm-0.8.57-7fe43e451a-0942950a21.zip/node_modules/esbuild/",
+          "packageLocation": "./.yarn/unplugged/esbuild-npm-0.8.57-7fe43e451a/node_modules/esbuild/",
           "packageDependencies": [
             ["esbuild", "npm:0.8.57"]
           ],
