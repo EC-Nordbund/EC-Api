@@ -43,7 +43,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.12"],
             ["@types/eslint", "npm:7.2.6"],
-            ["@types/express", "npm:4.17.11"],
+            ["@types/express", "npm:4.17.13"],
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.31"],
@@ -660,10 +660,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@types/express", [
-        ["npm:4.17.11", {
-          "packageLocation": "./.yarn/cache/@types-express-npm-4.17.11-1b3f17f056-2818120a0f.zip/node_modules/@types/express/",
+        ["npm:4.17.13", {
+          "packageLocation": "./.yarn/cache/@types-express-npm-4.17.13-0e12fe9c24-9f17da703d.zip/node_modules/@types/express/",
           "packageDependencies": [
-            ["@types/express", "npm:4.17.11"],
+            ["@types/express", "npm:4.17.13"],
             ["@types/body-parser", "npm:1.19.0"],
             ["@types/express-serve-static-core", "npm:4.17.18"],
             ["@types/qs", "npm:6.9.5"],
@@ -1358,7 +1358,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/accepts", "npm:1.3.5"],
             ["@types/body-parser", "npm:1.19.1"],
             ["@types/cors", "npm:2.8.12"],
-            ["@types/express", "npm:4.17.11"],
+            ["@types/express", "npm:4.17.13"],
             ["@types/express-serve-static-core", "npm:4.17.24"],
             ["@types/graphql", null],
             ["accepts", "npm:1.3.7"],
@@ -2300,7 +2300,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/compression", "npm:1.7.0"],
             ["@types/cors", "npm:2.8.12"],
             ["@types/eslint", "npm:7.2.6"],
-            ["@types/express", "npm:4.17.11"],
+            ["@types/express", "npm:4.17.13"],
             ["@types/express-rate-limit", "npm:5.1.1"],
             ["@types/jsonwebtoken", "npm:8.5.0"],
             ["@types/node", "npm:14.14.31"],
