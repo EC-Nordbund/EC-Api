@@ -74,7 +74,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:2.2.1"],
             ["promise-mysql", "npm:5.0.4"],
             ["rollup", "npm:2.60.2"],
-            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.0.4"],
+            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
             ["typescript", "patch:typescript@npm%3A4.1.6#builtin<compat/typescript>::version=4.1.6&hash=cc6730"],
@@ -526,25 +526,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],
           "linkType": "SOFT",
         }],
-        ["npm:4.1.0", {
-          "packageLocation": "./.yarn/cache/@rollup-pluginutils-npm-4.1.0-d00c3a42d6-566b8d2bcc.zip/node_modules/@rollup/pluginutils/",
+        ["npm:4.1.1", {
+          "packageLocation": "./.yarn/cache/@rollup-pluginutils-npm-4.1.1-7b6d7ea8b8-218d681f54.zip/node_modules/@rollup/pluginutils/",
           "packageDependencies": [
-            ["@rollup/pluginutils", "npm:4.1.0"]
-          ],
-          "linkType": "SOFT",
-        }],
-        ["virtual:326b684453f045aa95b008628eb6398e4b747d39332664564ff4c2f0425cccb3d5c22c1e122c7c7100789f96bc23f3c1101556f6577eced3423fefca57340dd3#npm:4.1.0", {
-          "packageLocation": "./.yarn/$$virtual/@rollup-pluginutils-virtual-3dea824397/0/cache/@rollup-pluginutils-npm-4.1.0-d00c3a42d6-566b8d2bcc.zip/node_modules/@rollup/pluginutils/",
-          "packageDependencies": [
-            ["@rollup/pluginutils", "virtual:326b684453f045aa95b008628eb6398e4b747d39332664564ff4c2f0425cccb3d5c22c1e122c7c7100789f96bc23f3c1101556f6577eced3423fefca57340dd3#npm:4.1.0"],
-            ["@types/rollup", null],
+            ["@rollup/pluginutils", "npm:4.1.1"],
             ["estree-walker", "npm:2.0.2"],
-            ["picomatch", "npm:2.2.2"],
-            ["rollup", "npm:2.60.2"]
-          ],
-          "packagePeers": [
-            "@types/rollup",
-            "rollup"
+            ["picomatch", "npm:2.2.2"]
           ],
           "linkType": "HARD",
         }],
@@ -2369,7 +2356,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:2.2.1"],
             ["promise-mysql", "npm:5.0.4"],
             ["rollup", "npm:2.60.2"],
-            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.0.4"],
+            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
             ["typescript", "patch:typescript@npm%3A4.1.6#builtin<compat/typescript>::version=4.1.6&hash=cc6730"],
@@ -5107,18 +5094,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["rollup-plugin-esbuild", [
-        ["npm:3.0.4", {
-          "packageLocation": "./.yarn/cache/rollup-plugin-esbuild-npm-3.0.4-12d9ea0c89-f08745900b.zip/node_modules/rollup-plugin-esbuild/",
+        ["npm:4.7.2", {
+          "packageLocation": "./.yarn/cache/rollup-plugin-esbuild-npm-4.7.2-807db18a08-9cdbcac867.zip/node_modules/rollup-plugin-esbuild/",
           "packageDependencies": [
-            ["rollup-plugin-esbuild", "npm:3.0.4"]
+            ["rollup-plugin-esbuild", "npm:4.7.2"]
           ],
           "linkType": "SOFT",
         }],
-        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.0.4", {
-          "packageLocation": "./.yarn/$$virtual/rollup-plugin-esbuild-virtual-326b684453/0/cache/rollup-plugin-esbuild-npm-3.0.4-12d9ea0c89-f08745900b.zip/node_modules/rollup-plugin-esbuild/",
+        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2", {
+          "packageLocation": "./.yarn/$$virtual/rollup-plugin-esbuild-virtual-aaba3fac03/0/cache/rollup-plugin-esbuild-npm-4.7.2-807db18a08-9cdbcac867.zip/node_modules/rollup-plugin-esbuild/",
           "packageDependencies": [
-            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:3.0.4"],
-            ["@rollup/pluginutils", "virtual:326b684453f045aa95b008628eb6398e4b747d39332664564ff4c2f0425cccb3d5c22c1e122c7c7100789f96bc23f3c1101556f6577eced3423fefca57340dd3#npm:4.1.0"],
+            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2"],
+            ["@rollup/pluginutils", "npm:4.1.1"],
             ["@types/esbuild", null],
             ["@types/rollup", null],
             ["esbuild", "npm:0.14.2"],

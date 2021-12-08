@@ -322,15 +322,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/pluginutils@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@rollup/pluginutils@npm:4.1.0"
+"@rollup/pluginutils@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "@rollup/pluginutils@npm:4.1.1"
   dependencies:
     estree-walker: ^2.0.1
     picomatch: ^2.2.2
-  peerDependencies:
-    rollup: ^1.20.0||^2.0.0
-  checksum: 566b8d2bcc0d52877f8c9f364026be40fa921c8d5860b5f2a5f476658dfebf462536632f079aa3f52fafe64d8aea6741c20bb198e67b33eaba8f9fe69b38ae3f
+  checksum: 218d681f54ce2b372647124a7da260c8e4ff1ec2888ab128a71f67857ef791ca773d5fd122398fdc3cd652245d997bcf5f04dbad299f6df050bf3d62c3811bc3
   languageName: node
   linkType: hard
 
@@ -1783,7 +1781,7 @@ __metadata:
     prettier: 2.2.1
     promise-mysql: 5.0.4
     rollup: 2.60.2
-    rollup-plugin-esbuild: 3.0.4
+    rollup-plugin-esbuild: 4.7.2
     rollup-plugin-terser: 7.0.2
     sql-escape-tag: 1.0.0
     typescript: 4.1.6
@@ -4172,17 +4170,17 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"rollup-plugin-esbuild@npm:3.0.4":
-  version: 3.0.4
-  resolution: "rollup-plugin-esbuild@npm:3.0.4"
+"rollup-plugin-esbuild@npm:4.7.2":
+  version: 4.7.2
+  resolution: "rollup-plugin-esbuild@npm:4.7.2"
   dependencies:
-    "@rollup/pluginutils": ^4.1.0
+    "@rollup/pluginutils": ^4.1.1
     joycon: ^3.0.1
     jsonc-parser: ^3.0.0
   peerDependencies:
-    esbuild: ">=0.9.0"
+    esbuild: ">=0.10.1"
     rollup: ^1.20.0 || ^2.0.0
-  checksum: f08745900b38e226733b025bdb2621394277f63f1957ab8897806a16024efd7c22aee8a1624215661d98cf9e007812e7351b9e8b6c3c4ddc4575195bb3fb3539
+  checksum: 9cdbcac86737a33d17bcca35ce3e5f6bba0c98a3e1906ef1fa545f71a31dc0b37b983916363624459665392dade1689efdb415d7030ebe264506c4ece5bffe4e
   languageName: node
   linkType: hard
 
