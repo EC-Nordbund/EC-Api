@@ -41,7 +41,7 @@ export async function createBriefVeranstaltung(vID: number) {
   const vData = await getVData(vID)
   const aData = await Promise.all(anmeldeIDs.map((v) => getAnmeldeData(v)))
 
-  aData.forEach((v) => createBriefFromData(v, vData))
+  await Promise.all(aData.map((v) => createBriefFromData(v, vData)))
 }
 
 export async function createBriefAnmeldung(anmeldeID: string) {
