@@ -78,7 +78,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
             ["typescript", "patch:typescript@npm%3A4.1.5#builtin<compat/typescript>::version=4.1.5&hash=cc6730"],
-            ["web-push", "npm:3.4.4"]
+            ["web-push", "npm:3.4.5"]
           ],
           "linkType": "SOFT",
         }]
@@ -2373,7 +2373,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
             ["typescript", "patch:typescript@npm%3A4.1.5#builtin<compat/typescript>::version=4.1.5&hash=cc6730"],
-            ["web-push", "npm:3.4.4"]
+            ["web-push", "npm:3.4.5"]
           ],
           "linkType": "SOFT",
         }]
@@ -5819,10 +5819,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["web-push", [
-        ["npm:3.4.4", {
-          "packageLocation": "./.yarn/cache/web-push-npm-3.4.4-4843c022f3-9ce9b643e3.zip/node_modules/web-push/",
+        ["npm:3.4.5", {
+          "packageLocation": "./.yarn/cache/web-push-npm-3.4.5-c548a29b4b-51cc413cd9.zip/node_modules/web-push/",
           "packageDependencies": [
-            ["web-push", "npm:3.4.4"],
+            ["web-push", "npm:3.4.5"],
             ["asn1.js", "npm:5.4.1"],
             ["http_ece", "npm:1.1.0"],
             ["https-proxy-agent", "npm:5.0.0"],

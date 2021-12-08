@@ -63,6 +63,6 @@
     "nodemailer": "6.7.2",
     "promise-mysql": "5.0.4",
     "sql-escape-tag": "1.0.0",
-    "web-push": "3.4.4"
+    "web-push": "3.4.5"
   }
 }
