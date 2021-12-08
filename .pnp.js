@@ -48,7 +48,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jsonwebtoken", "npm:8.5.6"],
             ["@types/node", "npm:16.11.12"],
             ["@types/node-fetch", "npm:2.5.12"],
-            ["@types/nodemailer", "npm:6.4.0"],
+            ["@types/nodemailer", "npm:6.4.4"],
             ["@types/web-push", "npm:3.3.2"],
             ["@typescript-eslint/eslint-plugin", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:5.6.0"],
             ["@typescript-eslint/parser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:5.6.0"],
@@ -824,10 +824,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@types/nodemailer", [
-        ["npm:6.4.0", {
-          "packageLocation": "./.yarn/cache/@types-nodemailer-npm-6.4.0-394262773c-490553de54.zip/node_modules/@types/nodemailer/",
+        ["npm:6.4.4", {
+          "packageLocation": "./.yarn/cache/@types-nodemailer-npm-6.4.4-c5c500abe2-72cd334b51.zip/node_modules/@types/nodemailer/",
           "packageDependencies": [
-            ["@types/nodemailer", "npm:6.4.0"],
+            ["@types/nodemailer", "npm:6.4.4"],
             ["@types/node", "npm:14.14.16"]
           ],
           "linkType": "HARD",
@@ -2305,7 +2305,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jsonwebtoken", "npm:8.5.6"],
             ["@types/node", "npm:16.11.12"],
             ["@types/node-fetch", "npm:2.5.12"],
-            ["@types/nodemailer", "npm:6.4.0"],
+            ["@types/nodemailer", "npm:6.4.4"],
             ["@types/web-push", "npm:3.3.2"],
             ["@typescript-eslint/eslint-plugin", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:5.6.0"],
             ["@typescript-eslint/parser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:5.6.0"],
