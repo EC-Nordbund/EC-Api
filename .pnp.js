@@ -44,7 +44,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/cors", "npm:2.8.12"],
             ["@types/eslint", "npm:7.2.6"],
             ["@types/express", "npm:4.17.13"],
-            ["@types/express-rate-limit", "npm:5.1.1"],
+            ["@types/express-rate-limit", "npm:5.1.3"],
             ["@types/jsonwebtoken", "npm:8.5.6"],
             ["@types/node", "npm:16.11.12"],
             ["@types/node-fetch", "npm:2.5.12"],
@@ -684,10 +684,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@types/express-rate-limit", [
-        ["npm:5.1.1", {
-          "packageLocation": "./.yarn/cache/@types-express-rate-limit-npm-5.1.1-49febf9040-070185ac26.zip/node_modules/@types/express-rate-limit/",
+        ["npm:5.1.3", {
+          "packageLocation": "./.yarn/cache/@types-express-rate-limit-npm-5.1.3-9d611672fc-4b9d7d7bbb.zip/node_modules/@types/express-rate-limit/",
           "packageDependencies": [
-            ["@types/express-rate-limit", "npm:5.1.1"],
+            ["@types/express-rate-limit", "npm:5.1.3"],
             ["@types/express", "npm:4.17.9"]
           ],
           "linkType": "HARD",
@@ -2301,7 +2301,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/cors", "npm:2.8.12"],
             ["@types/eslint", "npm:7.2.6"],
             ["@types/express", "npm:4.17.13"],
-            ["@types/express-rate-limit", "npm:5.1.1"],
+            ["@types/express-rate-limit", "npm:5.1.3"],
             ["@types/jsonwebtoken", "npm:8.5.6"],
             ["@types/node", "npm:16.11.12"],
             ["@types/node-fetch", "npm:2.5.12"],
