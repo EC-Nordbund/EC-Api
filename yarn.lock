@@ -1767,7 +1767,7 @@ __metadata:
     compression: 1.7.4
     cors: 2.8.5
     docx-templates-to-pdf: 2.0.0
-    esbuild: 0.8.50
+    esbuild: 0.8.57
     eslint: 7.32.0
     eslint-config-prettier: 8.3.0
     eslint-plugin-prettier: 3.4.1
@@ -1863,12 +1863,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.8.50":
-  version: 0.8.50
-  resolution: "esbuild@npm:0.8.50"
+"esbuild@npm:0.8.57":
+  version: 0.8.57
+  resolution: "esbuild@npm:0.8.57"
   bin:
     esbuild: bin/esbuild
-  checksum: eb3cedf4819dc608912f50287d4386595305f9519c0d49a93f304c308896eddad007b43f3d8340aabdf170510d4fc4c2708ab32af9ea39a59cf34a56e82ee536
+  checksum: 0942950a21a30b57a324380cfedcb425cc1245412e720593415afa0d4f1b7c5f931aa6330937dc1353c754d45c1e5ff7dbc52eb514f54d85517114971300b454
   languageName: node
   linkType: hard
 

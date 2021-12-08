@@ -35,7 +35,7 @@
     "@types/web-push": "3.3.2",
     "@typescript-eslint/eslint-plugin": "5.6.0",
     "@typescript-eslint/parser": "5.6.0",
-    "esbuild": "0.8.50",
+    "esbuild": "0.8.57",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.1",
