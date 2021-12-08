@@ -72,7 +72,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nodemailer", "npm:6.7.2"],
             ["nodemon", "npm:2.0.7"],
             ["prettier", "npm:2.2.1"],
-            ["promise-mysql", "npm:5.0.2"],
+            ["promise-mysql", "npm:5.0.4"],
             ["rollup", "npm:2.60.2"],
             ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:2.6.1"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
@@ -2329,7 +2329,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nodemailer", "npm:6.7.2"],
             ["nodemon", "npm:2.0.7"],
             ["prettier", "npm:2.2.1"],
-            ["promise-mysql", "npm:5.0.2"],
+            ["promise-mysql", "npm:5.0.4"],
             ["rollup", "npm:2.60.2"],
             ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:2.6.1"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
@@ -4570,10 +4570,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["promise-mysql", [
-        ["npm:5.0.2", {
-          "packageLocation": "./.yarn/cache/promise-mysql-npm-5.0.2-a4b93b55ba-9c86881777.zip/node_modules/promise-mysql/",
+        ["npm:5.0.4", {
+          "packageLocation": "./.yarn/cache/promise-mysql-npm-5.0.4-066501ab22-e5ec7728fd.zip/node_modules/promise-mysql/",
           "packageDependencies": [
-            ["promise-mysql", "npm:5.0.2"],
+            ["promise-mysql", "npm:5.0.4"],
             ["@types/bluebird", "npm:3.5.33"],
             ["@types/mysql", "npm:2.15.16"],
             ["bluebird", "npm:3.7.2"],
