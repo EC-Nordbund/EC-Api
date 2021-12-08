@@ -570,12 +570,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:6.4.0":
-  version: 6.4.0
-  resolution: "@types/nodemailer@npm:6.4.0"
+"@types/nodemailer@npm:6.4.4":
+  version: 6.4.4
+  resolution: "@types/nodemailer@npm:6.4.4"
   dependencies:
     "@types/node": "*"
-  checksum: 490553de5408b30793246cdd1476885a26649d1403d9530a84730d87644aa515ad52a1eacda4f4fc2dcfd40762d737007fffbf1bf40ed62d628ae8ef04c8a87b
+  checksum: 72cd334b512d2168f59f97705b69154bb1ae75037ce7f2008f3dc7bf359f386e22e4a65e30190d88529c8e94b13db2ec32db523e096cc8b597d1b8f89f4b3cb3
   languageName: node
   linkType: hard
 
@@ -1721,7 +1721,7 @@ __metadata:
     "@types/jsonwebtoken": 8.5.6
     "@types/node": 16.11.12
     "@types/node-fetch": 2.5.12
-    "@types/nodemailer": 6.4.0
+    "@types/nodemailer": 6.4.4
     "@types/web-push": 3.3.2
     "@typescript-eslint/eslint-plugin": 5.6.0
     "@typescript-eslint/parser": 5.6.0
