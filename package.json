@@ -61,7 +61,7 @@
     "jsonwebtoken": "8.5.1",
     "node-fetch": "2.6.1",
     "nodemailer": "6.7.2",
-    "promise-mysql": "5.0.2",
+    "promise-mysql": "5.0.4",
     "sql-escape-tag": "1.0.0",
     "web-push": "3.4.4"
   }
