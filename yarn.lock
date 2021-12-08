@@ -621,12 +621,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web-push@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@types/web-push@npm:3.3.0"
+"@types/web-push@npm:3.3.2":
+  version: 3.3.2
+  resolution: "@types/web-push@npm:3.3.2"
   dependencies:
     "@types/node": "*"
-  checksum: 4eb56ee9c3ea360e20234df61211ee7ff76aa174972cc41cd372398d75db66a05d3d667f7e0322656c11efba654cd818cd58249e670023fe4f4b96cc31a21dc7
+  checksum: b1ec34307136c25a7f35fdca56385c91e63a9ee777985fe57fd5c9d38574df2b7a48f1b7020d4aca6aa113cc88a018c685eb96e6523511361ec7fda0c01e1ba5
   languageName: node
   linkType: hard
 
@@ -1722,7 +1722,7 @@ __metadata:
     "@types/node": 16.11.12
     "@types/node-fetch": 2.5.12
     "@types/nodemailer": 6.4.0
-    "@types/web-push": 3.3.0
+    "@types/web-push": 3.3.2
     "@typescript-eslint/eslint-plugin": 5.6.0
     "@typescript-eslint/parser": 5.6.0
     apollo-server-express: 3.5.0
