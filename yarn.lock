@@ -1734,7 +1734,7 @@ __metadata:
     esbuild: 0.8.50
     eslint: 7.20.0
     eslint-config-prettier: 8.3.0
-    eslint-plugin-prettier: 3.3.1
+    eslint-plugin-prettier: 3.4.1
     express: 4.17.1
     express-rate-limit: 5.2.6
     graphql: 16.1.0
@@ -1868,9 +1868,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:3.3.1":
-  version: 3.3.1
-  resolution: "eslint-plugin-prettier@npm:3.3.1"
+"eslint-plugin-prettier@npm:3.4.1":
+  version: 3.4.1
+  resolution: "eslint-plugin-prettier@npm:3.4.1"
   dependencies:
     prettier-linter-helpers: ^1.0.0
   peerDependencies:
@@ -1879,7 +1879,7 @@ __metadata:
   peerDependenciesMeta:
     eslint-config-prettier:
       optional: true
-  checksum: cf35b0f0e9ef30782fe82913db92f6874181723d77f0c4613f9d69c87069f73d0dc420ef850ebc844613c00a8e87eb9762a36b7d028334c5c7b091763118347b
+  checksum: 191173e52fafb168af6ac65a9b882f2fc1b2dc979d7c893cec26637c612c7b62dc69df22faf4e80d4e17e5320ba061fc627b59d29512e5ddb42dedcd72966613
   languageName: node
   linkType: hard
 
