@@ -369,12 +369,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/compression@npm:1.7.0":
-  version: 1.7.0
-  resolution: "@types/compression@npm:1.7.0"
+"@types/compression@npm:1.7.2":
+  version: 1.7.2
+  resolution: "@types/compression@npm:1.7.2"
   dependencies:
     "@types/express": "*"
-  checksum: 8725877fb88a37d29ce4150fbaafe67ba8fff64322330bfcc2462ea8e614d0072bf97c4db1b056d6bd3371cf76bde12bd31701e1fb9b02b3fdad483692ff97e7
+  checksum: da709600089e8bd8c83f770f2451302f6727eba325a00f6f5985897ccceb7437ca2dd5d9790d8ebdb155e745aa7677dc6db1e16d45772d75643a0b1fcdced934
   languageName: node
   linkType: hard
 
@@ -418,12 +418,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-rate-limit@npm:5.1.1":
-  version: 5.1.1
-  resolution: "@types/express-rate-limit@npm:5.1.1"
+"@types/express-rate-limit@npm:5.1.3":
+  version: 5.1.3
+  resolution: "@types/express-rate-limit@npm:5.1.3"
   dependencies:
     "@types/express": "*"
-  checksum: 070185ac26589df97f0fa53e5521fe4e9d5625248c415f4e3153b0823a847701a660dfdc2b6b6ce2fdb2556374170d06ca9ca6c141f7007c50c6c6c884539484
+  checksum: 4b9d7d7bbb226fa4fd2bb5b586dd834effebe64ee89c82b92c509977ba2fc52f0d3155c0b8009ebd7830fc916752e13344107a82e832ac0d7a65cff17630c615
   languageName: node
   linkType: hard
 
@@ -556,10 +556,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:14.14.31":
-  version: 14.14.31
-  resolution: "@types/node@npm:14.14.31"
-  checksum: 635dc8a0898a923621e02ca179e17baa39fdfa44f0096fcc1b7046c9b32317e74a99956a7b45ca0e8069874f51f4e7873a418239a318a4b6e7936f6510ac5992
+"@types/node@npm:16.11.12":
+  version: 16.11.12
+  resolution: "@types/node@npm:16.11.12"
+  checksum: 6b9d35e0e9a9c3d0d82bc114ba0457661be70aeaabbc85efaf31f78f5fa1c27d6214a32f3f03ddb1d7710753fa2fb77ddc417c4948eb72b22b1456527dc04263
   languageName: node
   linkType: hard
 
@@ -570,12 +570,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/nodemailer@npm:6.4.0":
-  version: 6.4.0
-  resolution: "@types/nodemailer@npm:6.4.0"
+"@types/nodemailer@npm:6.4.4":
+  version: 6.4.4
+  resolution: "@types/nodemailer@npm:6.4.4"
   dependencies:
     "@types/node": "*"
-  checksum: 490553de5408b30793246cdd1476885a26649d1403d9530a84730d87644aa515ad52a1eacda4f4fc2dcfd40762d737007fffbf1bf40ed62d628ae8ef04c8a87b
+  checksum: 72cd334b512d2168f59f97705b69154bb1ae75037ce7f2008f3dc7bf359f386e22e4a65e30190d88529c8e94b13db2ec32db523e096cc8b597d1b8f89f4b3cb3
   languageName: node
   linkType: hard
 
@@ -621,12 +621,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/web-push@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@types/web-push@npm:3.3.0"
+"@types/web-push@npm:3.3.2":
+  version: 3.3.2
+  resolution: "@types/web-push@npm:3.3.2"
   dependencies:
     "@types/node": "*"
-  checksum: 4eb56ee9c3ea360e20234df61211ee7ff76aa174972cc41cd372398d75db66a05d3d667f7e0322656c11efba654cd818cd58249e670023fe4f4b96cc31a21dc7
+  checksum: b1ec34307136c25a7f35fdca56385c91e63a9ee777985fe57fd5c9d38574df2b7a48f1b7020d4aca6aa113cc88a018c685eb96e6523511361ec7fda0c01e1ba5
   languageName: node
   linkType: hard
 
@@ -1713,16 +1713,16 @@ __metadata:
     "@rollup/plugin-commonjs": 21.0.1
     "@rollup/plugin-json": 4.1.0
     "@rollup/plugin-node-resolve": 13.0.6
-    "@types/compression": 1.7.0
+    "@types/compression": 1.7.2
     "@types/cors": 2.8.12
     "@types/eslint": 7.2.6
     "@types/express": 4.17.13
-    "@types/express-rate-limit": 5.1.1
+    "@types/express-rate-limit": 5.1.3
     "@types/jsonwebtoken": 8.5.6
-    "@types/node": 14.14.31
+    "@types/node": 16.11.12
     "@types/node-fetch": 2.5.12
-    "@types/nodemailer": 6.4.0
-    "@types/web-push": 3.3.0
+    "@types/nodemailer": 6.4.4
+    "@types/web-push": 3.3.2
     "@typescript-eslint/eslint-plugin": 5.6.0
     "@typescript-eslint/parser": 5.6.0
     apollo-server-express: 3.5.0
@@ -1734,14 +1734,14 @@ __metadata:
     esbuild: 0.8.50
     eslint: 7.20.0
     eslint-config-prettier: 8.3.0
-    eslint-plugin-prettier: 3.3.1
+    eslint-plugin-prettier: 3.4.1
     express: 4.17.1
     express-rate-limit: 5.2.6
-    graphql: 15.5.0
+    graphql: 16.1.0
     graphql-subscriptions: 2.0.0
     js-sha3: 0.8.0
     jsonwebtoken: 8.5.1
-    node-fetch: 2.6.1
+    node-fetch: 2.6.6
     nodemailer: 6.7.2
     nodemon: 2.0.7
     prettier: 2.2.1
@@ -1868,9 +1868,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:3.3.1":
-  version: 3.3.1
-  resolution: "eslint-plugin-prettier@npm:3.3.1"
+"eslint-plugin-prettier@npm:3.4.1":
+  version: 3.4.1
+  resolution: "eslint-plugin-prettier@npm:3.4.1"
   dependencies:
     prettier-linter-helpers: ^1.0.0
   peerDependencies:
@@ -1879,7 +1879,7 @@ __metadata:
   peerDependenciesMeta:
     eslint-config-prettier:
       optional: true
-  checksum: cf35b0f0e9ef30782fe82913db92f6874181723d77f0c4613f9d69c87069f73d0dc420ef850ebc844613c00a8e87eb9762a36b7d028334c5c7b091763118347b
+  checksum: 191173e52fafb168af6ac65a9b882f2fc1b2dc979d7c893cec26637c612c7b62dc69df22faf4e80d4e17e5320ba061fc627b59d29512e5ddb42dedcd72966613
   languageName: node
   linkType: hard
 
@@ -2482,10 +2482,10 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"graphql@npm:15.5.0":
-  version: 15.5.0
-  resolution: "graphql@npm:15.5.0"
-  checksum: 789cdcb069a3e00592e779002217a6bc5fd09efad63ee8c4190c4b3ea96c89010e74f085fb1cba876a0bb0e324e01df2eddb84d79dca90a28e582bc425fef9ef
+"graphql@npm:16.1.0":
+  version: 16.1.0
+  resolution: "graphql@npm:16.1.0"
+  checksum: 0800a79289c797a6b53642cb674e3afc87c3793404db5ff49cbf203020cbfbd63c6dd26619b33cdc563bece8d0aa0c411717f6f02623ca5e5231928fc61d9149
   languageName: node
   linkType: hard
 
@@ -3378,14 +3378,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.1":
-  version: 2.6.1
-  resolution: "node-fetch@npm:2.6.1"
-  checksum: cbb171635e538162b977eac5dfe7a1e07a9a02e991924377a6435502291e2f823d306b95aabc455caebf4a118ccf836868462bc70ccc3095af02bb9da61fda37
-  languageName: node
-  linkType: hard
-
-"node-fetch@npm:^2.6.1":
+"node-fetch@npm:2.6.6, node-fetch@npm:^2.6.1":
   version: 2.6.6
   resolution: "node-fetch@npm:2.6.6"
   dependencies:
