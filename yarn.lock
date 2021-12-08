@@ -558,13 +558,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:2.5.8":
-  version: 2.5.8
-  resolution: "@types/node-fetch@npm:2.5.8"
+"@types/node-fetch@npm:2.5.12":
+  version: 2.5.12
+  resolution: "@types/node-fetch@npm:2.5.12"
   dependencies:
     "@types/node": "*"
     form-data: ^3.0.0
-  checksum: 608cdd6aed2c6a44a26406eb63475d4bfb8f63f78f22f747e30dd7cda309b86dc019e4427b9092011541da95d83ef03e2e6558c37d39221c0931617f32d3c4e1
+  checksum: f648728116a24b9b5abc117e08788ed859283548ed65d374dba333d4604a7e8d22934cb4dbe7d64498c5c7f04885d84a2dc11c9a4115d426c242e74fb2f2a6a6
   languageName: node
   linkType: hard
 
@@ -1739,7 +1739,7 @@ __metadata:
     "@types/express-rate-limit": 5.1.1
     "@types/jsonwebtoken": 8.5.0
     "@types/node": 14.14.31
-    "@types/node-fetch": 2.5.8
+    "@types/node-fetch": 2.5.12
     "@types/nodemailer": 6.4.0
     "@types/web-push": 3.3.0
     "@typescript-eslint/eslint-plugin": 5.6.0
