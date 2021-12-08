@@ -45,7 +45,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/eslint", "npm:7.2.6"],
             ["@types/express", "npm:4.17.13"],
             ["@types/express-rate-limit", "npm:5.1.1"],
-            ["@types/jsonwebtoken", "npm:8.5.0"],
+            ["@types/jsonwebtoken", "npm:8.5.6"],
             ["@types/node", "npm:14.14.31"],
             ["@types/node-fetch", "npm:2.5.8"],
             ["@types/nodemailer", "npm:6.4.0"],
@@ -742,10 +742,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@types/jsonwebtoken", [
-        ["npm:8.5.0", {
-          "packageLocation": "./.yarn/cache/@types-jsonwebtoken-npm-8.5.0-9d7d29ea0b-d1a6b28f82.zip/node_modules/@types/jsonwebtoken/",
+        ["npm:8.5.6", {
+          "packageLocation": "./.yarn/cache/@types-jsonwebtoken-npm-8.5.6-a2debacc40-11294f8e18.zip/node_modules/@types/jsonwebtoken/",
           "packageDependencies": [
-            ["@types/jsonwebtoken", "npm:8.5.0"],
+            ["@types/jsonwebtoken", "npm:8.5.6"],
             ["@types/node", "npm:14.14.16"]
           ],
           "linkType": "HARD",
@@ -2302,7 +2302,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/eslint", "npm:7.2.6"],
             ["@types/express", "npm:4.17.13"],
             ["@types/express-rate-limit", "npm:5.1.1"],
-            ["@types/jsonwebtoken", "npm:8.5.0"],
+            ["@types/jsonwebtoken", "npm:8.5.6"],
             ["@types/node", "npm:14.14.31"],
             ["@types/node-fetch", "npm:2.5.8"],
             ["@types/nodemailer", "npm:6.4.0"],
