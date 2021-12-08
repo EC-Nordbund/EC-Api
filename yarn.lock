@@ -556,10 +556,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:14.14.31":
-  version: 14.14.31
-  resolution: "@types/node@npm:14.14.31"
-  checksum: 635dc8a0898a923621e02ca179e17baa39fdfa44f0096fcc1b7046c9b32317e74a99956a7b45ca0e8069874f51f4e7873a418239a318a4b6e7936f6510ac5992
+"@types/node@npm:16.11.12":
+  version: 16.11.12
+  resolution: "@types/node@npm:16.11.12"
+  checksum: 6b9d35e0e9a9c3d0d82bc114ba0457661be70aeaabbc85efaf31f78f5fa1c27d6214a32f3f03ddb1d7710753fa2fb77ddc417c4948eb72b22b1456527dc04263
   languageName: node
   linkType: hard
 
@@ -1719,7 +1719,7 @@ __metadata:
     "@types/express": 4.17.13
     "@types/express-rate-limit": 5.1.1
     "@types/jsonwebtoken": 8.5.6
-    "@types/node": 14.14.31
+    "@types/node": 16.11.12
     "@types/node-fetch": 2.5.12
     "@types/nodemailer": 6.4.0
     "@types/web-push": 3.3.0
