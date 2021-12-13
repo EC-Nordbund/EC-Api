@@ -39,7 +39,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@rollup/plugin-commonjs", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:21.0.1"],
             ["@rollup/plugin-json", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.1.0"],
-            ["@rollup/plugin-node-resolve", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.0.6"],
+            ["@rollup/plugin-node-resolve", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.1.1"],
             ["@types/compression", "npm:1.7.2"],
             ["@types/cors", "npm:2.8.12"],
             ["@types/eslint", "npm:7.29.0"],
@@ -491,17 +491,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@rollup/plugin-node-resolve", [
-        ["npm:13.0.6", {
-          "packageLocation": "./.yarn/cache/@rollup-plugin-node-resolve-npm-13.0.6-3ed2aa51ff-0a30bc8809.zip/node_modules/@rollup/plugin-node-resolve/",
+        ["npm:13.1.1", {
+          "packageLocation": "./.yarn/cache/@rollup-plugin-node-resolve-npm-13.1.1-6d1e1fac23-74999ddae1.zip/node_modules/@rollup/plugin-node-resolve/",
           "packageDependencies": [
-            ["@rollup/plugin-node-resolve", "npm:13.0.6"]
+            ["@rollup/plugin-node-resolve", "npm:13.1.1"]
           ],
           "linkType": "SOFT",
         }],
-        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.0.6", {
-          "packageLocation": "./.yarn/$$virtual/@rollup-plugin-node-resolve-virtual-d230dbbbb4/0/cache/@rollup-plugin-node-resolve-npm-13.0.6-3ed2aa51ff-0a30bc8809.zip/node_modules/@rollup/plugin-node-resolve/",
+        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.1.1", {
+          "packageLocation": "./.yarn/$$virtual/@rollup-plugin-node-resolve-virtual-6ca19c548a/0/cache/@rollup-plugin-node-resolve-npm-13.1.1-6d1e1fac23-74999ddae1.zip/node_modules/@rollup/plugin-node-resolve/",
           "packageDependencies": [
-            ["@rollup/plugin-node-resolve", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.0.6"],
+            ["@rollup/plugin-node-resolve", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.1.1"],
             ["@rollup/pluginutils", "virtual:40aaa66db2a6d83929126bf5930c821f138df21d91beff8b44f1c8638770d17f209ad187bc0b4638b6a1ada2fd44f550df6f37a269f8105ecbc13585dd0b4acf#npm:3.1.0"],
             ["@types/resolve", "npm:1.17.1"],
             ["@types/rollup", null],
@@ -2345,7 +2345,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ec-api", "workspace:."],
             ["@rollup/plugin-commonjs", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:21.0.1"],
             ["@rollup/plugin-json", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.1.0"],
-            ["@rollup/plugin-node-resolve", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.0.6"],
+            ["@rollup/plugin-node-resolve", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:13.1.1"],
             ["@types/compression", "npm:1.7.2"],
             ["@types/cors", "npm:2.8.12"],
             ["@types/eslint", "npm:7.29.0"],
