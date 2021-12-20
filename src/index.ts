@@ -39,6 +39,8 @@ personen(app)
 ak(app)
 document(app)
 
-apollo.applyMiddleware({ app, path: '/graphql' })
+apollo.start().then(() => {
+  apollo.applyMiddleware({ app, path: '/graphql' })
 
-http.createServer(app).listen(4000)
+  http.createServer(app).listen(4000)
+})
