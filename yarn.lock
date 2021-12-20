@@ -1796,7 +1796,7 @@ __metadata:
     eslint-plugin-prettier: 4.0.0
     express: 4.17.1
     express-rate-limit: 5.5.1
-    graphql: 16.1.0
+    graphql: 16.2.0
     graphql-subscriptions: 2.0.0
     js-sha3: 0.8.0
     jsonwebtoken: 8.5.1
@@ -2714,10 +2714,10 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.1.0":
-  version: 16.1.0
-  resolution: "graphql@npm:16.1.0"
-  checksum: 0800a79289c797a6b53642cb674e3afc87c3793404db5ff49cbf203020cbfbd63c6dd26619b33cdc563bece8d0aa0c411717f6f02623ca5e5231928fc61d9149
+"graphql@npm:16.2.0":
+  version: 16.2.0
+  resolution: "graphql@npm:16.2.0"
+  checksum: a2a5a3e5750aa200b976e42e8bc40b3309325bfa3a5aba9cfafe5ef2577249bfb49bf8cb8ca2fad07e13b4f04ca76c5d1ba81eedcc38b569924e106b39e276b2
   languageName: node
   linkType: hard
 
