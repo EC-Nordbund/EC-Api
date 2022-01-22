@@ -26,8 +26,8 @@ async function getAnmeldeData(aID: string): Promise<any> {
       WHERE 
         anmeldungen.personID = personen.personID 
         AND anmeldungen.telefonID = telefone.telefonID 
-        AND anmeldungen.adressID = anmeldungen.adressID 
-        AND anmeldungen.eMailID = anmeldungen.eMailID 
+        AND anmeldungen.adressID = adressen.adressID 
+        AND anmeldungen.eMailID = eMails.eMailID 
         AND anmeldungen.anmeldeID = ${aID}`
   ).then((v) => v[0])
 }
