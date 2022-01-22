@@ -880,15 +880,6 @@ const veranstaltung = new GraphQLObjectType({
     preisLastMinute: {
       type: new GraphQLNonNull(GraphQLInt)
     },
-    preisAnzahlungNormal: {
-      type: new GraphQLNonNull(GraphQLInt)
-    },
-    preisAnzahlungFruehbucher: {
-      type: new GraphQLNonNull(GraphQLInt)
-    },
-    preisAnzahlungLastMinute: {
-      type: new GraphQLNonNull(GraphQLInt)
-    },
     fruehbucherBis: {
       type: date
     },
@@ -2338,8 +2329,7 @@ export const schema = new GraphQLSchema({
           sendMail(
             'automated@ec-nordbund.de',
             {
-              to:
-                '2pi_r2@gmx.de; BirgitHerbert@t-online.de; an-gela@gmx.net; referent@ec-nordbund.de'
+              to: '2pi_r2@gmx.de; BirgitHerbert@t-online.de; an-gela@gmx.net; referent@ec-nordbund.de'
             },
             `Neue Abmeldung`,
             `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`

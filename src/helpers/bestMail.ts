@@ -76,6 +76,15 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     .toISOString()
     .split('T')[0]
 
+  const type =
+    aData.anmeldeZeitpunkt < vData.fruehbucherBis
+      ? 'Fruehbucher'
+      : aData.anmeldeZeitpunkt > vData.lastMinuteAb
+      ? 'LastMinute'
+      : 'Normal'
+
+  const preis = vData[`preis${type}`]
+
   const file = await worker.generateDocumentPDF(
     `./best-brief-${vData.briefID}.docx`,
     {
@@ -109,7 +118,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       jahr: begin.split('-')[0],
       ort: vData.ort,
       anzahlung: vData.anzahlung + ',00',
-      restzahlung: '???' + ',00',
+      restzahlung: preis - vData.anzahlung + ',00',
       restzahlungsdatum: restzahlung.split('-').reverse().join('.'),
       vegetarisch: aData.vegetarisch,
       lebensmittelAllergien: aData.lebensmittelAllergien,
@@ -133,10 +142,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     },
     `Buchungsbestätigung für ${aData.vorname} ${aData.nachname} für ${
       vData.name
-    } vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
+    } vom ${begin.split('-').reverse().join('.')} - ${vData.ende
       .toISOString()
       .split('T')[0]
       .split('-')
