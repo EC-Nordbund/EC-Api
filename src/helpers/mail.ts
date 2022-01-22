@@ -44,14 +44,18 @@ export default async function sendMail(
   attachments: Array<{
     content: string | Readable | Buffer
     filename: string
-  }> = []
+  }> = [],
+  replyTo: string = ''
 ): Promise<true> {
+  if (!replyTo) replyTo = from
+
   const mailData = {
     from,
     to: e.to,
     cc: e.cc ?? '',
     bcc: e.bcc ?? '',
     subject,
+    replyTo,
     ...(isHTML ? { html: body } : { text: body }),
     attachments: attachments.map((at) => ({
       ...at,
