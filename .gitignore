@@ -1,6 +1,7 @@
 node_modules
 dist
-fz.docx
+*.docx
+*.pdf
 
 .yarn/*
 !.yarn/cache

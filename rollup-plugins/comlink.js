@@ -16,7 +16,7 @@ export function comlink({ type = 'web', types = './src/shim-worker.d.ts' } = {})
 
           const tsd = `
 declare module "${id}" {
-  const worker: import('comlink').Remote<typeof import(${JSON.stringify(res.id.split('.')[0].toLowerCase())}).default>
+  const worker: import('comlink').Remote<typeof import(${JSON.stringify(res.id.split('.')[0].split(/\\|\//).map((v, i) => i === 0 ? v.toLowerCase() : v).join('/'))}).default>
   export default worker
 }
               `;

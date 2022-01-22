@@ -9,6 +9,7 @@ import user from './api/user'
 import personen from './api/personen'
 import ak from './api/ak'
 import document from './api/document'
+import bestBrief from './api/best-brief'
 import expressRateLimit from 'express-rate-limit'
 import * as http from 'http'
 
@@ -38,6 +39,7 @@ user(app)
 personen(app)
 ak(app)
 document(app)
+bestBrief(app)
 
 apollo.start().then(() => {
   apollo.applyMiddleware({ app, path: '/graphql' })

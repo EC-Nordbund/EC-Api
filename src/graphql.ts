@@ -880,15 +880,6 @@ const veranstaltung = new GraphQLObjectType({
     preisLastMinute: {
       type: new GraphQLNonNull(GraphQLInt)
     },
-    preisAnzahlungNormal: {
-      type: new GraphQLNonNull(GraphQLInt)
-    },
-    preisAnzahlungFruehbucher: {
-      type: new GraphQLNonNull(GraphQLInt)
-    },
-    preisAnzahlungLastMinute: {
-      type: new GraphQLNonNull(GraphQLInt)
-    },
     fruehbucherBis: {
       type: date
     },
@@ -924,6 +915,9 @@ const veranstaltung = new GraphQLObjectType({
     },
     bestaetigungsBriefGeschlecht: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    briefID: {
+      type: new GraphQLNonNull(GraphQLInt)
     }
   })
 })
