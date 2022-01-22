@@ -28,7 +28,7 @@ async function getAnmeldeData(aID: string): Promise<any> {
         AND anmeldungen.telefonID = telefone.telefonID 
         AND anmeldungen.adressID = anmeldungen.adressID 
         AND anmeldungen.eMailID = anmeldungen.eMailID 
-        AND anmeldungen.anmeldeID = '${aID}'`
+        AND anmeldungen.anmeldeID = ${aID}`
   ).then((v) => v[0])
 }
 
@@ -142,10 +142,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     },
     `Buchungsbestätigung für ${aData.vorname} ${aData.nachname} für ${
       vData.name
-    } vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
+    } vom ${begin.split('-').reverse().join('.')} - ${vData.ende
       .toISOString()
       .split('T')[0]
       .split('-')
@@ -177,6 +174,6 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
   )
 
   await query(
-    sql`UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = '${aData.anmeldeID}'`
+    sql`UPDATE anmeldungen SET bestaetigungsBrief=CURRENT_TIMESTAMP WHERE anmeldeID = ${aData.anmeldeID}`
   )
 }
