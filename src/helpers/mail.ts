@@ -45,7 +45,7 @@ export default async function sendMail(
     content: string | Readable | Buffer
     filename: string
   }> = [],
-  replyTo: string = ''
+  replyTo = ''
 ): Promise<true> {
   if (!replyTo) replyTo = from
 
