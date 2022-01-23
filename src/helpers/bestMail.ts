@@ -128,7 +128,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       schwimmen: aData.schwimmen,
       sichEntfernen: aData.sichEntfernen,
       klettern: aData.klettern,
-      bootfahren: aData.bootfahren
+      bootfahren: aData.bootFahren
     }
   )
 
