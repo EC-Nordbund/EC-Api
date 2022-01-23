@@ -8,7 +8,7 @@ async function getVData(vID: number): Promise<any> {
   return query(
     sql`
       SELECT * 
-      FROM veranstaltungen, vOrte 
+      FROM veranstaltungen
       WHERE veranstaltungen.veranstaltungsID = ${vID}`
   ).then((v) => v[0])
 }
