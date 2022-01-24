@@ -138,7 +138,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
   await mail(
     'anmeldung@ec-nordbund.de',
     {
-      to: aData.email,
+      to: aData.eMail,
       cc: vData.informAnmeldecenter,
       bcc: 'datenschutz@ec-nordbund.de'
     },
