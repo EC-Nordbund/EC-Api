@@ -58,7 +58,7 @@ export class Gotenberg {
       gotenberg(this.url),
       convert,
       office,
-      set(timeout(120)),
+      set(timeout(30)),
       please
     )(docx.map((v, i) => [`${i}.docx`, Buffer.from(v)]))
   }
