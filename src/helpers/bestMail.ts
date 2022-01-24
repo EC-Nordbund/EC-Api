@@ -54,7 +54,7 @@ export async function createBriefAnmeldung(anmeldeID: string) {
 const anhaenge = (async () => [
   {
     content: await readFile('./tnBedingungen.pdf'),
-    filename: 'TeilnehmeBedingungen.pdf'
+    filename: 'TeilnahmeBedingungen.pdf'
   },
   {
     content: await readFile('./sicherungsschein.pdf'),
@@ -134,6 +134,43 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     }
   )
 
+  let text = 'N/A'
+
+  if (vData.briefID === 1) {
+    text = `<p>Hallo ${aData.vorname} ${
+      aData.nachname
+    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
+      .split('-')
+      .reverse()
+      .join('.')} - ${vData.ende
+      .toISOString()
+      .split('T')[0]
+      .split('-')
+      .reverse()
+      .join(
+        '.'
+      )} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
+      beginMinus18 >= gebDat
+        ? ''
+        : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
+    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Entschieden für Christus grüßt<br><b>ThomaS :-)</b></p>`
+  } else if (vData.briefID === 2) {
+    text = `<p>Liebe Eltern von ${aData.vorname} ${
+      aData.nachname
+    },<br>Sie haben ihr Kind zu unserem Angebot ${vData.name} vom ${begin
+      .split('-')
+      .reverse()
+      .join('.')} - ${vData.ende
+      .toISOString()
+      .split('T')[0]
+      .split('-')
+      .reverse()
+      .join(
+        '.'
+      )} angemeldet.  Anbei erhalten Sie die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lesen Sie alles sorgfältig. Sie finden darin auch alle wichtigen Zahlungsinformationen.<br>
+    Falls Sie Fragen haben, melden Sie sich gerne bei uns (Sie können einfach auf die E-Mail antworten).<br><br>Entschieden für Christus grüßt<br><b>ThomaS :-)</b></p>`
+  }
+
   // Sende Mail
   await mail(
     'anmeldung@ec-nordbund.de',
@@ -150,26 +187,10 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       .split('-')
       .reverse()
       .join('.')}`,
-    `<p>Hallo ${aData.vorname} ${
-      aData.nachname
-    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
-      .toISOString()
-      .split('T')[0]
-      .split('-')
-      .reverse()
-      .join(
-        '.'
-      )} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
-      beginMinus18 >= gebDat
-        ? ''
-        : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
-    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Entschieden für Christus grüßt</p>`,
+    text,
     true,
     [
-      { content: Buffer.from(file), filename: 'bestaetingung_rechnung.pdf' },
+      { content: Buffer.from(file), filename: 'bestaetigung_rechnung.pdf' },
       ...(await anhaenge)
     ],
     vData.informAnmeldecenter
