@@ -168,7 +168,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       .join(
         '.'
       )} angemeldet.  Anbei erhalten Sie die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lesen Sie alles sorgfältig. Sie finden darin auch alle wichtigen Zahlungsinformationen.<br>
-    Falls Sie Fragen haben, melden Sie sich gerne bei uns (Sie können einfach auf die E-Mail antworten).<br><br>Herzliche Grüße<br><b>Birgit Herbert<b>ThomaS :-)</b></p>`
+    Falls Sie Fragen haben, melden Sie sich gerne bei uns (Sie können einfach auf die E-Mail antworten).<br><br>Herzliche Grüße<br><b>Birgit Herbert</b></p>`
   }
 
   // Sende Mail
