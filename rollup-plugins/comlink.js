@@ -45,6 +45,7 @@ declare module "${id}" {
                 import { wrap } from 'comlink'
 
                 const worker = new Worker(import.meta.ROLLUP_FILE_URL_${fileID});
+                worker.setMaxListeners(100)
 
                 const api = wrap(${type === 'node' ? `nodeEndpoint(worker)` : 'worker'});
 
@@ -58,6 +59,8 @@ declare module "${id}" {
                 import { expose } from 'comlink'
 
                 import api from ${JSON.stringify(id.slice(importPrefix.length).split('?')[0])}
+
+                parentPort.setMaxListeners(100)
                 
                 expose(api${type === 'node' ? ', nodeEndpoint(parentPort)' : ''})
               `;

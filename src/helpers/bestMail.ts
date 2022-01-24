@@ -4,6 +4,8 @@ import worker from 'comlink:../workers/generation'
 import sql from 'sql-escape-tag'
 import { readFile } from 'fs/promises'
 
+import {} from 'comlink/dist/esm/node-adapter'
+
 async function getVData(vID: number): Promise<any> {
   return query(
     sql`

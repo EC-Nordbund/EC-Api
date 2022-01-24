@@ -63,6 +63,7 @@ export default async function sendMail(
     }))
   }
   await smtp.sendMail(mailData)
+  mailData.attachments.forEach((v) => (v.content = 'REMOVED!'))
   await query(
     `INSERT INTO gesendeteEmails (content) VALUES ('${JSON.stringify(
       mailData
