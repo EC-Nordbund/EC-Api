@@ -34,14 +34,14 @@ async function getAnmeldeData(aID: string): Promise<any> {
 
 export async function createBriefVeranstaltung(vID: number) {
   const anmeldeIDs: { anmeldeID: string }[] = await query(
-    sql`SELECT anmeldeID FROM anmeldungen WHERE wartelistenPlatz = 0 AND position = 1 AND bestaetigungsBrief is null AND veranstaltungsID = ${vID} LIMIT 5`
+    sql`SELECT anmeldeID FROM anmeldungen WHERE wartelistenPlatz = 0 AND position = 1 AND bestaetigungsBrief is null AND veranstaltungsID = ${vID}`
   )
   const vData = await getVData(vID)
-  const aData = await Promise.all(
-    anmeldeIDs.map((v) => getAnmeldeData(v.anmeldeID))
-  )
 
-  await Promise.all(aData.map((v) => createBriefFromData(v, vData)))
+  for (let i = 0; i < anmeldeIDs.length; i++) {
+    const aData = await getAnmeldeData(anmeldeIDs[i].anmeldeID)
+    await createBriefFromData(aData, vData)
+  }
 }
 
 export async function createBriefAnmeldung(anmeldeID: string) {
