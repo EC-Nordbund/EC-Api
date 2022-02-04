@@ -1,28 +1,28 @@
-import { sign, verify } from "jsonwebtoken";
+import { sign, verify } from 'jsonwebtoken'
 
-const secret_token = process.env.JWT_SECRET!;
+const secret_token = process.env.JWT_SECRET!
 
 export function createToken(payload: any) {
   return new Promise<string>((res, rej) => {
     sign(
       payload,
       secret_token,
-      { expiresIn: "100d", issuer: "ec-nordbund" },
+      { expiresIn: '100d', issuer: 'ec-nordbund' },
       (err: Error | null, encoded: string | undefined) => {
         if (err) {
-          rej(err);
-          return;
+          rej(err)
+          return
         }
 
         if (!encoded) {
-          rej("No Token generated");
-          return;
+          rej('No Token generated')
+          return
         }
 
-        res(encoded);
+        res(encoded)
       }
-    );
-  });
+    )
+  })
 }
 
 export function checkToken<T = any>(token: string) {
@@ -32,18 +32,17 @@ export function checkToken<T = any>(token: string) {
       secret_token,
       (err: Error | null, decoded: object | undefined) => {
         if (err) {
-          rej(err);
-          return;
+          rej(err)
+          return
         }
 
         if (!decoded) {
-          rej("No Data provided");
-          return;
+          rej('No Data provided')
+          return
         }
 
-        res((decoded as any) as T);
+        res((decoded as any) as T)
       }
-    );
-  });
+    )
+  })
 }
-

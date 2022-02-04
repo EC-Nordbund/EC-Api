@@ -1,16 +1,16 @@
 export const ruleLib = {
   vorname: [
     (v: string) => (!v ? 'Du musst einen Vornamen angeben!' : true),
-    (v: string) => (v && v.length > 50 ? 'Der Vorname ist zu lang.' : true),
+    (v: string) => (v && v.length > 50 ? 'Der Vorname ist zu lang.' : true)
   ],
   nachname: [
     (v: string) => (!v ? 'Du musst einen Nachnamen angeben!' : true),
-    (v: string) => (v && v.length > 50 ? 'Der Nachname ist zu lang.' : true),
+    (v: string) => (v && v.length > 50 ? 'Der Nachname ist zu lang.' : true)
   ],
   geschlecht: [
     (v: string) => (!v ? 'Du musst ein Geschlecht angeben!' : true),
     (v: string) =>
-      v && v !== 'm' && v !== 'w' ? 'Du musst ein Geschlecht angeben!' : true,
+      v && v !== 'm' && v !== 'w' ? 'Du musst ein Geschlecht angeben!' : true
   ],
   gebDat: [
     (v: string) => (!v ? 'Du musst ein Geburtsdatum angeben!' : true),
@@ -21,11 +21,11 @@ export const ruleLib = {
         v
       )
         ? 'Du musst ein valides Geburtsdatum angeben!'
-        : true,
+        : true
   ],
   strasse: [
     (v: string) => (!v ? 'Du musst eine Straße angeben!' : true),
-    (v: string) => (v && v.length > 50 ? 'Die Straße ist zu lang.' : true),
+    (v: string) => (v && v.length > 50 ? 'Die Straße ist zu lang.' : true)
   ],
   plz: [
     (v: string) => (!v ? 'Du musst eine Postleitzahl angeben!' : true),
@@ -34,7 +34,7 @@ export const ruleLib = {
     (v: string) =>
       v && v.length === 5 && /\d\d\d\d\d/.test(v) === false
         ? 'Die PLZ muss aus 5 Ziffern bestehen!'
-        : true,
+        : true
   ],
   ort: [(v: string) => (!v ? 'Du musst einen Ort angeben!' : true)],
   email: [
@@ -45,7 +45,7 @@ export const ruleLib = {
       // http://www.regular-expressions.info/email.html
       /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(v) === false
         ? 'Du musst eine valide E-Mail angeben!'
-        : true,
+        : true
   ],
   telefon: [
     (v: string) => (!v ? 'Du musst eine Telefonnummer angeben' : true),
@@ -62,29 +62,29 @@ export const ruleLib = {
     (v: string) =>
       v && /^((?!\d).)*$/gm.test(v)
         ? 'Die Telefonnummer darf nur aus Ziffern besetehen!'
-        : true,
+        : true
   ],
   textArea250: [
     (v: string) =>
-      v && v.length > 250 ? 'Dieses Feld ist auf 250 Zeichen begrenzt!' : true,
+      v && v.length > 250 ? 'Dieses Feld ist auf 250 Zeichen begrenzt!' : true
   ],
   datenschutz: [
     (v: boolean) =>
       !v
         ? 'Wir benötigen deine Zustimmung zu den Datenschutzbedingungen um deine Anmeldung verarbeiten zu dürfen!'
-        : true,
+        : true
   ],
   checkboxRequired: [
     (v: boolean) =>
-      !v ? 'Deine Zustimmung zu diese Aussage ist erforderlich!' : true,
+      !v ? 'Deine Zustimmung zu diese Aussage ist erforderlich!' : true
   ],
   tnBedingungen: [
     (v: boolean) =>
-      !v ? 'Wir benötigen deine Zustimmung zu den Teilnahmebedingungen!' : true,
+      !v ? 'Wir benötigen deine Zustimmung zu den Teilnahmebedingungen!' : true
   ],
   ecKreis: [(v: number) => (!v ? 'Du musst einen EC-Kreis angeben!' : true)],
   isMA: [
     (v: boolean) =>
-      !v ? 'Du musst bestätigen, dass du ein Mitarbeiter bist!' : true,
-  ],
+      !v ? 'Du musst bestätigen, dass du ein Mitarbeiter bist!' : true
+  ]
 }

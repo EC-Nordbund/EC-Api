@@ -1,3 +1,4 @@
+/* eslint-disable */
 const dsgvoTN = require('remark')()
   .use(require('remark-html'))
   .processSync(
@@ -43,7 +44,7 @@ const erlaubnisse = [
   'fahrgemeinschaften',
   'datenschutz',
   'freizeitLeitung',
-  'tnBedingungen',
+  'tnBedingungen'
 ]
 
 function longText(data: any, key: string) {
@@ -230,7 +231,7 @@ export async function createMailContentTN(
                 'Nicht Erlaubt',
                 'Erlaubt, Nichtschwimmer',
                 'Erlaubt, Mittelmäßiger Schwimmer',
-                'Erlaubt, Guter Schwimmer',
+                'Erlaubt, Guter Schwimmer'
               ][data.schwimmen]
             }</td>
           </tr>
