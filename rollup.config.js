@@ -90,7 +90,8 @@ export default {
     'body-parser',
     'swagger-ui-express',
     'express-rate-limit',
-    'web-push'
+    'web-push',
+    'axios'
   ]
 }
 

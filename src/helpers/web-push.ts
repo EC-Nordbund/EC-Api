@@ -8,11 +8,11 @@ type payload = {
   body: string
 }
 
-setVapidDetails(
-  'mailto:app@ec-nordbund.de',
-  process.env.VAPID_PUBLIC!,
-  process.env.VAPID_PRIVATE!
-)
+// setVapidDetails(
+//   'mailto:app@ec-nordbund.de',
+//   process.env.VAPID_PUBLIC!,
+//   process.env.VAPID_PRIVATE!
+// )
 
 async function createNotification(
   subscription: subscription,

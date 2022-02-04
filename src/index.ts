@@ -13,6 +13,8 @@ import bestBrief from './api/best-brief'
 import expressRateLimit from 'express-rate-limit'
 import * as http from 'http'
 
+import nuxt from './nuxt'
+
 const apollo = new ApolloServer({ schema })
 const app = express()
   .use(compression())
@@ -35,6 +37,9 @@ const app = express()
       max: 2
     })
   )
+
+nuxt(app)
+
 user(app)
 personen(app)
 ak(app)
