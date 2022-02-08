@@ -181,7 +181,10 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     },
     `Buchungsbestätigung für ${aData.vorname} ${aData.nachname} für ${
       vData.name
-    } vom ${begin.split('-').reverse().join('.')} - ${vData.ende
+    } vom ${begin
+      .split('-')
+      .reverse()
+      .join('.')} - ${vData.ende
       .toISOString()
       .split('T')[0]
       .split('-')
