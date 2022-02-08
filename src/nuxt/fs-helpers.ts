@@ -14,12 +14,14 @@ export function cleanup() {
       return
     }
 
-    const exp = JSON.parse(
-      fs.readFileSync(path.join(__dirname, ANMELDUNG_SAVE_DIR, file), 'utf-8')
-    ).__internals.expires
-    if (expired(exp)) {
-      fs.unlinkSync(path.join(__dirname, ANMELDUNG_SAVE_DIR, file))
-    }
+    try {
+      const exp = JSON.parse(
+        fs.readFileSync(path.join(__dirname, ANMELDUNG_SAVE_DIR, file), 'utf-8')
+      ).__internals.expires
+      if (expired(exp)) {
+        fs.unlinkSync(path.join(__dirname, ANMELDUNG_SAVE_DIR, file))
+      }
+    } catch (ex) {}
   })
 }
 export function saveForConfirm(data: any, type: number): string {
