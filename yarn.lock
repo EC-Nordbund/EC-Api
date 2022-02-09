@@ -2113,7 +2113,7 @@ __metadata:
     promise-mysql: 5.0.4
     remark: 13
     remark-html: 13
-    rollup: 2.61.1
+    rollup: 2.67.1
     rollup-plugin-esbuild: 4.7.2
     rollup-plugin-terser: 7.0.2
     sql-escape-tag: 1.0.0
@@ -5334,9 +5334,9 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"rollup@npm:2.61.1":
-  version: 2.61.1
-  resolution: "rollup@npm:2.61.1"
+"rollup@npm:2.67.1":
+  version: 2.67.1
+  resolution: "rollup@npm:2.67.1"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -5344,7 +5344,7 @@ fsevents@~2.3.2:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: a41bd821c1d9f296e71e867828150080fb05d08cbdff9b6b5c0e3642da4d0723f7a847189f197c2a695a8a353d968ad89ebd54a4228dc3e92765c00e6bbadf87
+  checksum: 4320927ae9d42abf0a72ccdfd14303f7b6d6908ec94be953900a41bd4c0bbba3131887c3925dec65361a3e394cb572a4fa8e1f1be4db587a775068ad71d42acd
   languageName: node
   linkType: hard
 
