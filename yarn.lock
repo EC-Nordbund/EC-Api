@@ -522,7 +522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/inline-css@npm:^3":
+"@types/inline-css@npm:3.0.1":
   version: 3.0.1
   resolution: "@types/inline-css@npm:3.0.1"
   dependencies:
@@ -1169,7 +1169,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.25.0":
+"axios@npm:0.25.0":
   version: 0.25.0
   resolution: "axios@npm:0.25.0"
   dependencies:
@@ -1976,7 +1976,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docx-templates@npm:^4.9.0":
+"docx-templates@npm:4.9.0":
   version: 4.9.0
   resolution: "docx-templates@npm:4.9.0"
   dependencies:
@@ -2078,7 +2078,7 @@ __metadata:
     "@types/eslint": 8.4.1
     "@types/express": 4.17.13
     "@types/express-rate-limit": 5.1.3
-    "@types/inline-css": ^3
+    "@types/inline-css": 3.0.1
     "@types/jsonwebtoken": 8.5.6
     "@types/node": 17.0.1
     "@types/node-fetch": 2.5.12
@@ -2087,12 +2087,12 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.7.0
     "@typescript-eslint/parser": 5.7.0
     apollo-server-express: 3.5.0
-    axios: ^0.25.0
+    axios: 0.25.0
     body-parser: 1.19.1
     comlink: 4.3.1
     compression: 1.7.4
     cors: 2.8.5
-    docx-templates: ^4.9.0
+    docx-templates: 4.9.0
     docx-templates-to-pdf: 2.0.0
     esbuild: 0.14.6
     eslint: 8.8.0
@@ -2100,19 +2100,19 @@ __metadata:
     eslint-plugin-prettier: 4.0.0
     express: 4.17.2
     express-rate-limit: 5.5.1
-    gotenberg-js-client: ^0.7.2
+    gotenberg-js-client: 0.7.2
     graphql: 16.2.0
     graphql-subscriptions: 2.0.0
-    inline-css: ^3.0.0
+    inline-css: 3.0.0
     js-sha3: 0.8.0
-    jsonwebtoken: ^8.5.1
+    jsonwebtoken: 8.5.1
     node-fetch: 2.6.7
     nodemailer: 6.7.2
     nodemon: 2.0.15
     prettier: 2.2.1
     promise-mysql: 5.0.4
-    remark: 13
-    remark-html: 13
+    remark: 13.0.0
+    remark-html: 13.0.2
     rollup: 2.67.1
     rollup-plugin-esbuild: 4.7.2
     rollup-plugin-terser: 7.0.2
@@ -3137,7 +3137,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"gotenberg-js-client@npm:^0.7.2":
+"gotenberg-js-client@npm:0.7.2":
   version: 0.7.2
   resolution: "gotenberg-js-client@npm:0.7.2"
   dependencies:
@@ -3513,7 +3513,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"inline-css@npm:^3.0.0":
+"inline-css@npm:3.0.0":
   version: 3.0.0
   resolution: "inline-css@npm:3.0.0"
   dependencies:
@@ -3871,7 +3871,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^8.5.1":
+"jsonwebtoken@npm:8.5.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:
@@ -5159,7 +5159,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"remark-html@npm:13":
+"remark-html@npm:13.0.2":
   version: 13.0.2
   resolution: "remark-html@npm:13.0.2"
   dependencies:
@@ -5188,7 +5188,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"remark@npm:13":
+"remark@npm:13.0.0":
   version: 13.0.0
   resolution: "remark@npm:13.0.0"
   dependencies:
