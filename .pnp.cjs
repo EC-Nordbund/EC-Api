@@ -44,7 +44,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/express", "npm:4.17.13"],
             ["@types/express-rate-limit", "npm:5.1.3"],
             ["@types/inline-css", "npm:3.0.1"],
-            ["@types/jsonwebtoken", "npm:8.5.6"],
+            ["@types/jsonwebtoken", "npm:8.5.8"],
             ["@types/node", "npm:17.0.16"],
             ["@types/node-fetch", "npm:2.5.12"],
             ["@types/nodemailer", "npm:6.4.4"],
@@ -792,10 +792,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["@types/jsonwebtoken", [
-        ["npm:8.5.6", {
-          "packageLocation": "./.yarn/cache/@types-jsonwebtoken-npm-8.5.6-a2debacc40-c1c0e40cb1.zip/node_modules/@types/jsonwebtoken/",
+        ["npm:8.5.8", {
+          "packageLocation": "./.yarn/cache/@types-jsonwebtoken-npm-8.5.8-798e14708c-56738a918c.zip/node_modules/@types/jsonwebtoken/",
           "packageDependencies": [
-            ["@types/jsonwebtoken", "npm:8.5.6"],
+            ["@types/jsonwebtoken", "npm:8.5.8"],
             ["@types/node", "npm:14.14.16"]
           ],
           "linkType": "HARD",
@@ -2723,7 +2723,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/express", "npm:4.17.13"],
             ["@types/express-rate-limit", "npm:5.1.3"],
             ["@types/inline-css", "npm:3.0.1"],
-            ["@types/jsonwebtoken", "npm:8.5.6"],
+            ["@types/jsonwebtoken", "npm:8.5.8"],
             ["@types/node", "npm:17.0.16"],
             ["@types/node-fetch", "npm:2.5.12"],
             ["@types/nodemailer", "npm:6.4.4"],
