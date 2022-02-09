@@ -300,9 +300,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-node-resolve@npm:13.1.1":
-  version: 13.1.1
-  resolution: "@rollup/plugin-node-resolve@npm:13.1.1"
+"@rollup/plugin-node-resolve@npm:13.1.3":
+  version: 13.1.3
+  resolution: "@rollup/plugin-node-resolve@npm:13.1.3"
   dependencies:
     "@rollup/pluginutils": ^3.1.0
     "@types/resolve": 1.17.1
@@ -312,7 +312,7 @@ __metadata:
     resolve: ^1.19.0
   peerDependencies:
     rollup: ^2.42.0
-  checksum: 28f917b2af2051b987173438ccfa6848acb8323eef0fa0bc0d4d9b962b853dbc885849875867e9a29c076098fb4452664663242303b69f5999df5df5f475863f
+  checksum: c275843aef884ff15ed7edb8a3b8fd072a72d517632098f6e9c25ef2c00f7842559565cc77e16c59eb119b8c4e2d858a8b5a94701ca6f85ae6a4f60a6e31f0ab
   languageName: node
   linkType: hard
 
@@ -2072,7 +2072,7 @@ __metadata:
   dependencies:
     "@rollup/plugin-commonjs": 21.0.1
     "@rollup/plugin-json": 4.1.0
-    "@rollup/plugin-node-resolve": 13.1.1
+    "@rollup/plugin-node-resolve": 13.1.3
     "@types/compression": 1.7.2
     "@types/cors": 2.8.12
     "@types/eslint": 8.4.1
