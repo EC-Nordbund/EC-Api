@@ -2114,7 +2114,7 @@ __metadata:
     remark: 13.0.0
     remark-html: 13.0.2
     rollup: 2.67.1
-    rollup-plugin-esbuild: 4.7.2
+    rollup-plugin-esbuild: 4.8.2
     rollup-plugin-terser: 7.0.2
     sql-escape-tag: 1.0.0
     typescript: 4.5.5
@@ -2196,6 +2196,13 @@ __metadata:
   version: 2.2.0
   resolution: "env-paths@npm:2.2.0"
   checksum: ba2aea38301aafd69086be1f8cb453b92946e4840cb0de9d1c88a67e6f43a6174dcddb60b218ec36db8720b12de46b0d93c2f97ad9bbec6a267b479ab37debb6
+  languageName: node
+  linkType: hard
+
+"es-module-lexer@npm:^0.9.3":
+  version: 0.9.3
+  resolution: "es-module-lexer@npm:0.9.3"
+  checksum: 84bbab23c396281db2c906c766af58b1ae2a1a2599844a504df10b9e8dc77ec800b3211fdaa133ff700f5703d791198807bba25d9667392d27a5e9feda344da8
   languageName: node
   linkType: hard
 
@@ -5326,17 +5333,19 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"rollup-plugin-esbuild@npm:4.7.2":
-  version: 4.7.2
-  resolution: "rollup-plugin-esbuild@npm:4.7.2"
+"rollup-plugin-esbuild@npm:4.8.2":
+  version: 4.8.2
+  resolution: "rollup-plugin-esbuild@npm:4.8.2"
   dependencies:
     "@rollup/pluginutils": ^4.1.1
+    debug: ^4.3.3
+    es-module-lexer: ^0.9.3
     joycon: ^3.0.1
     jsonc-parser: ^3.0.0
   peerDependencies:
     esbuild: ">=0.10.1"
     rollup: ^1.20.0 || ^2.0.0
-  checksum: 14d35699349ed573e533a416823885b730cdb27757e2d7f935749c8e6bb59aaa6f2bc60a20843c927d647cd561c4865fcaaddaaeea6e38677915037bb3930e41
+  checksum: 3be8dc0c2da7eb182719f793595614396136298def5a09c874c4be6e7428026f3c7a5052b02cf19801e87de6b2d0b320aad813ad01e7992de6deabb55ca9fa3a
   languageName: node
   linkType: hard
 
