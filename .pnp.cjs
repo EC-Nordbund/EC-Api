@@ -79,7 +79,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["remark", "npm:13.0.0"],
             ["remark-html", "npm:13.0.2"],
             ["rollup", "npm:2.67.1"],
-            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2"],
+            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.8.2"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
             ["typescript", "patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=493e53"],
@@ -2758,7 +2758,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["remark", "npm:13.0.0"],
             ["remark-html", "npm:13.0.2"],
             ["rollup", "npm:2.67.1"],
-            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2"],
+            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.8.2"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
             ["typescript", "patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=493e53"],
@@ -2853,6 +2853,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/env-paths-npm-2.2.0-ac4ed99068-ba2aea3830.zip/node_modules/env-paths/",
           "packageDependencies": [
             ["env-paths", "npm:2.2.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["es-module-lexer", [
+        ["npm:0.9.3", {
+          "packageLocation": "./.yarn/cache/es-module-lexer-npm-0.9.3-ff6236dadb-84bbab23c3.zip/node_modules/es-module-lexer/",
+          "packageDependencies": [
+            ["es-module-lexer", "npm:0.9.3"]
           ],
           "linkType": "HARD",
         }]
@@ -6433,20 +6442,22 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["rollup-plugin-esbuild", [
-        ["npm:4.7.2", {
-          "packageLocation": "./.yarn/cache/rollup-plugin-esbuild-npm-4.7.2-807db18a08-14d3569934.zip/node_modules/rollup-plugin-esbuild/",
+        ["npm:4.8.2", {
+          "packageLocation": "./.yarn/cache/rollup-plugin-esbuild-npm-4.8.2-1bb24373da-3be8dc0c2d.zip/node_modules/rollup-plugin-esbuild/",
           "packageDependencies": [
-            ["rollup-plugin-esbuild", "npm:4.7.2"]
+            ["rollup-plugin-esbuild", "npm:4.8.2"]
           ],
           "linkType": "SOFT",
         }],
-        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2", {
-          "packageLocation": "./.yarn/__virtual__/rollup-plugin-esbuild-virtual-aaba3fac03/0/cache/rollup-plugin-esbuild-npm-4.7.2-807db18a08-14d3569934.zip/node_modules/rollup-plugin-esbuild/",
+        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.8.2", {
+          "packageLocation": "./.yarn/__virtual__/rollup-plugin-esbuild-virtual-11e265f073/0/cache/rollup-plugin-esbuild-npm-4.8.2-1bb24373da-3be8dc0c2d.zip/node_modules/rollup-plugin-esbuild/",
           "packageDependencies": [
-            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.7.2"],
+            ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.8.2"],
             ["@rollup/pluginutils", "npm:4.1.1"],
             ["@types/esbuild", null],
             ["@types/rollup", null],
+            ["debug", "virtual:bd5ac53f2a4d13161e4becd2185852df3b4231ea7460becce6b80faf113589c84e6d5a7592f2b45846dcda321b203d871f080c12cd9638e02938ccdf6bfbd6ee#npm:4.3.3"],
+            ["es-module-lexer", "npm:0.9.3"],
             ["esbuild", "npm:0.14.21"],
             ["joycon", "npm:3.1.1"],
             ["jsonc-parser", "npm:3.0.0"],
