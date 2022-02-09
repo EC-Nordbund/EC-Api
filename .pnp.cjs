@@ -75,7 +75,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nodemailer", "npm:6.7.2"],
             ["nodemon", "npm:2.0.15"],
             ["prettier", "npm:2.2.1"],
-            ["promise-mysql", "npm:5.0.4"],
+            ["promise-mysql", "npm:5.1.0"],
             ["remark", "npm:13.0.0"],
             ["remark-html", "npm:13.0.2"],
             ["rollup", "npm:2.67.1"],
@@ -2719,7 +2719,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nodemailer", "npm:6.7.2"],
             ["nodemon", "npm:2.0.15"],
             ["prettier", "npm:2.2.1"],
-            ["promise-mysql", "npm:5.0.4"],
+            ["promise-mysql", "npm:5.1.0"],
             ["remark", "npm:13.0.0"],
             ["remark-html", "npm:13.0.2"],
             ["rollup", "npm:2.67.1"],
@@ -5959,10 +5959,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["promise-mysql", [
-        ["npm:5.0.4", {
-          "packageLocation": "./.yarn/cache/promise-mysql-npm-5.0.4-066501ab22-b00b49217c.zip/node_modules/promise-mysql/",
+        ["npm:5.1.0", {
+          "packageLocation": "./.yarn/cache/promise-mysql-npm-5.1.0-b1de89e58f-d9d64da3e5.zip/node_modules/promise-mysql/",
           "packageDependencies": [
-            ["promise-mysql", "npm:5.0.4"],
+            ["promise-mysql", "npm:5.1.0"],
             ["@types/bluebird", "npm:3.5.33"],
             ["@types/mysql", "npm:2.15.16"],
             ["bluebird", "npm:3.7.2"],

@@ -2089,7 +2089,7 @@ __metadata:
     nodemailer: 6.7.2
     nodemon: 2.0.15
     prettier: 2.2.1
-    promise-mysql: 5.0.4
+    promise-mysql: 5.1.0
     remark: 13.0.0
     remark-html: 13.0.2
     rollup: 2.67.1
@@ -4899,15 +4899,15 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"promise-mysql@npm:5.0.4":
-  version: 5.0.4
-  resolution: "promise-mysql@npm:5.0.4"
+"promise-mysql@npm:5.1.0":
+  version: 5.1.0
+  resolution: "promise-mysql@npm:5.1.0"
   dependencies:
     "@types/bluebird": ^3.5.26
     "@types/mysql": ^2.15.2
     bluebird: ^3.5.1
     mysql: ^2.18.1
-  checksum: b00b49217c6f35a52badc01bfa9400c0aed0854003c13e100924a7af97fd94b4b18b8710e0f63a69f7084b91660e9a814584911b4e4b474ebd82e6bc8564e463
+  checksum: d9d64da3e57f57f712e643761b0b3783d088499004c141cb359f11bb624e910f90e7966e179f6a4d5a6e84a9818dfe0c3dc7c099f588f4330e04dab5dd658529
   languageName: node
   linkType: hard
 
