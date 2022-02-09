@@ -46,8 +46,6 @@ const vData = {
   478: 'Der Ehe-Kurs'
 }
 export default (app) => {
-  app.get('/nuxt/health', (req,res)=>res.json({ok: true}))
-  
   app.post('/nuxt/anmeldung/ma/checkToken', (req, res) => {
     checkToken(req.body.token)
       .then((d) => {
