@@ -64,7 +64,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:8.3.0"],
             ["eslint-plugin-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.0.0"],
             ["express", "npm:4.17.2"],
-            ["express-rate-limit", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.0"],
+            ["express-rate-limit", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.1"],
             ["gotenberg-js-client", "npm:0.7.2"],
             ["graphql", "npm:16.3.0"],
             ["graphql-subscriptions", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:2.0.0"],
@@ -2623,7 +2623,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-config-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:8.3.0"],
             ["eslint-plugin-prettier", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.0.0"],
             ["express", "npm:4.17.2"],
-            ["express-rate-limit", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.0"],
+            ["express-rate-limit", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.1"],
             ["gotenberg-js-client", "npm:0.7.2"],
             ["graphql", "npm:16.3.0"],
             ["graphql-subscriptions", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:2.0.0"],
@@ -3294,17 +3294,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["express-rate-limit", [
-        ["npm:6.2.0", {
-          "packageLocation": "./.yarn/cache/express-rate-limit-npm-6.2.0-ed256d1e34-642f148e6b.zip/node_modules/express-rate-limit/",
+        ["npm:6.2.1", {
+          "packageLocation": "./.yarn/cache/express-rate-limit-npm-6.2.1-e83f737aab-4d07e535c1.zip/node_modules/express-rate-limit/",
           "packageDependencies": [
-            ["express-rate-limit", "npm:6.2.0"]
+            ["express-rate-limit", "npm:6.2.1"]
           ],
           "linkType": "SOFT",
         }],
-        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.0", {
-          "packageLocation": "./.yarn/__virtual__/express-rate-limit-virtual-7604a6d898/0/cache/express-rate-limit-npm-6.2.0-ed256d1e34-642f148e6b.zip/node_modules/express-rate-limit/",
+        ["virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.1", {
+          "packageLocation": "./.yarn/__virtual__/express-rate-limit-virtual-9a55692792/0/cache/express-rate-limit-npm-6.2.1-e83f737aab-4d07e535c1.zip/node_modules/express-rate-limit/",
           "packageDependencies": [
-            ["express-rate-limit", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.0"],
+            ["express-rate-limit", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:6.2.1"],
             ["@types/express", "npm:4.17.13"],
             ["express", "npm:4.17.2"]
           ],
