@@ -78,7 +78,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["promise-mysql", "npm:5.1.0"],
             ["remark", "npm:13.0.0"],
             ["remark-html", "npm:13.0.2"],
-            ["rollup", "npm:2.67.1"],
+            ["rollup", "npm:2.67.2"],
             ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.8.2"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
@@ -472,7 +472,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["is-reference", "npm:1.2.1"],
             ["magic-string", "npm:0.25.7"],
             ["resolve", "patch:resolve@npm%3A1.19.0#~builtin<compat/resolve>::version=1.19.0&hash=07638b"],
-            ["rollup", "npm:2.67.1"]
+            ["rollup", "npm:2.67.2"]
           ],
           "packagePeers": [
             "@types/rollup",
@@ -495,7 +495,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@rollup/plugin-json", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.1.0"],
             ["@rollup/pluginutils", "virtual:40aaa66db2a6d83929126bf5930c821f138df21d91beff8b44f1c8638770d17f209ad187bc0b4638b6a1ada2fd44f550df6f37a269f8105ecbc13585dd0b4acf#npm:3.1.0"],
             ["@types/rollup", null],
-            ["rollup", "npm:2.67.1"]
+            ["rollup", "npm:2.67.2"]
           ],
           "packagePeers": [
             "@types/rollup",
@@ -523,7 +523,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["deepmerge", "npm:4.2.2"],
             ["is-module", "npm:1.0.0"],
             ["resolve", "patch:resolve@npm%3A1.19.0#~builtin<compat/resolve>::version=1.19.0&hash=07638b"],
-            ["rollup", "npm:2.67.1"]
+            ["rollup", "npm:2.67.2"]
           ],
           "packagePeers": [
             "@types/rollup",
@@ -557,7 +557,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/rollup", null],
             ["estree-walker", "npm:1.0.1"],
             ["picomatch", "npm:2.2.2"],
-            ["rollup", "npm:2.67.1"]
+            ["rollup", "npm:2.67.2"]
           ],
           "packagePeers": [
             "@types/rollup",
@@ -2637,7 +2637,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["promise-mysql", "npm:5.1.0"],
             ["remark", "npm:13.0.0"],
             ["remark-html", "npm:13.0.2"],
-            ["rollup", "npm:2.67.1"],
+            ["rollup", "npm:2.67.2"],
             ["rollup-plugin-esbuild", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:4.8.2"],
             ["rollup-plugin-terser", "virtual:5a905dcf2c7d93103fff23804c799a936f1f512015f1ce8626c4b75a08e354e690d8a2b8a43c57831df422e2d56ec384f96cd19e7538f019ab6ae1ab936c7e71#npm:7.0.2"],
             ["sql-escape-tag", "npm:1.0.0"],
@@ -6236,10 +6236,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["rollup", [
-        ["npm:2.67.1", {
-          "packageLocation": "./.yarn/cache/rollup-npm-2.67.1-27edb63f67-4320927ae9.zip/node_modules/rollup/",
+        ["npm:2.67.2", {
+          "packageLocation": "./.yarn/cache/rollup-npm-2.67.2-23df7ee784-9aca5251ba.zip/node_modules/rollup/",
           "packageDependencies": [
-            ["rollup", "npm:2.67.1"],
+            ["rollup", "npm:2.67.2"],
             ["fsevents", "patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"]
           ],
           "linkType": "HARD",
@@ -6265,7 +6265,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["esbuild", "npm:0.14.21"],
             ["joycon", "npm:3.1.1"],
             ["jsonc-parser", "npm:3.0.0"],
-            ["rollup", "npm:2.67.1"]
+            ["rollup", "npm:2.67.2"]
           ],
           "packagePeers": [
             "@types/esbuild",
@@ -6291,7 +6291,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@babel/code-frame", "npm:7.12.11"],
             ["@types/rollup", null],
             ["jest-worker", "npm:26.6.2"],
-            ["rollup", "npm:2.67.1"],
+            ["rollup", "npm:2.67.2"],
             ["serialize-javascript", "npm:4.0.0"],
             ["terser", "npm:5.5.1"]
           ],
