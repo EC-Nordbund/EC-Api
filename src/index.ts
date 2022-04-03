@@ -17,7 +17,7 @@ import nuxt from './nuxt'
 
 const apollo = new ApolloServer({ schema })
 const app = express()
-  .use(compression())
+  //.use(compression())
   .use((req, res, next) => {
     res.append("access-control-allow-headers", "content-type")
     res.append("access-control-allow-methods", "GET,HEAD,PUT,PATCH,POST,DELETE")
