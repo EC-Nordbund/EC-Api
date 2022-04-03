@@ -365,6 +365,9 @@ console.log(req.body)
           query: gqlCode
         })
 
+        console.log('res', gqlRes)
+        console.log(JSON.stringify(gqlRes))
+
         if (!data.alter && gqlRes.data.data.anmelden.status >= 0) {
           await sendMail({
             to:
