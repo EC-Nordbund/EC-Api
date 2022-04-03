@@ -13,8 +13,8 @@ export const sendMail: ReturnType<typeof createTransport>['sendMail'] = async (
     if (process.env.ON_SERVER) {
       transport = createTransport({
         host: process.env.SMTP_SERVER,
-        port: 465,
-        secure: true, // true for 465, false for other ports
+        port: 25,
+        // secure: true, // true for 465, false for other ports
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS
