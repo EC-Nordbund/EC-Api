@@ -74,5 +74,5 @@ function expired(time: string) {
   if (time === 'NEVER') {
     return false
   }
-  return new Date().toUTCString() > time
+  return new Date().toUTCString() < time
 }
