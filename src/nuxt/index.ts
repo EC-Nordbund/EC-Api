@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import { ruleLib } from './rules'
 import { saveForConfirm, validateToken, cleanup } from './fs-helpers'
 import { validate } from './validate'
+import { json } from 'body-parser'
 import { sendMail } from './sendMail'
 import * as path from 'path'
 import axios from 'axios'
@@ -195,7 +196,9 @@ export default (app) => {
   //   next()
   // })
 
-  app.post('/nuxt/anmeldung/tn/:id', async (req, res) => {
+  app.post('/nuxt/anmeldung/tn/:id', json(), async (req, res) => {
+    console.log('in post hook')
+
     const __IS_CHRISTIVAL__ = req.params.id == 477
 
     // console.log('test2')
@@ -218,8 +221,12 @@ export default (app) => {
       freizeitLeitung: ruleLib.checkboxRequired,
       tnBedingungen: ruleLib.tnBedingungen
     }
+console.log('post1.5')
+
+console.log(req.body)
 
     const errVals = validate(rules, req.body)
+    console.log('post2')
 
     if (__IS_CHRISTIVAL__) {
       const alter = getAge(req.body.gebDat, '2022-05-25')
@@ -264,6 +271,8 @@ export default (app) => {
       })
       return
     }
+
+    console.log('log 2')
 
     try {
       const token = saveForConfirm(

@@ -1,7 +1,7 @@
 import { schema } from './graphql'
 import { appVersion } from './config/version'
 import { ApolloServer } from 'apollo-server-express'
-import { json } from 'body-parser'
+import { json as jsonBody } from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import compression from 'compression'
@@ -36,10 +36,9 @@ const app = express()
       windowMs: 1000,
       max: 2
     })
-  )
+  )//.use(json({ type: 'application/*+json'}))
 
 nuxt(app)
-
 user(app)
 personen(app)
 ak(app)
