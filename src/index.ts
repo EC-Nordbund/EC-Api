@@ -18,7 +18,7 @@ import nuxt from './nuxt'
 const apollo = new ApolloServer({ schema })
 const app = express()
   .use(compression())
-  .use(cors())
+  .use(cors({origin: (o, cb) => cb(null, true)}))
   .use('/time', (req, res) => {
     res.end(`{"time": ${new Date().getTime()}}`)
   })
