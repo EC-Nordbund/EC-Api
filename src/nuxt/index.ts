@@ -47,7 +47,7 @@ const vData = {
   478: 'Der Ehe-Kurs'
 }
 export default (app) => {
-  app.post('/nuxt/anmeldung/ma/checkToken', (req, res) => {
+  app.post('/nuxt/anmeldung/ma/checkToken', json(), (req, res) => {
     checkToken(req.body.token)
       .then((d) => {
         res.json({
@@ -62,7 +62,7 @@ export default (app) => {
       })
   })
 
-  app.post('/nuxt/anmeldung/ma/ort', (req, res) => {
+  app.post('/nuxt/anmeldung/ma/ort', json(), (req, res) => {
     const rules = {
       vorname: ruleLib.vorname,
       nachname: ruleLib.nachname,
@@ -109,7 +109,7 @@ export default (app) => {
       })
     }
   })
-  app.post('/nuxt/anmeldung/ma/veranstaltung', async (req, res) => {
+  app.post('/nuxt/anmeldung/ma/veranstaltung', json(), async (req, res) => {
     const tk: string = (await checkToken(req.body.token)).d
 
     const [veranstaltungsID, position] = tk
@@ -315,7 +315,7 @@ console.log(req.body)
     return JSON.stringify(data.trim())
   }
 
-  app.post('/nuxt/confirm/:token', async (req, res) => {
+  app.post('/nuxt/confirm/:token', json(), async (req, res) => {
     const token = req.params.token
 
     try {
