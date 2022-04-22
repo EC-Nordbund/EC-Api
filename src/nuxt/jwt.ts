@@ -1,6 +1,6 @@
 import { sign, verify } from 'jsonwebtoken'
 
-const secret_token = process.env.JWT_SECRET!
+const secret_token = process.env.NUXT_SECRET_TOKEN!
 
 export function createToken(payload: any) {
   return new Promise<string>((res, rej) => {
