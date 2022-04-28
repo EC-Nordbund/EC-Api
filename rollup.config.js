@@ -91,7 +91,8 @@ export default {
     'swagger-ui-express',
     'express-rate-limit',
     'web-push',
-    'axios'
+    'axios',
+    'xlsx-template'
   ]
 }
 
