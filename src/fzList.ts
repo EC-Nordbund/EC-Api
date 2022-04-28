@@ -32,9 +32,26 @@ interface FZData {
 export async function createFZAll() {
   const getDATA = await getDataAll()
 
-  console.log(getDATA)
-
-  return render({ row: getDATA, heute: new Date() }, fzTemplates.all)
+  return render(
+    {
+      row: getDATA.map((v) => ({
+        personID: v.personID,
+        vorname: v.vorname,
+        nachname: v.nachname,
+        gebDat: v.gebDat,
+        bezeichnung: v.bezeichnung ?? 'N/A',
+        gesehenVon: v.gesehenVon ?? '',
+        gesehenAm: v.gesehenAm ?? '',
+        gueltigBis: v.gueltigBis ?? '',
+        gueltig: v.gueltig ?? false,
+        fzVon: v.fzVon ?? '',
+        erzeugt_durch: v.erzeugt_durch ?? '',
+        erzeugt: v.erzeugt ?? ''
+      })),
+      heute: new Date()
+    },
+    fzTemplates.all
+  )
 }
 
 function getDataAll() {
