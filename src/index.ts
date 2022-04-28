@@ -1,7 +1,7 @@
 import { schema } from './graphql'
 import { appVersion } from './config/version'
 import { ApolloServer } from 'apollo-server-express'
-import { json as jsonBody } from 'body-parser'
+import { json } from 'body-parser'
 import cors from 'cors'
 import express from 'express'
 import compression from 'compression'
@@ -28,7 +28,7 @@ const app = express()
   .use('/version', (req, res) => {
     res.end(`{"version": "${appVersion}"}`)
   })
-//  .use('/v6', json())
+  .use('/v6', json())
 
   .use(
     '/v6',
