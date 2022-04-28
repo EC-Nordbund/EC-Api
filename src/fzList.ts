@@ -32,7 +32,7 @@ interface FZData {
 export async function createFZAll() {
   const getDATA = await getDataAll()
 
-  return render({ rows: getDATA, heute: new Date() }, fzTemplates.all)
+  return render({ row: getDATA, heute: new Date() }, fzTemplates.all)
 }
 
 function getDataAll() {
