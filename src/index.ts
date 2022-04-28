@@ -14,6 +14,7 @@ import expressRateLimit from 'express-rate-limit'
 import * as http from 'http'
 
 import nuxt from './nuxt'
+import fz from './api/fz'
 
 const apollo = new ApolloServer({ schema })
 const app = express()
@@ -44,6 +45,7 @@ personen(app)
 ak(app)
 document(app)
 bestBrief(app)
+fz(app)
 
 apollo.start().then(() => {
   apollo.applyMiddleware({ app, path: '/graphql' })
