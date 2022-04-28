@@ -1,13 +1,18 @@
 import { query } from './helpers/mysql'
-import * as xlsx from 'xlsx-template/lib'
+import xlsx from 'xlsx-template'
+import { readFileSync } from 'fs'
 
-const fzTemplates = {
+const fzTemplates: Record<string, Buffer> = {
   ec: null,
   veranstaltung: null,
-  all: null
-}
+  all: readFileSync('./all.xlsx')
+} as any
 
-const template = new xlsx()
+function render(data: any, template: Buffer) {
+  const workbook = new xlsx(template)
+  workbook.substitute(1, data)
+  return workbook.generate('arraybuffer')
+}
 
 interface FZData {
   personID: number
@@ -22,6 +27,12 @@ interface FZData {
   fzVon: Date
   erzeugt_durch: string
   erzeugt: Date
+}
+
+export async function createFZAll() {
+  const getDATA = await getDataAll()
+
+  return render({ rows: getDATA, heute: new Date() }, fzTemplates.all)
 }
 
 function getDataAll() {
