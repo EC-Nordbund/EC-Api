@@ -1722,8 +1722,10 @@ export const schema = new GraphQLSchema({
             sql`SELECT ecKreis FROM personen WHERE personID = ${args.personID}`
           )[0]?.ecKreis
 
-          if(ecKreis) {
-            await query(sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`) 
+          if (ecKreis) {
+            await query(
+              sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
+            )
           }
         })
       },
@@ -2624,7 +2626,9 @@ export const schema = new GraphQLSchema({
                 await query(
                   `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'ecKreis ${args.gesundheitsinformationen}')`
                 )
-                await query(sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`)
+                await query(
+                  sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
+                )
               } else {
                 if (mailExisted) {
                   await sendMail(
@@ -2788,8 +2792,10 @@ export const schema = new GraphQLSchema({
                     sql`SELECT ecKreis FROM personen WHERE personID = ${personID}`
                   )[0]?.ecKreis
 
-                  if(ecKreis) {
-                    await query(sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`) 
+                  if (ecKreis) {
+                    await query(
+                      sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
+                    )
                   }
 
                   await createFZ(

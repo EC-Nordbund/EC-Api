@@ -18,7 +18,7 @@ import nuxt from './nuxt'
 const apollo = new ApolloServer({ schema })
 const app = express()
   //.use(compression())
-  .use(cors({origin: (o, cb) => cb(null, true)}))
+  .use(cors({ origin: (o, cb) => cb(null, true) }))
   .use('/time', (req, res) => {
     res.end(`{"time": ${new Date().getTime()}}`)
   })
@@ -28,7 +28,7 @@ const app = express()
   .use('/version', (req, res) => {
     res.end(`{"version": "${appVersion}"}`)
   })
-//  .use('/v6', json())
+  //  .use('/v6', json())
 
   .use(
     '/v6',
@@ -36,7 +36,7 @@ const app = express()
       windowMs: 1000,
       max: 2
     })
-  )//.use(json({ type: 'application/*+json'}))
+  ) //.use(json({ type: 'application/*+json'}))
 
 nuxt(app)
 user(app)
