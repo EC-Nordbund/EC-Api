@@ -14,11 +14,12 @@ import expressRateLimit from 'express-rate-limit'
 import * as http from 'http'
 
 import nuxt from './nuxt'
+import fz from './api/fz'
 
 const apollo = new ApolloServer({ schema })
 const app = express()
   //.use(compression())
-  .use(cors({origin: (o, cb) => cb(null, true)}))
+  .use(cors({ origin: (o, cb) => cb(null, true) }))
   .use('/time', (req, res) => {
     res.end(`{"time": ${new Date().getTime()}}`)
   })
@@ -36,7 +37,7 @@ const app = express()
       windowMs: 1000,
       max: 2
     })
-  )//.use(json({ type: 'application/*+json'}))
+  ) //.use(json({ type: 'application/*+json'}))
 
 nuxt(app)
 user(app)
@@ -44,6 +45,7 @@ personen(app)
 ak(app)
 document(app)
 bestBrief(app)
+fz(app)
 
 apollo.start().then(() => {
   apollo.applyMiddleware({ app, path: '/graphql' })

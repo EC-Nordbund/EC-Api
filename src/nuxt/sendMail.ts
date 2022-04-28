@@ -11,7 +11,7 @@ export const sendMail: ReturnType<typeof createTransport>['sendMail'] = async (
 ) => {
   if (!transport) {
     if (process.env.ON_SERVER) {
-      transport =  createTransport({
+      transport = createTransport({
         host: process.env.SMTP_SERVER || '',
         port: parseInt(process.env.SMTP_PORT || '1'),
         auth: {

@@ -221,9 +221,9 @@ export default (app) => {
       freizeitLeitung: ruleLib.checkboxRequired,
       tnBedingungen: ruleLib.tnBedingungen
     }
-console.log('post1.5')
+    console.log('post1.5')
 
-console.log(req.body)
+    console.log(req.body)
 
     const errVals = validate(rules, req.body)
     console.log('post2')

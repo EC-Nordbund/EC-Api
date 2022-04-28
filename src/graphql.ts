@@ -1718,6 +1718,15 @@ export const schema = new GraphQLSchema({
           await query(
             `INSERT INTO fzAntrag (personID) VALUES (${args.personID})`
           )
+          const ecKreisID = await query(
+            sql`SELECT ecKreis FROM personen WHERE personID = ${args.personID}`
+          )[0]?.ecKreis
+
+          if (ecKreis) {
+            await query(
+              sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
+            )
+          }
         })
       },
       editSonstiges: {
@@ -2602,20 +2611,23 @@ export const schema = new GraphQLSchema({
                 }
               }
 
+              const ecKreisID: number = (
+                await query(
+                  sql`SELECT ecKreisID FROM ecKreis WHERE lower(bezeichnung) = ${args.gesundheitsinformationen}`
+                )
+              )[0].ecKreisID
+
+              await query(
+                sql`UPDATE personen SET ecKreis = ${ecKreisID} WHERE personID = ${personID}`
+              )
+
               if (generateFlag) {
                 await createFZ(personID, args.eMail, adressID, 42)
                 await query(
                   `INSERT INTO fzAntrag(personID, erzeugt_durch) VALUES (${personID}, 'ecKreis ${args.gesundheitsinformationen}')`
                 )
-
-                const ecKreisID: number = (
-                  await query(
-                    sql`SELECT ecKreisID FROM ecKreis WHERE lower(bezeichnung) = ${args.gesundheitsinformationen}`
-                  )
-                )[0].ecKreisID
-
                 await query(
-                  sql`UPDATE personen SET ecKreis = ${ecKreisID} WHERE personID = ${personID}`
+                  sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
                 )
               } else {
                 if (mailExisted) {
@@ -2776,6 +2788,16 @@ export const schema = new GraphQLSchema({
                 }
 
                 if (generateFlag) {
+                  const ecKreisID = await query(
+                    sql`SELECT ecKreis FROM personen WHERE personID = ${personID}`
+                  )[0]?.ecKreis
+
+                  if (ecKreis) {
+                    await query(
+                      sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
+                    )
+                  }
+
                   await createFZ(
                     personID,
                     args.eMail,
