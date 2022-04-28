@@ -11,7 +11,7 @@ const fzTemplates: Record<string, Buffer> = {
 function render(data: any, template: Buffer) {
   const workbook = new xlsx(template)
   workbook.substitute(1, data)
-  return workbook.generate('arraybuffer')
+  return workbook.generate('nodebuffer')
 }
 
 interface FZData {
