@@ -65,7 +65,7 @@
     "js-sha3": "0.8.0",
     "jsonwebtoken": "8.5.1",
     "node-fetch": "2.6.7",
-    "nodemailer": "6.7.2",
+    "nodemailer": "6.7.4",
     "promise-mysql": "5.1.0",
     "remark": "13.0.0",
     "remark-html": "13.0.2",
