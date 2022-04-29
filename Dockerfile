@@ -1,4 +1,4 @@
-FROM node:17.4.0-alpine
+FROM node:17.9.0-alpine
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn
