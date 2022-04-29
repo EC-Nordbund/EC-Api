@@ -1348,10 +1348,10 @@ docx-templates-to-pdf@2.0.0:
   dependencies:
     mime-db "^1.45.0"
 
-docx-templates@4.9.0:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/docx-templates/-/docx-templates-4.9.0.tgz#f589e27f3ba90d99546590465449d0f28dea4c01"
-  integrity sha512-IzdoyGKEBZ55WCqG1lj0H+3ScZC8EfyyPbuXjc+n9o1hYRZIlA9jc9ylA3n2teuNUhdBeI6IXAWa2Gw0VqCMlw==
+docx-templates@4.9.2:
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/docx-templates/-/docx-templates-4.9.2.tgz#24e04b9f6dbeecdedab900486b548d9dca9968a0"
+  integrity sha512-NWuT7UBHRTBYpgFRpnFtdukY8H6BMqEgR0u3C2OOlCDM+lP28yGTgH/mMh7w8JSlrWzEWkCvcbLOR8XB2/mgow==
   dependencies:
     jszip "^3.5.0"
     sax "1.2.4"
