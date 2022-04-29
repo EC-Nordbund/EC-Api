@@ -64,7 +64,7 @@
     "inline-css": "3.0.0",
     "js-sha3": "0.8.0",
     "jsonwebtoken": "8.5.1",
-    "node-fetch": "2.6.7",
+    "node-fetch": "3.2.4",
     "nodemailer": "6.7.4",
     "promise-mysql": "5.1.0",
     "remark": "13.0.0",
