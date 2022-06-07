@@ -2517,7 +2517,7 @@ export const schema = new GraphQLSchema({
                 anmeldeID_start +
                 genFour(args.geschlecht === 'm') +
                 anmeldeID_ende
-            } while (!isUniqueAnmeldeID(anmeldeID));
+            } while (!isUniqueAnmeldeID(anmeldeID))
 
             let persons = await query(
               `SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`
@@ -2675,37 +2675,49 @@ export const schema = new GraphQLSchema({
                 const letzterWLPlatz = { m: 0, w: 0, gesamt: 0 }
                 const teilnehmerCounter = { m: 0, w: 0, gesamt: 0 }
 
-                aktuellLetzterWLPlatz.forEach(row => {
+                aktuellLetzterWLPlatz.forEach((row) => {
                   letzterWLPlatz[`${row.geschlecht}`] = row.wartelistenPlatz
                 })
 
-                letzterWLPlatz.gesamt = Math.max(letzterWLPlatz.m, letzterWLPlatz.w)
+                letzterWLPlatz.gesamt = Math.max(
+                  letzterWLPlatz.m,
+                  letzterWLPlatz.w
+                )
 
-                aktuellTeilnehmende.forEach(row => {
+                aktuellTeilnehmende.forEach((row) => {
                   teilnehmerCounter[`${row.geschlecht}`] = row.anzahlPersonen
                 })
 
-                teilnehmerCounter.gesamt = teilnehmerCounter.m + teilnehmerCounter.w
+                teilnehmerCounter.gesamt =
+                  teilnehmerCounter.m + teilnehmerCounter.w
 
                 const hatGeschlechterWL = vData.hatGWarteliste
-                const verfügbarePlätze = { absolut: vData.anzahlPlätze, m: vData.anzahlPlätzeMännlich, w: vData.anzahlPlätzeWeiblich }
+                const verfügbarePlätze = {
+                  absolut: vData.anzahlPlätze,
+                  m: vData.anzahlPlätzeMännlich,
+                  w: vData.anzahlPlätzeWeiblich
+                }
 
                 const geschlechtKey = args.geschlecht === 'm' ? 'm' : 'w'
 
                 if (hatGeschlechterWL) {
                   const letzerGeschlechtsWLPlatz = letzterWLPlatz[geschlechtKey]
-                  const angemeldetGeschlechtCounter = teilnehmerCounter[geschlechtKey]
+                  const angemeldetGeschlechtCounter =
+                    teilnehmerCounter[geschlechtKey]
                   if (letzerGeschlechtsWLPlatz > 0) {
                     wartelistenplatz = letzerGeschlechtsWLPlatz + 1
-                    } else {
-                    if (angemeldetGeschlechtCounter < verfügbarePlätze[geschlechtKey]) {
+                  } else {
+                    if (
+                      angemeldetGeschlechtCounter <
+                      verfügbarePlätze[geschlechtKey]
+                    ) {
                       if (teilnehmerCounter.gesamt < verfügbarePlätze.absolut) {
-                          wartelistenplatz = 0
-                        } else {
-                          wartelistenplatz = 1
-                        }
+                        wartelistenplatz = 0
                       } else {
                         wartelistenplatz = 1
+                      }
+                    } else {
+                      wartelistenplatz = 1
                     }
                   }
                 } else {
