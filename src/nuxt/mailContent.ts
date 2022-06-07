@@ -181,7 +181,7 @@ export async function createMailContentTN(
       Um deine Anmeldung zu bestätigen überprüfe deine Daten, lese bitte die Datenschutzhinweise und klicke dann
       auf Anmeldung bestätigen.
     </p>
-    <p>Sollte es einen Fehler in deinen Daten geben, melde dich bitte <b>erneut</b> an.</p>
+    <p>Sollte du daraufhin <b>keine abschließende E-Mail</b> mehr erhalten oder es einen Fehler in deinen Daten geben, melde dich bitte <b>erneut</b> an.</p>
     <div class="btn">
         <a href="https://www.ec-nordbund.de/anmeldung/token/${token}">Anmeldung bestätigen</a>
     </div>
