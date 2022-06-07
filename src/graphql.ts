@@ -2505,22 +2505,19 @@ export const schema = new GraphQLSchema({
                 (2 * Math.floor(Math.random() * 5) + (m ? 1 : 0)).toString()
               )
             }
-            const checkAnmeldeID = (id: string) => {
+            const isUniqueAnmeldeID = (id: string) => {
               return query(
                 `SELECT anmeldeID FROM anmeldungen WHERE anmeldeID = '${id}'`
               ).then((v) => v.length === 0)
             }
 
-            let anmeldeID =
-              anmeldeID_start +
-              genFour(args.geschlecht === 'm') +
-              anmeldeID_ende
-            while (!checkAnmeldeID(anmeldeID)) {
+            let anmeldeID
+            do {
               anmeldeID =
                 anmeldeID_start +
                 genFour(args.geschlecht === 'm') +
                 anmeldeID_ende
-            }
+            } while (!isUniqueAnmeldeID(anmeldeID));
 
             let persons = await query(
               `SELECT personID FROM personen WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`
@@ -2528,7 +2525,7 @@ export const schema = new GraphQLSchema({
             if (persons.length === 0) {
               // check in dublikaten Table
               const dubs = await query(
-                `SELECT zielPersonID FROM dublikate WHERE vorname="${args.vorname}"AND  nachname="${args.nachname}" AND gebDat="${args.gebDat}"`
+                `SELECT zielPersonID FROM dublikate WHERE vorname="${args.vorname}"AND nachname="${args.nachname}" AND gebDat="${args.gebDat}"`
               )
 
               if (dubs.length === 0) {
@@ -2548,7 +2545,7 @@ export const schema = new GraphQLSchema({
               `SELECT eMailID FROM eMails WHERE eMail="${args.eMail}" AND personID=${personID}`
             )
             const mailExisted = eMails.length !== 0
-            if (eMails.length === 0) {
+            if (!mailExisted) {
               await query(
                 `INSERT INTO eMails(eMail, personID) VALUES ("${args.eMail}",${personID})`
               )
@@ -2668,89 +2665,54 @@ export const schema = new GraphQLSchema({
             } else {
               let wartelistenplatz = 0
               if (args.position === 1) {
-                const maxWListPlatz: Array<any> = await query(
-                  `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS maxWlistPos FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} AND anmeldungen.position = 1 GROUP BY personen.geschlecht`
+                const aktuellLetzterWLPlatz: Array<any> = await query(
+                  `SELECT personen.geschlecht AS geschlecht, MAX(anmeldungen.wartelistenPlatz) AS wartelistenPlatz FROM anmeldungen, personen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} AND anmeldungen.position = 1 GROUP BY personen.geschlecht`
                 )
-                const anzahlPersonen: Array<any> = await query(
+                const aktuellTeilnehmende: Array<any> = await query(
                   `SELECT COUNT(personen.personID) AS anzahlPersonen, personen.geschlecht AS geschlecht FROM personen, anmeldungen WHERE personen.personID = anmeldungen.personID AND anmeldungen.veranstaltungsID = ${args.veranstaltungsID} AND anmeldungen.wartelistenPlatz = 0 AND anmeldungen.position = 1 GROUP BY personen.geschlecht`
                 )
 
-                let maxWlistMännlich = 0
-                let maxWlistWeiblich = 0
-                let anzahlMännlich = 0
-                let anzahlWeiblich = 0
+                const letzterWLPlatz = { m: 0, w: 0, gesamt: 0 }
+                const teilnehmerCounter = { m: 0, w: 0, gesamt: 0 }
 
-                maxWListPlatz.forEach((per) => {
-                  switch (per.geschlecht) {
-                    case 'm':
-                      maxWlistMännlich = per.maxWlistPos
-                      break
-                    case 'w':
-                      maxWlistWeiblich = per.maxWlistPos
-                      break
-                  }
+                aktuellLetzterWLPlatz.forEach(row => {
+                  letzterWLPlatz[`${row.geschlecht}`] = row.wartelistenPlatz
                 })
 
-                const maxWlistGesamt = Math.max(
-                  maxWlistMännlich,
-                  maxWlistWeiblich
-                )
+                letzterWLPlatz.gesamt = Math.max(letzterWLPlatz.m, letzterWLPlatz.w)
 
-                anzahlPersonen.forEach((per) => {
-                  switch (per.geschlecht) {
-                    case 'm':
-                      anzahlMännlich = per.anzahlPersonen
-                      break
-                    case 'w':
-                      anzahlWeiblich = per.anzahlPersonen
-                      break
-                  }
+                aktuellTeilnehmende.forEach(row => {
+                  teilnehmerCounter[`${row.geschlecht}`] = row.anzahlPersonen
                 })
 
-                const anzahlGesamt = anzahlMännlich + anzahlWeiblich
+                teilnehmerCounter.gesamt = teilnehmerCounter.m + teilnehmerCounter.w
 
-                const hatGWarteliste = vData.hatGWarteliste
-                const anzahlPlätze = vData.anzahlPlätze
-                const anzahlPlätzeWeiblich = vData.anzahlPlätzeWeiblich
-                const anzahlPlätzeMännlich = vData.anzahlPlätzeMännlich
+                const hatGeschlechterWL = vData.hatGWarteliste
+                const verfügbarePlätze = { absolut: vData.anzahlPlätze, m: vData.anzahlPlätzeMännlich, w: vData.anzahlPlätzeWeiblich }
 
-                const myGeschlecht = args.geschlecht
+                const geschlechtKey = args.geschlecht === 'm' ? 'm' : 'w'
 
-                if (hatGWarteliste) {
-                  if (myGeschlecht === 'm') {
-                    if (maxWlistMännlich > 0) {
-                      wartelistenplatz = maxWlistMännlich + 1
+                if (hatGeschlechterWL) {
+                  const letzerGeschlechtsWLPlatz = letzterWLPlatz[geschlechtKey]
+                  const angemeldetGeschlechtCounter = teilnehmerCounter[geschlechtKey]
+                  if (letzerGeschlechtsWLPlatz > 0) {
+                    wartelistenplatz = letzerGeschlechtsWLPlatz + 1
                     } else {
-                      if (anzahlMännlich < anzahlPlätzeMännlich) {
-                        if (anzahlGesamt < anzahlPlätze) {
+                    if (angemeldetGeschlechtCounter < verfügbarePlätze[geschlechtKey]) {
+                      if (teilnehmerCounter.gesamt < verfügbarePlätze.absolut) {
                           wartelistenplatz = 0
                         } else {
                           wartelistenplatz = 1
                         }
                       } else {
                         wartelistenplatz = 1
-                      }
-                    }
-                  } else {
-                    if (maxWlistWeiblich > 0) {
-                      wartelistenplatz = maxWlistWeiblich + 1
-                    } else {
-                      if (anzahlWeiblich < anzahlPlätzeWeiblich) {
-                        if (anzahlGesamt < anzahlPlätze) {
-                          wartelistenplatz = 0
-                        } else {
-                          wartelistenplatz = 1
-                        }
-                      } else {
-                        wartelistenplatz = 1
-                      }
                     }
                   }
                 } else {
-                  if (maxWlistGesamt > 0) {
-                    wartelistenplatz = maxWlistGesamt + 1
+                  if (letzterWLPlatz.gesamt > 0) {
+                    wartelistenplatz = letzterWLPlatz.gesamt + 1
                   } else {
-                    if (anzahlGesamt < anzahlPlätze) {
+                    if (teilnehmerCounter.gesamt < verfügbarePlätze.absolut) {
                       wartelistenplatz = 0
                     } else {
                       wartelistenplatz = 1
