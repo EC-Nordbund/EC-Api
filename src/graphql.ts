@@ -281,6 +281,14 @@ const ecKreis = new GraphQLObjectType({
     },
     website: {
       type: new GraphQLNonNull(GraphQLString)
+    },
+    fzPersonen: {
+      type: new GraphQLList(person),
+      resolve(val: { ecKreisID: number }) {
+        return query(
+          `SELECT * FROM personen WHERE personen.ecKreis = ${val.ecKreisID} AND (EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 7 YEAR))))`
+        )
+      }
     }
   })
 })
@@ -1009,6 +1017,15 @@ export const schema = new GraphQLSchema({
     name: 'rootQuery',
 
     fields: {
+      fzPersonen: {
+        args: addAuth({}),
+        type: new GraphQLList(person),
+        resolve: handleAuth(() =>
+          query(
+            `SELECT * FROM personen WHERE EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 7 YEAR)))`
+          )
+        )
+      },
       ecKreise: {
         args: addAuth({}),
         type: new GraphQLList(ecKreis),
