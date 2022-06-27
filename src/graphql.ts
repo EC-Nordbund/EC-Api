@@ -286,7 +286,7 @@ const ecKreis = new GraphQLObjectType({
       type: new GraphQLList(person),
       resolve(val: { ecKreisID: number }) {
         return query(
-          `SELECT * FROM personen WHERE personen.ecKreis = ${val.ecKreisID} AND (EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 7 YEAR))))`
+          `SELECT * FROM personen WHERE personen.ecKreis = ${val.ecKreisID} AND (EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 10 YEAR))))`
         )
       }
     }
@@ -1022,7 +1022,7 @@ export const schema = new GraphQLSchema({
         type: new GraphQLList(person),
         resolve: handleAuth(() =>
           query(
-            `SELECT * FROM personen WHERE EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 7 YEAR)))`
+            `SELECT * FROM personen WHERE EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 10 YEAR)))`
           )
         )
       },
