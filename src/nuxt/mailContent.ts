@@ -750,8 +750,8 @@ export async function erfolgMailContent(data: any): Promise<string> {
     <p>
       ${
         data.status == 0
-          ? 'Deine Anmeldung wurde bestätigt! Und du stehst nicht auf der Warteliste. (Beachte, dass der Hinweis zu Warteliste eine <b>unverbindliche</b> Mitteilung ist. Erst bei Erhalt der <b>Buchungsbestätigung</b> per Post ist ein Platz garantiert)'
-          : `Deine Anmeldung wurde bestätigt! - Leider bist du auf der Warteliste gelandet (Platz ${data.status}) (Beachte, dass der Hinweis zu Warteliste eine <b>unverbindliche</b> Mitteilung ist. Es kann sein, dass du in den nächsten Stunden von uns hörst, dass du mit dabei bist. (Falls du dich zu Begin der Anmeldephase anmeldest kann es durchaus sein, dass z.B. die verteilung der Plätze männlich / weiblich angepasst wird.)`
+          ? 'Deine Anmeldung wurde bestätigt! Und du stehst nicht auf der Warteliste. (Beachte, dass der Hinweis zu Warteliste eine <b>unverbindliche</b> Mitteilung ist. Erst bei Erhalt der <b>Buchungsbestätigung</b> per E-Mail ist ein Platz garantiert!)'
+          : `Deine Anmeldung wurde bestätigt! - Leider bist du auf der Warteliste gelandet (Platz ${data.status}) (Beachte, dass der Hinweis zu Warteliste eine <b>unverbindliche</b> Mitteilung ist. Es kann sein, dass du in den nächsten Stunden von uns hörst, dass du mit dabei bist. (Falls du dich zu Begin der Anmeldephase anmeldest kann es durchaus sein, dass z.B. die Verteilung der Plätze männlich / weiblich angepasst wird und du Nachrücken kannst!)`
       }
     </p>
     <div class="footer">
