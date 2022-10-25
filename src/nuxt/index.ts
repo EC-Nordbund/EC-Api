@@ -44,7 +44,8 @@ const vData = {
   454: 'LeitHaus',
 
   477: 'Christival 2022',
-  478: 'Der Ehe-Kurs'
+  478: 'Der Ehe-Kurs',
+  479: 'Dartsturnier'
 }
 export default (app) => {
   app.post('/nuxt/anmeldung/ma/checkToken', json(), (req, res) => {
