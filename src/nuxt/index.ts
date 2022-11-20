@@ -45,7 +45,20 @@ const vData = {
 
   477: 'Christival 2022',
   478: 'Der Ehe-Kurs',
-  479: 'Dartsturnier'
+  479: 'Dartsturnier',
+
+  // 2023
+  480: 'MaWoE - Großes Mitarbeiterwochenende',
+  481: 'Juleica-Grundkurs',
+  482: 'Karlsminde Kurz-Camp',
+  483: 'PfingstCamp',
+  484: 'Landesjungscharfreizeit 1',
+  485: 'Landesjungscharfreizeit 2',
+  486: 'TeenCamp',
+  487: 'Jugendfreizeit',
+  488: 'BibleCamp',
+  489: 'Abenteuerfreizeit',
+  490: 'Timeout'
 }
 export default (app) => {
   app.post('/nuxt/anmeldung/ma/checkToken', json(), (req, res) => {
