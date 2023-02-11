@@ -406,7 +406,8 @@ export default (app) => {
                   ')'),
             html: await erfolgMailContent({
               ...data,
-              status: gqlRes.data.data.anmelden.status
+              status: gqlRes.data.data.anmelden.status,
+              anmeldeID: gqlRes.data.data.anmelden.anmeldeID,
             })
           })
 
@@ -509,7 +510,8 @@ export default (app) => {
             subject: 'Anmeldung Bestätigt.',
             html: await erfolgMailContent({
               ...data,
-              status: 0
+              status: 0,
+              anmeldeID: gqlRes.data.data.anmelden.anmeldeID,
             })
           })
         }
@@ -574,7 +576,8 @@ export default (app) => {
             subject: 'Anmeldung Bestätigt.',
             html: await erfolgMailContent({
               ...data,
-              status: 0
+              status: 0,
+              anmeldeID: gqlRes.data.data.anmelden.anmeldeID,
             })
           })
         }

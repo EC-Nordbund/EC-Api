@@ -745,7 +745,7 @@ export async function erfolgMailContent(data: any): Promise<string> {
     <h1>Deine Anmeldung beim EC-Nordbund!</h1>
     <p>
       <b>Hallo ${data.vorname} ${data.nachname},</b><br><br>
-      danke für deine Anmeldung!
+      danke für deine Anmeldung (ID der Anmeldung (bitte bei Anfragen angeben): ${data.anmeldeID})!
     </p>
     <p>
       ${
