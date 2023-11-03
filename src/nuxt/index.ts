@@ -58,7 +58,16 @@ const vData = {
   487: 'Jugendfreizeit',
   488: 'BibleCamp',
   489: 'Abenteuerfreizeit',
-  490: 'Timeout'
+  490: 'Timeout',
+
+  497: 'MaWoE - Großes Mitarbeiterwochenende',
+  498: 'Juleica-Grundkurs',
+  492: 'Landesjungscharfreizeit 1',
+  493: 'Landesjungscharfreizeit 2',
+  491: 'TeenCamp',
+  494: 'Abenteuerfreizeit',
+  495: 'Reiterfreizeit',
+  496: 'Timeout'
 }
 export default (app) => {
   app.post('/nuxt/anmeldung/ma/checkToken', json(), (req, res) => {
