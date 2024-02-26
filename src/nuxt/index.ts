@@ -67,7 +67,8 @@ const vData = {
   491: 'TeenCamp',
   494: 'Abenteuerfreizeit',
   495: 'Reiterfreizeit',
-  496: 'Timeout'
+  496: 'Timeout',
+  499: 'TeenTag'
 }
 export default (app) => {
   app.post('/nuxt/anmeldung/ma/checkToken', json(), (req, res) => {
