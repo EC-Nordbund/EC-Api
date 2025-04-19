@@ -33,12 +33,10 @@ const vData = {
   511: 'BibleCamp',
   512: 'PfingstCamp',
   513: 'TeenCamp',
-  
-  
+
   514: 'Landesjungscharfreizeit I',
   515: 'Landesjungscharfreizeit II',
 
-  
   516: 'Juleica-Grundkurs',
   517: 'TimeOut 2021/22',
 
@@ -46,7 +44,6 @@ const vData = {
 
   // 2024:
 
-  
   473: 'TimeOut 2022/23',
   461: "EC'ler auf der Kanzel",
   462: 'Mitarbeiter Wochenende',
@@ -436,7 +433,7 @@ export default (app) => {
             html: await erfolgMailContent({
               ...data,
               status: gqlRes.data.data.anmelden.status,
-              anmeldeID: gqlRes.data.data.anmelden.anmeldeID,
+              anmeldeID: gqlRes.data.data.anmelden.anmeldeID
             })
           })
 
@@ -540,7 +537,7 @@ export default (app) => {
             html: await erfolgMailContent({
               ...data,
               status: 0,
-              anmeldeID: gqlRes.data.data.anmelden.anmeldeID,
+              anmeldeID: gqlRes.data.data.anmelden.anmeldeID
             })
           })
         }
@@ -606,7 +603,7 @@ export default (app) => {
             html: await erfolgMailContent({
               ...data,
               status: 0,
-              anmeldeID: gqlRes.data.data.anmelden.anmeldeID,
+              anmeldeID: gqlRes.data.data.anmelden.anmeldeID
             })
           })
         }
