@@ -42,6 +42,10 @@ const vData = {
   516: 'Juleica-Grundkurs',
   517: 'TimeOut 2021/22',
 
+  521: 'HeidePark 2025',
+
+  // 2024:
+
   
   473: 'TimeOut 2022/23',
   461: "EC'ler auf der Kanzel",
