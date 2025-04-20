@@ -67,7 +67,7 @@
     "node-fetch": "3.2.10",
     "nodemailer": "6.9.9",
     "promise-mysql": "5.1.0",
-    "remark": "13.0.0",
+    "remark": "14.0.3",
     "remark-html": "13.0.2",
     "sql-escape-tag": "1.0.0",
     "web-push": "3.4.5",
