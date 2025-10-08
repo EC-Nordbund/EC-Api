@@ -77,7 +77,7 @@ export async function createFZ(
     <p>P.S. Du musst das Zeugnis nur vorzeigen. Nicht abgeben. Wenn es für dich allerdings einfacher sein sollte, das Zeugnis einzuscannen und mir zuzumailen (bitte an <a href="mailto:fz@ec-nordbund.de">fz@ec-nordbund.de</a>), ist das für uns in Ordnung.<br>
     Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
     <p>Entschieden für Christus grüßt</p>
-    <p><b>ThomaS:-)</b></p>`
+    <p><b>Kirke Husberg</b></p>`
       : veranstaltungsID === 42
       ? `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
     <p>du hast dich gerade als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''} 
@@ -90,7 +90,7 @@ export async function createFZ(
     <p>P.S. Du musst das Zeugnis nur vorzeigen. Nicht abgeben. Wenn es für dich allerdings einfacher sein sollte, das Zeugnis einzuscannen und mir zuzumailen (bitte an <a href="mailto:fz@ec-nordbund.de">fz@ec-nordbund.de</a>), ist das für uns in Ordnung.<br>
     Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
     <p>Entschieden für Christus grüßt</p>
-    <p><b>ThomaS:-)</b></p>`
+    <p><b>Kirke Husberg</b></p>`
       : `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
     <p>du hast dich gerade als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''} 
     auf einer EC-Freizeit angemeldet. 
@@ -103,7 +103,7 @@ export async function createFZ(
     <p>P.S. Du musst das Zeugnis nur vorzeigen. Nicht abgeben. Wenn es für dich allerdings einfacher sein sollte, das Zeugnis einzuscannen und mir zuzumailen (bitte an <a href="mailto:fz@ec-nordbund.de">fz@ec-nordbund.de</a>), ist das für uns in Ordnung.<br>
     Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
     <p>Entschieden für Christus grüßt</p>
-    <p><b>ThomaS:-)</b></p>`
+    <p><b>Kirke Husberg</b></p>`
 
   // Sende Mail
   await mail(

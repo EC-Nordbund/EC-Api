@@ -2662,7 +2662,7 @@ export const schema = new GraphQLSchema({
                       .reverse()
                       .join(
                         '.'
-                      )} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`,
+                      )} also noch gültig.\nEntschieden für Christus grüßt\n Kirke Husberg`,
                     false
                   )
                 }
@@ -2840,7 +2840,7 @@ export const schema = new GraphQLSchema({
                         .reverse()
                         .join(
                           '.'
-                        )} also noch gültig.\nEntschieden für Christus grüßt\n ThomaS:-D`,
+                        )} also noch gültig.\nEntschieden für Christus grüßt\n Kirke Husberg`,
                       false
                     )
                   }

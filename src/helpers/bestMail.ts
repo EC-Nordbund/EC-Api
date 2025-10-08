@@ -153,7 +153,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       beginMinus18 >= gebDat
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
-    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Entschieden für Christus grüßt<br><b>ThomaS :-)</b></p>`
+    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Entschieden für Christus grüßt<br><b>Tobias Krahe & Kirke Husberg</b></p>`
   } else if (vData.briefID === 2) {
     text = `<p>Liebe Eltern von ${aData.vorname} ${
       aData.nachname
