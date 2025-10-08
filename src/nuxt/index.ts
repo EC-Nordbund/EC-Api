@@ -411,7 +411,7 @@ export default (app) => {
         if (!data.alter && gqlRes.data.data.anmelden.status >= 0) {
           await sendMail({
             to:
-              'kinder-referent@ec-nordbund.de;referent@ec-nordbund.de;app@ec-nordbund.de;BirgitHerbert@t-online.de',
+              'k.husberg@ec-nordbund.de;t.krahe@ec-nordbund.de;d.gaertner@ec-nordbund.de;app@ec-nordbund.de;BirgitHerbert@t-online.de',
             // to: 'app@ec-nordbund.de',
             from: 'anmeldung@ec-nordbund.de',
             subject: `Anmeldung mit fehlerhaften Alter`,
