@@ -2359,7 +2359,7 @@ export const schema = new GraphQLSchema({
             'automated@ec-nordbund.de',
             {
               to:
-                'app@ec-nordbund.de;d.gaertner@ec-nordbund.de;t.krahe@ec-nordbund.de;k.husberg@ec-nordbund.de;BirgitHerbert@t-online.de'
+                'app@ec-nordbund.de;dortje.gaertner@ec-nordbund.de;tobias.krahe@ec-nordbund.de;kirke.husberg@ec-nordbund.de;BirgitHerbert@t-online.de'
             },
             `Neue Abmeldung`,
             `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`
