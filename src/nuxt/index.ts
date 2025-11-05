@@ -28,6 +28,17 @@ function getAge(gebDat: string, wann?: string | Date) {
 // console.log('test')
 
 const vData = {
+  // 2026:
+  530: 'Landesjungscharfreizeit I',
+  531: 'Landesjungscharfreizeit II',
+  
+  533: 'MaWoE - Großes Mitarbeiterwochenende',
+  532: 'TeenCamp',
+
+  534: 'BibleCamp',
+  535: 'PfingstCamp',
+
+  
   // 2025:
   510: 'MaWoE - Großes Mitarbeiterwochenende',
   511: 'BibleCamp',
