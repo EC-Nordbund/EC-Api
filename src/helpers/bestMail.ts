@@ -170,7 +170,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       )} angemeldet.  Anbei erhalten Sie die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lesen Sie alles sorgfältig. Sie finden darin auch alle wichtigen Zahlungsinformationen.<br>
     Falls Sie Fragen haben, melden Sie sich gerne bei uns (Sie können einfach auf die E-Mail antworten).<br><br>Herzliche Grüße<br><b>Birgit Herbert</b></p>`
   } else if (vData.briefID === 3) {
-    text = `<p>Hallo ${aData.vorname} ${
+    text = `<p>Moin ${aData.vorname} ${
       aData.nachname
     },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
       .split('-')
@@ -186,9 +186,9 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       beginMinus18 >= gebDat
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
-    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Entschieden für Christus grüßt<br><b>Kirke Husberg</b></p>`
+    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Gott mit dir!<br>Beste Grüße<br><b>Kirke Husberg</b></p>`
   } else if (vData.briefID === 4) {
-    text = `<p>Hallo ${aData.vorname} ${
+    text = `<p>Moin ${aData.vorname} ${
       aData.nachname
     },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
       .split('-')
@@ -204,7 +204,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
       beginMinus18 >= gebDat
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
-    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Entschieden für Christus grüßt<br><b>Tobias Krahe</b></p>`
+    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Gott mit dir!<br>Beste Grüße<br><b>Tobias Krahe</b></p>`
   } 
 
   // Sende Mail
