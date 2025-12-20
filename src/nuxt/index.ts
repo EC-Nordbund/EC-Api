@@ -38,6 +38,9 @@ const vData = {
   534: 'BibleCamp',
   535: 'PfingstCamp',
 
+
+  537: 'Busfahrt EC-Festival',
+
   
   // 2025:
   510: 'MaWoE - Großes Mitarbeiterwochenende',
