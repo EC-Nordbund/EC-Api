@@ -96,7 +96,7 @@ const vData = {
   493: 'Landesjungscharfreizeit 2',
   491: 'TeenCamp',
   494: 'Abenteuerfreizeit',
-  495: 'Reiterfreizeit',
+  542: 'Reiterfreizeit',
   496: 'Timeout',
   499: 'TeenTag'
 }
