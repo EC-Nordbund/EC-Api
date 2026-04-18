@@ -66,7 +66,7 @@ const vData = {
   466: 'Landesjungscharfreizeit II',
   467: 'TeenCamp',
   468: 'BibleCamp',
-  470: 'Abenteuerfreizeit',
+  540: 'Abenteuerfreizeit',
   469: 'Reiterfreizeit',
   472: 'MaTag',
   451: 'TimeOut 2021/22',
