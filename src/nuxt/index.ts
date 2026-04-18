@@ -91,7 +91,7 @@ const vData = {
   490: 'Timeout',
 
   497: 'MaWoE - Großes Mitarbeiterwochenende',
-  498: 'Juleica-Grundkurs',
+  542: 'Juleica-Grundkurs',
   492: 'Landesjungscharfreizeit 1',
   493: 'Landesjungscharfreizeit 2',
   491: 'TeenCamp',
