@@ -41,6 +41,8 @@ const vData = {
 
   537: 'Busfahrt EC-Festival',
 
+  543: 'Connect',
+
   
   // 2025:
   510: 'MaWoE - Großes Mitarbeiterwochenende',
