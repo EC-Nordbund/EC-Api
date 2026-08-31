@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [14]
+        node: [18]
 
     steps:
       - uses: actions/setup-node@v3
@@ -19,14 +19,14 @@ jobs:
         uses: actions/checkout@master
 
       - name: Install dependencies
-        run: yarn
+        run: npm ci
 
       - name: Build
-        run: yarn build
+        run: npm run build
         env:
           CI: true
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint
         env:
           CI: true
