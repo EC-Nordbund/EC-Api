@@ -55,7 +55,6 @@ export default (app: Express): void => {
     await checkAuth(req)
     res.json({
       status: await changePWD(
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         req.headers.authorization!,
         req.body.oldPassword,
         req.body.newPassword

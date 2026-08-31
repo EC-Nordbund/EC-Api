@@ -10,7 +10,10 @@ export class ecError extends Error {
    * @param message Fehlermeldung
    * @param code HTTP-Status-Code
    */
-  constructor(message: string, public code = 500) {
+  constructor(
+    message: string,
+    public code = 500
+  ) {
     super(message)
     this.name = 'EC-Fehler'
   }

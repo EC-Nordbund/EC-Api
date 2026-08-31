@@ -1,6 +1,7 @@
 import { schema } from './graphql'
 import { appVersion } from './config/version'
-import { ApolloServer } from 'apollo-server-express'
+import { ApolloServer } from '@apollo/server'
+import { expressMiddleware } from '@as-integrations/express4'
 import { json } from 'body-parser'
 import cors from 'cors'
 import express from 'express'
@@ -48,7 +49,7 @@ bestBrief(app)
 fz(app)
 
 apollo.start().then(() => {
-  apollo.applyMiddleware({ app, path: '/graphql' })
+  app.use('/graphql', json(), expressMiddleware(apollo))
 
   http.createServer(app).listen(4000)
 })

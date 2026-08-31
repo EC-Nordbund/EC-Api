@@ -1,4 +1,5 @@
 import { writeFileSync } from 'fs';
+import { relative, dirname } from 'path';
 
 const comlinkTSD = []
 const _ = new Set()
@@ -14,9 +15,14 @@ export function comlink({ type = 'web', types = './src/shim-worker.d.ts' } = {})
 
         if (id.split('?').length === 1 && !_.has(id)) {
 
+          // relativer Pfad, damit die generierte .d.ts maschinenunabhängig ist
+          const relPath = './' + relative(dirname(types), res.id)
+            .replace(/\\/g, '/')
+            .replace(/\.[tj]s$/, '');
+
           const tsd = `
 declare module "${id}" {
-  const worker: import('comlink').Remote<typeof import(${JSON.stringify(res.id.split('.')[0].split(/\\|\//).map((v, i) => i === 0 ? v.toLowerCase() : v).join('/'))}).default>
+  const worker: import('comlink').Remote<typeof import(${JSON.stringify(relPath)}).default>
   export default worker
 }
               `;

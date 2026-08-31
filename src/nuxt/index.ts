@@ -31,19 +31,17 @@ const vData = {
   // 2026:
   530: 'Landesjungscharfreizeit I',
   531: 'Landesjungscharfreizeit II',
-  
+
   533: 'MaWoE - Großes Mitarbeiterwochenende',
   532: 'TeenCamp',
 
   534: 'BibleCamp',
   535: 'PfingstCamp',
 
-
   537: 'Busfahrt EC-Festival',
 
   543: 'Connect',
 
-  
   // 2025:
   510: 'MaWoE - Großes Mitarbeiterwochenende',
   511: 'BibleCamp',
@@ -93,7 +91,6 @@ const vData = {
   490: 'Timeout',
 
   497: 'MaWoE - Großes Mitarbeiterwochenende',
-  542: 'Juleica-Grundkurs',
   492: 'Landesjungscharfreizeit 1',
   493: 'Landesjungscharfreizeit 2',
   491: 'TeenCamp',
@@ -304,13 +301,11 @@ export default (app) => {
             .split('')
             .filter((v) => /\d/.test(v))
             .join('')
-          if (
-            !(
-              checknum.length >= 0 &&
-              parseInt(checknum) % 97 === parseInt(p) &&
-              aid.length == 15
-            )
-          ) {
+          if (!(
+            checknum.length >= 0 &&
+            parseInt(checknum) % 97 === parseInt(p) &&
+            aid.length == 15
+          )) {
             errVals.push(
               'Du bist unter 18 und musst den echten Code von einem Erwachsenen Teilnehmer angeben!'
             )
@@ -426,8 +421,7 @@ export default (app) => {
 
         if (!data.alter && gqlRes.data.data.anmelden.status >= 0) {
           await sendMail({
-            to:
-              'kirke.husberg@ec-nordbund.de;tobias.krahe@ec-nordbund.de;dortje.gaertner@ec-nordbund.de;app@ec-nordbund.de;BirgitHerbert@t-online.de',
+            to: 'kirke.husberg@ec-nordbund.de;tobias.krahe@ec-nordbund.de;dortje.gaertner@ec-nordbund.de;app@ec-nordbund.de;BirgitHerbert@t-online.de',
             // to: 'app@ec-nordbund.de',
             from: 'anmeldung@ec-nordbund.de',
             subject: `Anmeldung mit fehlerhaften Alter`,

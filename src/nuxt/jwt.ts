@@ -27,22 +27,18 @@ export function createToken(payload: any) {
 
 export function checkToken<T = any>(token: string) {
   return new Promise<T>((res, rej) => {
-    verify(
-      token,
-      secret_token,
-      (err: Error | null, decoded: object | undefined) => {
-        if (err) {
-          rej(err)
-          return
-        }
-
-        if (!decoded) {
-          rej('No Data provided')
-          return
-        }
-
-        res((decoded as any) as T)
+    verify(token, secret_token, (err: Error | null, decoded: any) => {
+      if (err) {
+        rej(err)
+        return
       }
-    )
+
+      if (!decoded) {
+        rej('No Data provided')
+        return
+      }
+
+      res(decoded as any as T)
+    })
   })
 }
