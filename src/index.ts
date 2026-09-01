@@ -17,6 +17,14 @@ import * as http from 'http'
 import nuxt from './nuxt'
 import fz from './api/fz'
 
+// Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
+// ein einzelner vergessener Fehlerpfad in einem async-Express-Handler riss
+// sonst die komplette API um (so geschehen bei /nuxt/anmeldung/ma/…).
+// Loggen statt sterben; echte Fehler tauchen so im Log auf.
+process.on('unhandledRejection', (reason) => {
+  console.error('[unhandledRejection]', reason)
+})
+
 const apollo = new ApolloServer({ schema })
 const app = express()
   //.use(compression())
