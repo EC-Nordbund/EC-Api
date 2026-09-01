@@ -205,6 +205,24 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
     }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Gott mit dir!<br>Beste Grüße<br><b>Tobias Krahe</b></p>`
+  } else if (vData.briefID === 5) {
+    text = `<p>Moin ${aData.vorname} ${
+      aData.nachname
+    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
+      .split('-')
+      .reverse()
+      .join('.')} - ${vData.ende
+      .toISOString()
+      .split('T')[0]
+      .split('-')
+      .reverse()
+      .join(
+        '.'
+      )} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
+      beginMinus18 >= gebDat
+        ? ''
+        : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
+    }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Gott mit dir!<br>Beste Grüße<br><b>Dortje Gaertner</b></p>`
   }
 
   // Sende Mail

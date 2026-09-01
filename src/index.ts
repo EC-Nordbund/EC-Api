@@ -16,6 +16,7 @@ import * as http from 'http'
 
 import nuxt from './nuxt'
 import fz from './api/fz'
+import sync from './api/sync'
 
 // Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
 // ein einzelner vergessener Fehlerpfad in einem async-Express-Handler riss
@@ -55,6 +56,7 @@ ak(app)
 document(app)
 bestBrief(app)
 fz(app)
+sync(app)
 
 apollo.start().then(() => {
   app.use('/graphql', json(), expressMiddleware(apollo))
