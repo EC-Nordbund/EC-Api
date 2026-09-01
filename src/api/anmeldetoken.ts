@@ -12,8 +12,7 @@ import { createToken } from '../nuxt/jwt'
  * Pro Rolle (rollen.rollenID >= 2, dynamisch aus der DB) wird ein JWT mit
  * Payload { d: "<veranstaltungsID>|<position>" } signiert — exakt das Format,
  * das /nuxt/anmeldung/ma/* der Website-Anmeldung erwartet. Gültigkeit:
- * bis einen Tag nach Veranstaltungsbeginn, gekappt auf 100 Tage (das war
- * schon immer der kommunizierte Rahmen der Links).
+ * bis einen Tag nach Veranstaltungsbeginn.
  */
 export default (app: Express): void => {
   app.post('/v6/anmeldetoken', json(), async (req, res) => {
@@ -36,15 +35,14 @@ export default (app: Express): void => {
         return
       }
 
-      // Link-Gültigkeit: bis begin + 1 Tag, maximal 100 Tage, mindestens 1 h
-      const MAX = 100 * 24 * 60 * 60
+      // Link-Gültigkeit: bis begin + 1 Tag, mindestens 1 h
       const untilBegin = Math.floor(
         (new Date(vRows[0].begin).getTime() +
           24 * 60 * 60 * 1000 -
           Date.now()) /
           1000
       )
-      const expiresIn = Math.max(60 * 60, Math.min(MAX, untilBegin))
+      const expiresIn = Math.max(60 * 60, untilBegin)
 
       const rollen = await query<{ rollenID: number; bezeichnung: string }>(
         'SELECT rollenID, bezeichnung FROM rollen WHERE rollenID >= 2 ORDER BY rollenID'
