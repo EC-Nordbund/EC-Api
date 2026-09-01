@@ -32,35 +32,52 @@ async function getAnmeldeData(aID: string): Promise<any> {
   ).then((v) => v[0])
 }
 
-export async function createBriefVeranstaltung(vID: number) {
+export interface BriefReport {
+  gesendet: string[]
+  fehler: { anmeldeID: string; grund: string }[]
+}
+
+/**
+ * Verschickt Bestätigungsbriefe an alle offenen Anmeldungen einer
+ * Veranstaltung (fester Platz, Teilnehmer, noch kein Brief). Ein Fehler bei
+ * einer Anmeldung bricht die Serie NICHT ab — der Report sagt hinterher
+ * genau, wer seinen Brief bekommen hat und bei wem es woran scheiterte.
+ */
+export async function createBriefVeranstaltung(
+  vID: number
+): Promise<BriefReport> {
   const anmeldeIDs: { anmeldeID: string }[] = await query(
     sql`SELECT anmeldeID FROM anmeldungen WHERE wartelistenPlatz = 0 AND position = 1 AND bestaetigungsBrief is null AND veranstaltungsID = ${vID}`
   )
   const vData = await getVData(vID)
-
-  for (let i = 0; i < anmeldeIDs.length; i++) {
-    const aData = await getAnmeldeData(anmeldeIDs[i].anmeldeID)
-    await createBriefFromData(aData, vData)
+  if (!vData) {
+    throw new Error(`Veranstaltung ${vID} nicht gefunden`)
   }
+
+  const report: BriefReport = { gesendet: [], fehler: [] }
+  for (let i = 0; i < anmeldeIDs.length; i++) {
+    const anmeldeID = anmeldeIDs[i].anmeldeID
+    try {
+      const aData = await getAnmeldeData(anmeldeID)
+      await createBriefFromData(aData, vData)
+      report.gesendet.push(anmeldeID)
+    } catch (err) {
+      console.error(`Bestätigungsbrief ${anmeldeID} fehlgeschlagen:`, err)
+      report.fehler.push({ anmeldeID, grund: String(err).slice(0, 200) })
+    }
+  }
+  return report
 }
 
 export async function createBriefAnmeldung(anmeldeID: string) {
   const aData = await getAnmeldeData(anmeldeID)
+  if (!aData) {
+    throw new Error(`Anmeldung ${anmeldeID} nicht gefunden`)
+  }
   const vData = await getVData(aData.veranstaltungsID)
 
-  createBriefFromData(aData, vData)
+  await createBriefFromData(aData, vData)
 }
-
-const anhaenge = (async () => [
-  {
-    content: await readFile('./tnBedingungen.pdf'),
-    filename: 'TeilnahmeBedingungen.pdf'
-  },
-  {
-    content: await readFile('./sicherungsschein.pdf'),
-    filename: 'Sicherungsschein.pdf'
-  }
-])()
 
 async function createBriefFromData(aData: any, vData: any): Promise<void> {
   // Erzeuge PDF
@@ -78,12 +95,25 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     .toISOString()
     .split('T')[0]
 
+  // NULL-sicher: `datum > null` ist in JS immer true (null -> 0) — ohne die
+  // Guards bekam bei fehlendem lastMinuteAb JEDER den Last-Minute-Preis
   const type =
+    vData.fruehbucherBis != null &&
     aData.anmeldeZeitpunkt < vData.fruehbucherBis
       ? 'Fruehbucher'
-      : aData.anmeldeZeitpunkt > vData.lastMinuteAb
+      : vData.lastMinuteAb != null &&
+          aData.anmeldeZeitpunkt > vData.lastMinuteAb
         ? 'LastMinute'
         : 'Normal'
+
+  // ende ist nullable (eintägige Veranstaltungen) — Fallback auf begin
+  const beginStr = begin.split('-').reverse().join('.')
+  const endeStr = ((vData.ende ?? vData.begin) as Date)
+    .toISOString()
+    .split('T')[0]
+    .split('-')
+    .reverse()
+    .join('.')
 
   const preis = vData[`preis${type}`]
 
@@ -110,13 +140,8 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
         ort: aData.ort
       },
       name: vData.name,
-      begin: begin.split('-').reverse().join('.'),
-      ende: vData.ende
-        .toISOString()
-        .split('T')[0]
-        .split('-')
-        .reverse()
-        .join('.'),
+      begin: beginStr,
+      ende: endeStr,
       jahr: begin.split('-')[0],
       ort: vData.ort,
       anzahlung: vData.anzahlung + ',00',
@@ -139,17 +164,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
   if (vData.briefID === 1) {
     text = `<p>Hallo ${aData.vorname} ${
       aData.nachname
-    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
-      .toISOString()
-      .split('T')[0]
-      .split('-')
-      .reverse()
-      .join(
-        '.'
-      )} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
+    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${beginStr} - ${endeStr} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
       beginMinus18 >= gebDat
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
@@ -157,32 +172,12 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
   } else if (vData.briefID === 2) {
     text = `<p>Liebe Eltern von ${aData.vorname} ${
       aData.nachname
-    },<br>Sie haben ihr Kind zu unserem Angebot ${vData.name} vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
-      .toISOString()
-      .split('T')[0]
-      .split('-')
-      .reverse()
-      .join(
-        '.'
-      )} angemeldet.  Anbei erhalten Sie die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lesen Sie alles sorgfältig. Sie finden darin auch alle wichtigen Zahlungsinformationen.<br>
+    },<br>Sie haben ihr Kind zu unserem Angebot ${vData.name} vom ${beginStr} - ${endeStr} angemeldet.  Anbei erhalten Sie die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lesen Sie alles sorgfältig. Sie finden darin auch alle wichtigen Zahlungsinformationen.<br>
     Falls Sie Fragen haben, melden Sie sich gerne bei uns (Sie können einfach auf die E-Mail antworten).<br><br>Herzliche Grüße<br><b>Birgit Herbert</b></p>`
   } else if (vData.briefID === 3) {
     text = `<p>Moin ${aData.vorname} ${
       aData.nachname
-    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
-      .toISOString()
-      .split('T')[0]
-      .split('-')
-      .reverse()
-      .join(
-        '.'
-      )} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
+    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${beginStr} - ${endeStr} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
       beginMinus18 >= gebDat
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
@@ -190,17 +185,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
   } else if (vData.briefID === 4) {
     text = `<p>Moin ${aData.vorname} ${
       aData.nachname
-    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
-      .toISOString()
-      .split('T')[0]
-      .split('-')
-      .reverse()
-      .join(
-        '.'
-      )} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
+    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${beginStr} - ${endeStr} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
       beginMinus18 >= gebDat
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
@@ -208,17 +193,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
   } else if (vData.briefID === 5) {
     text = `<p>Moin ${aData.vorname} ${
       aData.nachname
-    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
-      .toISOString()
-      .split('T')[0]
-      .split('-')
-      .reverse()
-      .join(
-        '.'
-      )} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
+    },<br>Du hast dich zu unserem Angebot ${vData.name} vom ${beginStr} - ${endeStr} angemeldet.  Anbei bekommst du die Buchungsbestätigung zusammen mit unseren Teilnahmebedingungen und dem gesetzlich vorgeschriebenen Sicherungsschein. Bitte lies alles sorgfältig. Du findest darin auch die für dich jetzt wichtigen Zahlungsinformationen.<br>${
       beginMinus18 >= gebDat
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
@@ -230,17 +205,13 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     'anmeldung@ec-nordbund.de',
     {
       to: aData.eMail,
-      cc: vData.informAnmeldecenter,
+      // nodemailer trennt Mehrfachempfänger mit Komma, nicht Semikolon
+      cc: vData.informAnmeldecenter?.replace(/;/g, ',') ?? undefined,
       bcc: 'datenschutz@ec-nordbund.de'
     },
     `Buchungsbestätigung für ${aData.vorname} ${aData.nachname} für ${
       vData.name
-    } vom ${begin.split('-').reverse().join('.')} - ${vData.ende
-      .toISOString()
-      .split('T')[0]
-      .split('-')
-      .reverse()
-      .join('.')}`,
+    } vom ${beginStr} - ${endeStr}`,
     text,
     true,
     [
@@ -256,7 +227,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
         filename: 'Sicherungsschein.pdf'
       }
     ],
-    vData.informAnmeldecenter
+    vData.informAnmeldecenter?.replace(/;/g, ',') ?? undefined
   )
 
   await query(
