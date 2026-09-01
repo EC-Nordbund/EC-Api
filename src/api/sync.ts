@@ -92,10 +92,7 @@ function validate(v: SyncVeranstaltung): string[] {
     errs.push('begin muss YYYY-MM-DD sein')
   if (v.ende != null && (typeof v.ende !== 'string' || !DATE_RE.test(v.ende)))
     errs.push('ende muss YYYY-MM-DD oder null sein')
-  if (
-    typeof v.veranstaltungsort !== 'string' ||
-    !v.veranstaltungsort.trim()
-  )
+  if (typeof v.veranstaltungsort !== 'string' || !v.veranstaltungsort.trim())
     errs.push('veranstaltungsort fehlt')
   if (typeof v.ort !== 'string' || !v.ort.trim() || v.ort.length > 250)
     errs.push('ort fehlt oder > 250 Zeichen')
@@ -280,52 +277,56 @@ async function syncOne(v: SyncVeranstaltung): Promise<SyncResult> {
 }
 
 export default (app: Express): void => {
-  app.post('/sync/veranstaltungen', json({ limit: '2mb' }), async (req, res) => {
-    if (!process.env.SYNC_TOKEN) {
-      res.status(503).json({ status: 'DISABLED' })
-      return
-    }
-    if (!checkSyncToken(req.headers.authorization)) {
-      res.status(401).json({ status: 'UNAUTHORIZED' })
-      return
-    }
+  app.post(
+    '/sync/veranstaltungen',
+    json({ limit: '2mb' }),
+    async (req, res) => {
+      if (!process.env.SYNC_TOKEN) {
+        res.status(503).json({ status: 'DISABLED' })
+        return
+      }
+      if (!checkSyncToken(req.headers.authorization)) {
+        res.status(401).json({ status: 'UNAUTHORIZED' })
+        return
+      }
 
-    const body = req.body
-    if (!body || !Array.isArray(body.veranstaltungen)) {
-      res.status(400).json({
-        status: 'ERROR',
-        context: 'Body braucht { veranstaltungen: [...] }'
-      })
-      return
-    }
-
-    const dryRun = body.dryRun === true
-    const results: SyncResult[] = []
-
-    for (const v of body.veranstaltungen as SyncVeranstaltung[]) {
-      const slug = typeof v?.slug === 'string' ? v.slug : '(ohne slug)'
-      const errs = validate(v)
-      if (errs.length > 0) {
-        results.push({
-          slug,
-          status: 'error',
-          error: 'VALIDATION',
-          context: errs
+      const body = req.body
+      if (!body || !Array.isArray(body.veranstaltungen)) {
+        res.status(400).json({
+          status: 'ERROR',
+          context: 'Body braucht { veranstaltungen: [...] }'
         })
-        continue
+        return
       }
-      if (dryRun) {
-        results.push({ slug, status: 'validated' })
-        continue
-      }
-      try {
-        results.push(await syncOne(v))
-      } catch (err) {
-        console.error(`sync/veranstaltungen [${slug}]:`, err)
-        results.push({ slug, status: 'error', error: 'DB_ERROR' })
-      }
-    }
 
-    res.status(200).json({ results })
-  })
+      const dryRun = body.dryRun === true
+      const results: SyncResult[] = []
+
+      for (const v of body.veranstaltungen as SyncVeranstaltung[]) {
+        const slug = typeof v?.slug === 'string' ? v.slug : '(ohne slug)'
+        const errs = validate(v)
+        if (errs.length > 0) {
+          results.push({
+            slug,
+            status: 'error',
+            error: 'VALIDATION',
+            context: errs
+          })
+          continue
+        }
+        if (dryRun) {
+          results.push({ slug, status: 'validated' })
+          continue
+        }
+        try {
+          results.push(await syncOne(v))
+        } catch (err) {
+          console.error(`sync/veranstaltungen [${slug}]:`, err)
+          results.push({ slug, status: 'error', error: 'DB_ERROR' })
+        }
+      }
+
+      res.status(200).json({ results })
+    }
+  )
 }
