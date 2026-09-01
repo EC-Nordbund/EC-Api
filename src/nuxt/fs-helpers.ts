@@ -70,6 +70,26 @@ export function validateToken(token: string): any {
   return data
 }
 
+/**
+ * Macht validateToken rückgängig, wenn das eigentliche Speichern der
+ * Anmeldung danach fehlschlug. Ohne Rollback war der Token nach jedem
+ * transienten Fehler (DB weg, GraphQL-Self-Call down, …) verbrannt:
+ * der Nutzer sah nur noch "Anmeldung bereits bestätigt", die Anmeldung
+ * existierte aber nie.
+ */
+export function rollbackToken(token: string) {
+  if (!isToken(token)) return
+  const filename = path.join(__dirname, ANMELDUNG_SAVE_DIR, token + '.json')
+  try {
+    const data = JSON.parse(fs.readFileSync(filename, 'utf-8'))
+    if (data.finished && data.__old) {
+      fs.writeFileSync(filename, JSON.stringify(data.__old))
+    }
+  } catch (ex) {
+    console.error('rollbackToken fehlgeschlagen:', ex)
+  }
+}
+
 function expired(time: string) {
   if (time === 'NEVER') {
     return false

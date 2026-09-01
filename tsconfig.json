@@ -9,8 +9,17 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
-    "types": ["node"],
-    "lib": ["esnext.asynciterable", "es2017"]
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "esnext.asynciterable",
+      "es2017"
+    ],
+    "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/shim-worker.d.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/shim-worker.d.ts"
+  ]
 }

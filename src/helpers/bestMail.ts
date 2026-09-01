@@ -82,8 +82,8 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     aData.anmeldeZeitpunkt < vData.fruehbucherBis
       ? 'Fruehbucher'
       : aData.anmeldeZeitpunkt > vData.lastMinuteAb
-      ? 'LastMinute'
-      : 'Normal'
+        ? 'LastMinute'
+        : 'Normal'
 
   const preis = vData[`preis${type}`]
 
@@ -205,7 +205,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
         ? ''
         : 'Bitte leite diese Informationen auch an deine Eltern weiter.<br>'
     }Falls du Fragen hast, melde dich gerne bei uns (du kannst einfach auf die E-Mail antworten).<br><br>Gott mit dir!<br>Beste Grüße<br><b>Tobias Krahe</b></p>`
-  } 
+  }
 
   // Sende Mail
   await mail(
@@ -217,10 +217,7 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     },
     `Buchungsbestätigung für ${aData.vorname} ${aData.nachname} für ${
       vData.name
-    } vom ${begin
-      .split('-')
-      .reverse()
-      .join('.')} - ${vData.ende
+    } vom ${begin.split('-').reverse().join('.')} - ${vData.ende
       .toISOString()
       .split('T')[0]
       .split('-')
@@ -235,7 +232,9 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
         filename: 'TeilnahmeBedingungen.pdf'
       },
       {
-        content: await readFile(`./sicherungsschein_${begin.split('-')[0]}.pdf`),
+        content: await readFile(
+          `./sicherungsschein_${begin.split('-')[0]}.pdf`
+        ),
         filename: 'Sicherungsschein.pdf'
       }
     ],

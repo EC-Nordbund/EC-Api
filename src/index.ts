@@ -1,6 +1,7 @@
 import { schema } from './graphql'
 import { appVersion } from './config/version'
-import { ApolloServer } from 'apollo-server-express'
+import { ApolloServer } from '@apollo/server'
+import { expressMiddleware } from '@as-integrations/express4'
 import { json } from 'body-parser'
 import cors from 'cors'
 import express from 'express'
@@ -15,6 +16,14 @@ import * as http from 'http'
 
 import nuxt from './nuxt'
 import fz from './api/fz'
+
+// Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
+// ein einzelner vergessener Fehlerpfad in einem async-Express-Handler riss
+// sonst die komplette API um (so geschehen bei /nuxt/anmeldung/ma/…).
+// Loggen statt sterben; echte Fehler tauchen so im Log auf.
+process.on('unhandledRejection', (reason) => {
+  console.error('[unhandledRejection]', reason)
+})
 
 const apollo = new ApolloServer({ schema })
 const app = express()
@@ -48,7 +57,7 @@ bestBrief(app)
 fz(app)
 
 apollo.start().then(() => {
-  apollo.applyMiddleware({ app, path: '/graphql' })
+  app.use('/graphql', json(), expressMiddleware(apollo))
 
   http.createServer(app).listen(4000)
 })

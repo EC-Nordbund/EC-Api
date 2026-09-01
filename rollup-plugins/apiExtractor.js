@@ -75,6 +75,7 @@ export function apiExtractor() {
     async generateBundle() {
       const code = `
 import { Base } from './api-base'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type emptyObj = Record<string, never>
 
 export class API extends Base {

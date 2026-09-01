@@ -79,7 +79,7 @@ export async function createFZ(
     <p>Entschieden für Christus grüßt</p>
     <p><b>Kirke Husberg</b></p>`
       : veranstaltungsID === 42
-      ? `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
+        ? `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
     <p>du hast dich gerade als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''} 
     in deinem EC-Kreis oder deiner Gemeinschaft angemeldet. 
     Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>
@@ -91,7 +91,7 @@ export async function createFZ(
     Du bist nur nicht verpflichtet, es uns zur Verfügung zu stellen, so dass wir es speichern können. Wir notieren uns keine Inhalte des Zeugnisses und löschen auch die Mail, falls du das wünscht...</p>
     <p>Entschieden für Christus grüßt</p>
     <p><b>Kirke Husberg</b></p>`
-      : `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
+        : `<p>Hey <b>${p.vorname} ${p.nachname}</b>,</p>
     <p>du hast dich gerade als Mitarbeiter${p.geschlecht === 'w' ? 'in' : ''} 
     auf einer EC-Freizeit angemeldet. 
     Das freut uns ungemein. <b>Danke für deinen Einsatz.</b><br>

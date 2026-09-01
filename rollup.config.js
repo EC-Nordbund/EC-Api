@@ -2,10 +2,10 @@ import esbuild from 'rollup-plugin-esbuild'
 import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
-import { apiExtractor } from './rollup-plugins/apiExtractor'
-import { terser } from "rollup-plugin-terser";
-import { minifySql } from './rollup-plugins/minifySql'
-import { comlink } from './rollup-plugins/comlink'
+import { apiExtractor } from './rollup-plugins/apiExtractor.js'
+import terser from '@rollup/plugin-terser';
+import { minifySql } from './rollup-plugins/minifySql.js'
+import { comlink } from './rollup-plugins/comlink.js'
 
 const nodeExternals = [
   'assert',
@@ -76,7 +76,8 @@ export default {
   external: [
     ...nodeExternals,
     'docx-templates-to-pdf',
-    'apollo-server-express',
+    '@apollo/server',
+    '@as-integrations/express4',
     'compression',
     'cors',
     'express',

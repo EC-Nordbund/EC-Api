@@ -1,6 +1,11 @@
 import * as fs from 'fs'
 import { ruleLib } from './rules'
-import { saveForConfirm, validateToken, cleanup } from './fs-helpers'
+import {
+  saveForConfirm,
+  validateToken,
+  cleanup,
+  rollbackToken
+} from './fs-helpers'
 import { validate } from './validate'
 import { json } from 'body-parser'
 import { sendMail } from './sendMail'
@@ -13,6 +18,7 @@ import {
   erfolgMailContent
 } from './mailContent'
 import { checkToken } from './jwt'
+import { query } from '../helpers/mysql'
 
 function getAge(gebDat: string, wann?: string | Date) {
   const today = wann ? new Date(wann) : new Date()
@@ -31,19 +37,17 @@ const vData = {
   // 2026:
   530: 'Landesjungscharfreizeit I',
   531: 'Landesjungscharfreizeit II',
-  
+
   533: 'MaWoE - Großes Mitarbeiterwochenende',
   532: 'TeenCamp',
 
   534: 'BibleCamp',
   535: 'PfingstCamp',
 
-
   537: 'Busfahrt EC-Festival',
 
   543: 'Connect',
 
-  
   // 2025:
   510: 'MaWoE - Großes Mitarbeiterwochenende',
   511: 'BibleCamp',
@@ -93,7 +97,6 @@ const vData = {
   490: 'Timeout',
 
   497: 'MaWoE - Großes Mitarbeiterwochenende',
-  542: 'Juleica-Grundkurs',
   492: 'Landesjungscharfreizeit 1',
   493: 'Landesjungscharfreizeit 2',
   491: 'TeenCamp',
@@ -214,6 +217,25 @@ export default (app) => {
 
       const { email } = req.body
 
+      // Veranstaltungsname: erst die (historisch handgepflegte) vData-Map,
+      // sonst aus der DB. Der alte String-Fallback lief für jede numerische
+      // ID ohne Map-Eintrag auf (2)[0].toUpperCase() → TypeError, und das
+      // anschließende `throw ex` im catch tötete als unhandled rejection
+      // den kompletten API-Prozess (jede Anmeldung zu einer neuen, nicht
+      // eingetragenen Veranstaltung).
+      let vName = vData[veranstaltungsID as keyof typeof vData]
+      if (!vName && typeof veranstaltungsID === 'number') {
+        vName = (
+          await query<{ bezeichnung: string }>(
+            `SELECT bezeichnung FROM veranstaltungen WHERE veranstaltungsID = ${veranstaltungsID}`
+          )
+        )[0]?.bezeichnung
+      }
+      if (!vName && typeof veranstaltungsID === 'string') {
+        // Ort-Anmeldung: ID ist der Ortsname (z. B. 'schleswig')
+        vName = `EC-${veranstaltungsID[0]!.toUpperCase()}${veranstaltungsID.slice(1)}`
+      }
+
       const mail = await sendMail({
         to: email,
         from: 'anmeldung@ec-nordbund.de',
@@ -221,13 +243,7 @@ export default (app) => {
           veranstaltungsID == 454 && position == 1
             ? 'Teilnehmer'
             : 'Mitarbeiter'
-        } beim EC-Nordbund (${
-          vData[veranstaltungsID as keyof typeof vData] ||
-          /* eslint-disable */
-          // @ts-ignore veranstaltungsID kann hier ein String sein.
-          `EC-${veranstaltungsID[0].toUpperCase()}${veranstaltungsID.slice(1)}`
-          /* eslint-enable */
-        })`,
+        } beim EC-Nordbund (${vName || 'EC-Nordbund'})`,
         html:
           typeof veranstaltungsID !== 'number'
             ? await createMailContentMAOrt(req.body, token)
@@ -239,12 +255,14 @@ export default (app) => {
         status: 'OK'
       })
     } catch (ex) {
+      // KEIN rethrow: in einem async-Express-4-Handler fängt das niemand —
+      // die unhandled rejection beendete den Node-Prozess (Node >= 15)
+      console.error('anmeldung/ma/veranstaltung fehlgeschlagen:', ex)
       res.status(500)
       res.json({
         status: 'ERROR',
         context: ex
       })
-      throw ex
     }
   })
   // app.use(async (req, res, next) => {
@@ -304,13 +322,11 @@ export default (app) => {
             .split('')
             .filter((v) => /\d/.test(v))
             .join('')
-          if (
-            !(
-              checknum.length >= 0 &&
-              parseInt(checknum) % 97 === parseInt(p) &&
-              aid.length == 15
-            )
-          ) {
+          if (!(
+            checknum.length >= 0 &&
+            parseInt(checknum) % 97 === parseInt(p) &&
+            aid.length == 15
+          )) {
             errVals.push(
               'Du bist unter 18 und musst den echten Code von einem Erwachsenen Teilnehmer angeben!'
             )
@@ -374,8 +390,17 @@ export default (app) => {
   app.post('/nuxt/confirm/:token', json(), async (req, res) => {
     const token = req.params.token
 
+    // validateToken markiert den Token sofort als verbraucht; wenn das
+    // Speichern danach scheitert, muss das rückgängig gemacht werden —
+    // sonst ist die Anmeldung weg und jeder weitere Versuch sieht nur
+    // noch "bereits bestätigt". dbCommitted wird erst gesetzt, wenn die
+    // anmelden-Mutation nachweislich Daten geliefert hat.
+    let tokenConsumed = false
+    let dbCommitted = false
+
     try {
       const data = validateToken(token)
+      tokenConsumed = true
 
       const type = data.__internals.type
 
@@ -421,13 +446,17 @@ export default (app) => {
           query: gqlCode
         })
 
+        if (!gqlRes.data?.data?.anmelden) {
+          throw gqlRes.data?.errors ?? 'GraphQL-Antwort ohne Daten'
+        }
+        dbCommitted = true
+
         // console.log('res', gqlRes)
         // console.log(JSON.stringify(gqlRes))
 
         if (!data.alter && gqlRes.data.data.anmelden.status >= 0) {
           await sendMail({
-            to:
-              'kirke.husberg@ec-nordbund.de;tobias.krahe@ec-nordbund.de;dortje.gaertner@ec-nordbund.de;app@ec-nordbund.de;BirgitHerbert@t-online.de',
+            to: 'kirke.husberg@ec-nordbund.de;tobias.krahe@ec-nordbund.de;dortje.gaertner@ec-nordbund.de;app@ec-nordbund.de;BirgitHerbert@t-online.de',
             // to: 'app@ec-nordbund.de',
             from: 'anmeldung@ec-nordbund.de',
             subject: `Anmeldung mit fehlerhaften Alter`,
@@ -545,6 +574,11 @@ export default (app) => {
           query: gqlCode
         })
 
+        if (!gqlRes.data?.data?.anmelden) {
+          throw gqlRes.data?.errors ?? 'GraphQL-Antwort ohne Daten'
+        }
+        dbCommitted = true
+
         if (gqlRes.data.data.anmelden.status >= 0) {
           await sendMail({
             to: data.email,
@@ -609,6 +643,11 @@ export default (app) => {
           query: gqlCode
         })
 
+        if (!gqlRes.data?.data?.anmelden) {
+          throw gqlRes.data?.errors ?? 'GraphQL-Antwort ohne Daten'
+        }
+        dbCommitted = true
+
         console.log(gqlRes)
 
         if (gqlRes.data.data.anmelden.status >= 0) {
@@ -641,6 +680,11 @@ export default (app) => {
       })
     } catch (ex) {
       console.log(ex)
+      if (tokenConsumed && !dbCommitted) {
+        // Speichern fehlgeschlagen -> Token wieder freigeben, damit der
+        // Nutzer die Bestätigung erneut versuchen kann
+        rollbackToken(token)
+      }
       res.status(500)
       res.json({
         status: 'ERROR',

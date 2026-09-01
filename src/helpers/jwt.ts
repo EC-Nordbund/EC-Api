@@ -1,7 +1,6 @@
 import { sign, verify } from 'jsonwebtoken'
 import { payload } from '../types/payload'
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const secret_token = process.env.JWT_SECRET!
 
 /**
