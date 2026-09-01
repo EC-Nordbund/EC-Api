@@ -1,13 +1,16 @@
-import { sign, verify } from 'jsonwebtoken'
+import { sign, verify, SignOptions } from 'jsonwebtoken'
 
 const secret_token = process.env.NUXT_SECRET_TOKEN!
 
-export function createToken(payload: any) {
+export function createToken(
+  payload: any,
+  expiresIn: SignOptions['expiresIn'] = '100d'
+) {
   return new Promise<string>((res, rej) => {
     sign(
       payload,
       secret_token,
-      { expiresIn: '100d', issuer: 'ec-nordbund' },
+      { expiresIn, issuer: 'ec-nordbund' },
       (err: Error | null, encoded: string | undefined) => {
         if (err) {
           rej(err)
