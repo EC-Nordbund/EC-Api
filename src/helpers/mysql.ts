@@ -41,6 +41,37 @@ export async function query<T = any>(sql: string, uid = -1): Promise<T[]> {
 }
 
 /**
+ * Führt fn mit einer dedizierten Connection in einer Transaktion aus.
+ * Commit bei Erfolg, Rollback bei jedem Fehler, Release garantiert.
+ *
+ * Bewusst NICHT getMySQL(): dessen 10-Sekunden-Auto-Release würde die
+ * Connection mitten in einer laufenden Transaktion freigeben.
+ * Queries innerhalb von fn sollen parametrisiert laufen:
+ * conn.query('… WHERE x = ?', [wert])
+ */
+export async function withConnection<T>(
+  fn: (conn: PoolConnection) => Promise<T>
+): Promise<T> {
+  await ensurePool()
+  const connection = await pool!.getConnection()
+  try {
+    await connection.beginTransaction()
+    const result = await fn(connection)
+    await connection.commit()
+    return result
+  } catch (err) {
+    try {
+      await connection.rollback()
+    } catch (rollbackErr) {
+      console.error('Rollback fehlgeschlagen:', rollbackErr)
+    }
+    throw err
+  } finally {
+    connection.release()
+  }
+}
+
+/**
  * Gibt eine Connection aus. Und relased sie automatisch.
  *
  * @author Sebastian

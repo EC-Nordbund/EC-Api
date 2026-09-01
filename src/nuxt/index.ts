@@ -105,6 +105,29 @@ const vData = {
   496: 'Timeout',
   499: 'TeenTag'
 }
+/**
+ * Anzeigename einer Veranstaltung für Mail-Betreffe: erst die (historisch
+ * handgepflegte) vData-Map, sonst DB-Lookup, sonst generischer Fallback.
+ * Wirft nie — ein fehlender Name darf keine Anmeldung verhindern.
+ */
+async function getVeranstaltungsName(
+  veranstaltungsID: number
+): Promise<string> {
+  const fromMap = vData[veranstaltungsID as keyof typeof vData]
+  if (fromMap) return fromMap
+  try {
+    const rows = await query<{ bezeichnung: string }>(
+      `SELECT bezeichnung FROM veranstaltungen WHERE veranstaltungsID = ${
+        Number.isInteger(veranstaltungsID) ? veranstaltungsID : -1
+      }`
+    )
+    if (rows[0]?.bezeichnung) return rows[0].bezeichnung
+  } catch (err) {
+    console.error('getVeranstaltungsName:', err)
+  }
+  return 'EC-Nordbund'
+}
+
 export default (app) => {
   app.post('/nuxt/anmeldung/ma/checkToken', json(), (req, res) => {
     checkToken(req.body.token)
@@ -217,23 +240,15 @@ export default (app) => {
 
       const { email } = req.body
 
-      // Veranstaltungsname: erst die (historisch handgepflegte) vData-Map,
-      // sonst aus der DB. Der alte String-Fallback lief für jede numerische
-      // ID ohne Map-Eintrag auf (2)[0].toUpperCase() → TypeError, und das
-      // anschließende `throw ex` im catch tötete als unhandled rejection
-      // den kompletten API-Prozess (jede Anmeldung zu einer neuen, nicht
-      // eingetragenen Veranstaltung).
-      let vName = vData[veranstaltungsID as keyof typeof vData]
-      if (!vName && typeof veranstaltungsID === 'number') {
-        vName = (
-          await query<{ bezeichnung: string }>(
-            `SELECT bezeichnung FROM veranstaltungen WHERE veranstaltungsID = ${veranstaltungsID}`
-          )
-        )[0]?.bezeichnung
-      }
-      if (!vName && typeof veranstaltungsID === 'string') {
+      // Anzeigename für den Betreff (Map → DB → Fallback); der alte
+      // String-Fallback crashte bei numerischen IDs ohne Map-Eintrag,
+      // Historie siehe getVeranstaltungsName
+      let vName: string
+      if (typeof veranstaltungsID === 'string') {
         // Ort-Anmeldung: ID ist der Ortsname (z. B. 'schleswig')
         vName = `EC-${veranstaltungsID[0]!.toUpperCase()}${veranstaltungsID.slice(1)}`
+      } else {
+        vName = await getVeranstaltungsName(veranstaltungsID)
       }
 
       const mail = await sendMail({
@@ -357,9 +372,9 @@ export default (app) => {
       const mail = await sendMail({
         to: email,
         from: 'anmeldung@ec-nordbund.de',
-        subject: `Deine Anmeldung beim EC-Nordbund (${
-          vData[parseInt(req.params.id) as keyof typeof vData]
-        })`, // TODO: welche Veranstaltung
+        subject: `Deine Anmeldung beim EC-Nordbund (${await getVeranstaltungsName(
+          parseInt(req.params.id)
+        )})`,
         // html: `
         //   <p>Um deine Anmeldung zu bestätigen klicke <a href="https://www.ec-nordbund.de/anmeldung/token/${token}">HIER</a>.<br>Oder gebe den Verifizierungscode ${token} auf <a href="https://www.ec-nordbund.de/anmeldung/token">https://www.ec-nordbund.de/anmeldung/token</a> ein</p>
         //   <p>Deine Anmeldung für ... TOKEN: ${token}</p>
