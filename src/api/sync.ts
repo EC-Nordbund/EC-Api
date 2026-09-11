@@ -17,6 +17,11 @@ import { withConnection } from '../helpers/mysql'
  * Prod-Schema existieren (Schema-Drift: preisAnzahlung*, xlsx*, infoBrief*,
  * bestaetigungsBrief* gibt es nur in Prod — nie anfassen, Defaults bleiben).
  * Kein Delete-Pfad: Absagen/Löschungen bleiben Verwaltungssache.
+ *
+ * Jahrgangswechsel: Weicht das Beginn-Jahr im CMS vom Jahr der verknüpften
+ * DB-Zeile ab, wird NICHT umdatiert, sondern eine neue Veranstaltung
+ * angelegt (Status 'recreated'). Die Action schreibt deren ID ins
+ * Frontmatter zurück; der alte Jahrgang behält seine Anmeldungen.
  */
 
 interface SyncVeranstaltung {
@@ -49,7 +54,8 @@ interface SyncVeranstaltung {
 
 type SyncResult = {
   slug: string
-  status: 'created' | 'updated' | 'adopted' | 'validated' | 'error'
+  status:
+    'created' | 'recreated' | 'updated' | 'adopted' | 'validated' | 'error'
   veranstaltungsID?: number
   warning?: string
   error?: string
@@ -170,6 +176,48 @@ function setValues(v: SyncVeranstaltung, vOrtID: number): unknown[] {
   ]
 }
 
+/**
+ * Legt die Veranstaltung an. Kollidiert sie mit UNIQUE(bezeichnung, begin),
+ * wird die bestehende Zeile adoptiert und aktualisiert — Idempotenz-Netz für
+ * den Fall, dass ein früherer Lauf angelegt hat, der ID-Rückschreib-Commit
+ * aber scheiterte.
+ */
+async function insertOrAdopt(
+  conn: any,
+  v: SyncVeranstaltung,
+  vOrtID: number
+): Promise<SyncResult> {
+  try {
+    const ins = await conn.query(
+      `INSERT INTO veranstaltungen SET ${SET_SQL}`,
+      setValues(v, vOrtID)
+    )
+    return { slug: v.slug, status: 'created', veranstaltungsID: ins.insertId }
+  } catch (err: any) {
+    if (err?.code !== 'ER_DUP_ENTRY') throw err
+    const existing = await conn.query(
+      'SELECT veranstaltungsID, kurzBezeichnung FROM veranstaltungen WHERE bezeichnung = ? AND `begin` = ?',
+      [v.bezeichnung.trim(), v.begin]
+    )
+    if (existing.length === 0) throw err
+    const id: number = existing[0].veranstaltungsID
+    await conn.query(
+      `UPDATE veranstaltungen SET ${SET_SQL} WHERE veranstaltungsID = ?`,
+      [...setValues(v, vOrtID), id]
+    )
+    const warn =
+      existing[0].kurzBezeichnung !== v.kurzBezeichnung
+        ? `kurzBezeichnung weicht ab (DB: ${existing[0].kurzBezeichnung})`
+        : undefined
+    return {
+      slug: v.slug,
+      status: 'adopted',
+      veranstaltungsID: id,
+      ...(warn ? { warning: warn } : {})
+    }
+  }
+}
+
 async function syncOne(v: SyncVeranstaltung): Promise<SyncResult> {
   return withConnection<SyncResult>(async (conn) => {
     // 1) vOrte get-or-create über UNIQUE bezeichnung.
@@ -205,7 +253,7 @@ async function syncOne(v: SyncVeranstaltung): Promise<SyncResult> {
     // 2) Update-Pfad: ID ist gesetzt
     if (v.veranstaltungsID != null) {
       const exists = await conn.query(
-        'SELECT veranstaltungsID FROM veranstaltungen WHERE veranstaltungsID = ?',
+        'SELECT veranstaltungsID, YEAR(`begin`) AS beginJahr FROM veranstaltungen WHERE veranstaltungsID = ?',
         [v.veranstaltungsID]
       )
       if (exists.length === 0) {
@@ -213,6 +261,29 @@ async function syncOne(v: SyncVeranstaltung): Promise<SyncResult> {
         // Prod/Dev-Verwechslung hin
         return { slug: v.slug, status: 'error', error: 'ID_NOT_FOUND' }
       }
+
+      // Anderes Beginn-Jahr = anderer Jahrgang. Dann NICHT die bestehende
+      // Zeile umdatieren: eine fortgeschriebene Markdown-Datei (Datum auf
+      // das Folgejahr gesetzt) wuerde sonst den Vorjahrgang samt seiner
+      // Anmeldungen, Preise und Briefe ueberschreiben. Stattdessen eine
+      // neue Veranstaltung anlegen; die neue ID schreibt die Action ins
+      // Frontmatter zurueck, die alte Zeile bleibt unangetastet.
+      // YEAR() in SQL statt Date-Parsing in JS — kein Zeitzonen-Versatz.
+      const dbJahr: number | null = exists[0].beginJahr ?? null
+      const neuJahr = parseInt(v.begin.slice(0, 4), 10)
+      if (dbJahr && dbJahr !== neuJahr) {
+        const neu = await insertOrAdopt(conn, v, vOrtID)
+        const hinweis =
+          `Beginn-Jahr geaendert (DB ${dbJahr} -> ${neuJahr}): neue Veranstaltung ` +
+          `${neu.veranstaltungsID} ${neu.status === 'adopted' ? 'uebernommen' : 'angelegt'}, ` +
+          `${v.veranstaltungsID} bleibt unveraendert`
+        return {
+          ...neu,
+          status: neu.status === 'adopted' ? 'adopted' : 'recreated',
+          warning: neu.warning ? `${hinweis}; ${neu.warning}` : hinweis
+        }
+      }
+
       try {
         await conn.query(
           `UPDATE veranstaltungen SET ${SET_SQL} WHERE veranstaltungsID = ?`,
@@ -237,42 +308,7 @@ async function syncOne(v: SyncVeranstaltung): Promise<SyncResult> {
     }
 
     // 3) Create-Pfad
-    try {
-      const ins = await conn.query(
-        `INSERT INTO veranstaltungen SET ${SET_SQL}`,
-        setValues(v, vOrtID)
-      )
-      return {
-        slug: v.slug,
-        status: 'created',
-        veranstaltungsID: ins.insertId
-      }
-    } catch (err: any) {
-      if (err?.code !== 'ER_DUP_ENTRY') throw err
-      // UNIQUE(bezeichnung, begin) existiert schon: Zeile adoptieren —
-      // Idempotenz-Netz für den Fall, dass ein früherer Lauf angelegt hat,
-      // der ID-Rückschreib-Commit aber scheiterte.
-      const existing = await conn.query(
-        'SELECT veranstaltungsID, kurzBezeichnung FROM veranstaltungen WHERE bezeichnung = ? AND `begin` = ?',
-        [v.bezeichnung.trim(), v.begin]
-      )
-      if (existing.length === 0) throw err
-      const id: number = existing[0].veranstaltungsID
-      await conn.query(
-        `UPDATE veranstaltungen SET ${SET_SQL} WHERE veranstaltungsID = ?`,
-        [...setValues(v, vOrtID), id]
-      )
-      const warn =
-        existing[0].kurzBezeichnung !== v.kurzBezeichnung
-          ? `kurzBezeichnung weicht ab (DB: ${existing[0].kurzBezeichnung})`
-          : undefined
-      return {
-        slug: v.slug,
-        status: 'adopted',
-        veranstaltungsID: id,
-        ...(warn ? { warning: warn } : {})
-      }
-    }
+    return insertOrAdopt(conn, v, vOrtID)
   })
 }
 
