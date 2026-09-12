@@ -52,7 +52,10 @@ const app = express()
  * (z. B. "1" fuer genau einen Hop).
  */
 const trustProxy = process.env.TRUST_PROXY || 'loopback, linklocal, uniquelocal'
-app.set('trust proxy', /^\d+$/.test(trustProxy) ? Number(trustProxy) : trustProxy)
+app.set(
+  'trust proxy',
+  /^\d+$/.test(trustProxy) ? Number(trustProxy) : trustProxy
+)
 
 app
   //.use(compression())
