@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `portalAudit` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ---------------------------------------------------------------------------
--- Ortsverantwortliche/r als echte Personen-Referenz.
+-- FZ-Verantwortliche/r als echte Personen-Referenz.
 -- `fz_verantwortlicher` (Freitext) bleibt und wird von der Verwaltung im selben
 -- UPDATE mitgeschrieben — fz-mail-system/cron.php nutzt es als Mail-Anrede und
 -- bleibt dadurch unverändert lauffähig.
@@ -96,3 +96,16 @@ ALTER TABLE `ecKreis`
 ALTER TABLE `portalUser`
   ADD COLUMN IF NOT EXISTS `token_gen` int(11) NOT NULL DEFAULT 0
     AFTER `pw_changed_at`;
+
+-- ---------------------------------------------------------------------------
+-- Zweite Rolle je EC-Kreis: die/der Ortsverantwortliche.
+--
+-- Bewusst getrennt von fz_verantwortlicher_personID: die beiden Aufgaben haben
+-- nichts miteinander zu tun. Der FZ-Verantwortliche sieht Fuehrungszeugnisse,
+-- der Ortsverantwortliche pflegt die Mitgliederliste des Kreises. Wer beides
+-- macht, wird in beiden Spalten eingetragen.
+-- ---------------------------------------------------------------------------
+ALTER TABLE `ecKreis`
+  ADD COLUMN IF NOT EXISTS `ortsverantwortlicher_personID` int(11) DEFAULT NULL
+    AFTER `fz_verantwortlicher_personID`,
+  ADD KEY IF NOT EXISTS `ortsverantwortlicher_personID` (`ortsverantwortlicher_personID`);

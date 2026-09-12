@@ -32,6 +32,15 @@ import {
   type PortalScope
 } from '../portal/scope'
 import { KUECHEN_VORLAGE } from '../portal/config'
+import {
+  entferneAusKreis,
+  kreisMitglieder,
+  ladeStatusListe,
+  personAnlegenOderUebernehmen,
+  pruefeNeuePerson,
+  setzeStatus
+} from '../portal/mitglieder'
+import { sendeKreiswechsel } from '../portal/mail'
 
 /**
  * REST-Routen des EC-Portals (Freizeitleitung und Ortsverantwortliche).
@@ -230,7 +239,12 @@ export default (app: Express): void => {
           ecKreisID: k.ecKreisID,
           bezeichnung: k.bezeichnung,
           needsFZ: k.needsFZ,
-          offen: await offeneImKreis(k.ecKreisID)
+          rollen: k.rollen,
+          // Der Zaehler gehoert zur Fuehrungszeugnis-Liste; wer nur
+          // Ortsverantwortliche ist, sieht sie gar nicht.
+          offen: k.rollen.includes('fz')
+            ? await offeneImKreis(k.ecKreisID)
+            : null
         }))
       )
 
@@ -281,7 +295,8 @@ export default (app: Express): void => {
     try {
       const scope = await requirePortal(req)
       const ecKreisID = ganzzahlParam(req.params.id)
-      assertKreis(scope, ecKreisID)
+      // Die Fuehrungszeugnis-Liste sieht nur die FZ-Verantwortliche.
+      assertKreis(scope, ecKreisID, 'fz')
 
       const modus = req.query.modus === 'alle' ? 'alle' : 'ampel'
       const daten = await kreisListe(ecKreisID, modus)
@@ -389,6 +404,136 @@ export default (app: Express): void => {
       portalErrorHandler(err, res)
     }
   })
+
+  /* --------------------------------------------- Mitgliederliste ---------- */
+
+  /**
+   * Die Aufgabe der oder des Ortsverantwortlichen: alle Personen des Kreises,
+   * unabhaengig davon, ob je ein Fuehrungszeugnis im Spiel war.
+   */
+  app.get(
+    '/portal/kreis/:id/mitglieder',
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requirePortal(req)
+        const ecKreisID = ganzzahlParam(req.params.id)
+        assertKreis(scope, ecKreisID, 'ort')
+
+        const daten = await kreisMitglieder(ecKreisID)
+
+        await audit(
+          scope.portalUserID,
+          'liste.mitglieder',
+          `kreis:${ecKreisID}`,
+          req
+        )
+        keinCache(res)
+        res.json({ ...daten, status: await ladeStatusListe() })
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  app.patch(
+    '/portal/kreis/:id/mitglied/:personID',
+    body(),
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requirePortal(req)
+        const ecKreisID = ganzzahlParam(req.params.id)
+        assertKreis(scope, ecKreisID, 'ort')
+
+        const personID = ganzzahlParam(req.params.personID)
+        await setzeStatus(personID, ecKreisID, req.body?.ecMitglied)
+
+        await audit(
+          scope.portalUserID,
+          'mitglied.status',
+          `person:${personID}`,
+          req
+        )
+        keinCache(res)
+        res.json({ status: 'OK' })
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  app.delete(
+    '/portal/kreis/:id/mitglied/:personID',
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requirePortal(req)
+        const ecKreisID = ganzzahlParam(req.params.id)
+        assertKreis(scope, ecKreisID, 'ort')
+
+        const personID = ganzzahlParam(req.params.personID)
+        await entferneAusKreis(personID, ecKreisID)
+
+        await audit(
+          scope.portalUserID,
+          'mitglied.entfernt',
+          `person:${personID}`,
+          req
+        )
+        keinCache(res)
+        res.json({ status: 'OK' })
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  /**
+   * "+ Neu": Person anlegen oder aus dem Bestand uebernehmen.
+   *
+   * Die Dublettenpruefung folgt der Anmeldelogik der Website (siehe
+   * portal/mitglieder.ts). Gehoerte die Person bisher zu einem anderen Kreis,
+   * wird sie uebernommen und die Geschaeftsstelle bekommt eine Meldung --
+   * sonst verlöre der abgebende Kreis sie kommentarlos.
+   */
+  app.post(
+    '/portal/kreis/:id/mitglied',
+    body(),
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requirePortal(req)
+        const ecKreisID = ganzzahlParam(req.params.id)
+        assertKreis(scope, ecKreisID, 'ort')
+
+        const eingabe = pruefeNeuePerson(req.body)
+        const ergebnis = await personAnlegenOderUebernehmen(eingabe, ecKreisID)
+
+        await audit(
+          scope.portalUserID,
+          `mitglied.${ergebnis.art}`,
+          `person:${ergebnis.personID}`,
+          req
+        )
+
+        if (ergebnis.art === 'umgezogen' && ergebnis.vorherigerKreis) {
+          const kreis = scope.kreise.find((k) => k.ecKreisID === ecKreisID)
+          // Der Versand darf den Vorgang nicht scheitern lassen -- die Person
+          // ist zu diesem Zeitpunkt bereits umgehaengt.
+          sendeKreiswechsel({
+            vorname: eingabe.vorname,
+            nachname: eingabe.nachname,
+            gebDat: req.body?.gebDat ?? '',
+            vonKreis: ergebnis.vorherigerKreis.bezeichnung,
+            nachKreis: kreis?.bezeichnung ?? String(ecKreisID),
+            durch: `${scope.vorname} ${scope.nachname}`
+          }).catch((e) => console.error('[portal] Kreiswechsel-Mail:', e))
+        }
+
+        keinCache(res)
+        res.status(201).json(ergebnis)
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
 
   /* ------------------------------------------------ Fuehrungszeugnis ------ */
 

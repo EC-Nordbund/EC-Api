@@ -27,10 +27,21 @@ import { checkPortalToken, tokenAusHeader } from './token'
  * Stunden alter Token darf weder entzogene Rechte weitertragen noch neue zu
  * spaet gewaehren. Kosten sind zwei kleine, indizierte Abfragen.
  */
+/** Was jemand bei einem EC-Kreis tut. Beides zugleich ist möglich. */
+export type KreisRolle = 'fz' | 'ort'
+
 export interface ScopeKreis {
   ecKreisID: number
   bezeichnung: string
   needsFZ: boolean
+  /**
+   * 'fz'  — Führungszeugnis-Liste einsehen und Zeugnisse eintragen
+   * 'ort' — Mitgliederliste des Kreises pflegen
+   *
+   * Zwei getrennte Aufgaben, zwei getrennte Spalten in `ecKreis`. Wer beides
+   * macht, steht in beiden und hat hier beide Rollen.
+   */
+  rollen: KreisRolle[]
 }
 
 export interface ScopeVeranstaltung {
@@ -161,14 +172,33 @@ async function ladeKreise(
     ecKreisID: number
     bezeichnung: string
     needsFZ: number
+    istFz: number
+    istOrt: number
   }>(
     superuser
-      ? 'SELECT ecKreisID, bezeichnung, needsFZ FROM ecKreis ORDER BY bezeichnung'
-      : `SELECT ecKreisID, bezeichnung, needsFZ FROM ecKreis
-          WHERE fz_verantwortlicher_personID = ? ORDER BY bezeichnung`,
-    superuser ? [] : [personID]
+      ? `SELECT ecKreisID, bezeichnung, needsFZ, 1 AS istFz, 1 AS istOrt
+           FROM ecKreis ORDER BY bezeichnung`
+      : `SELECT ecKreisID, bezeichnung, needsFZ,
+                fz_verantwortlicher_personID = ? AS istFz,
+                ortsverantwortlicher_personID = ? AS istOrt
+           FROM ecKreis
+          WHERE fz_verantwortlicher_personID = ?
+             OR ortsverantwortlicher_personID = ?
+          ORDER BY bezeichnung`,
+    superuser ? [] : [personID, personID, personID, personID]
   )
-  return rows.map((r) => ({ ...r, needsFZ: r.needsFZ === 1 }))
+
+  return rows.map((r) => {
+    const rollen: KreisRolle[] = []
+    if (Number(r.istFz) === 1) rollen.push('fz')
+    if (Number(r.istOrt) === 1) rollen.push('ort')
+    return {
+      ecKreisID: r.ecKreisID,
+      bezeichnung: r.bezeichnung,
+      needsFZ: r.needsFZ === 1,
+      rollen
+    }
+  })
 }
 
 /**
@@ -229,10 +259,30 @@ async function ladeVeranstaltungen(
   return [...je.values()]
 }
 
-export function assertKreis(scope: PortalScope, ecKreisID: number): void {
+/**
+ * Zugriff auf einen EC-Kreis in einer bestimmten Rolle.
+ *
+ * Die Trennung ist gewollt: Führungszeugnisse und Mitgliederpflege haben
+ * nichts miteinander zu tun, und wer das eine macht, soll nicht automatisch
+ * das andere sehen.
+ */
+export function assertKreis(
+  scope: PortalScope,
+  ecKreisID: number,
+  rolle: KreisRolle
+): void {
   if (scope.superuser) return
-  if (!scope.kreise.some((k) => k.ecKreisID === ecKreisID)) {
+
+  const k = scope.kreise.find((x) => x.ecKreisID === ecKreisID)
+  if (!k) {
     throw forbidden('Für diesen EC-Kreis bist du nicht zuständig.')
+  }
+  if (!k.rollen.includes(rolle)) {
+    throw forbidden(
+      rolle === 'fz'
+        ? 'Die Führungszeugnis-Liste dieses Kreises sieht die oder der FZ-Verantwortliche.'
+        : 'Die Mitgliederliste dieses Kreises pflegt die oder der Ortsverantwortliche.'
+    )
   }
 }
 
@@ -299,7 +349,11 @@ export async function assertPerson(
     )
   }
 
-  const kreisIDs = scope.kreise.map((k) => k.ecKreisID)
+  // Nur Kreise, in denen die Person FZ-Verantwortliche ist: der
+  // Ortsverantwortliche traegt keine Fuehrungszeugnisse ein.
+  const kreisIDs = scope.kreise
+    .filter((k) => k.rollen.includes('fz'))
+    .map((k) => k.ecKreisID)
   // Nur Freizeiten mit vollem Umfang: eine Kuechenleitung traegt keine
   // Fuehrungszeugnisse ein, auch nicht fuer ihr eigenes Kuechenteam.
   const vIDs = scope.veranstaltungen

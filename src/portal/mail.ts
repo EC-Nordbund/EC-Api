@@ -101,6 +101,46 @@ ${FUSS}`,
   )
 }
 
+/**
+ * Meldung an die Geschaeftsstelle, wenn eine Person den EC-Kreis wechselt.
+ *
+ * Das Umhaengen passiert im Portal ohne Rueckfrage -- sonst braeuchte jeder
+ * Umzug einen Anruf. Damit der abgebende Kreis seine Leute nicht kommentarlos
+ * verliert, geht diese Meldung raus; sie ist die einzige Spur des Vorgangs
+ * ausserhalb des Audit-Protokolls.
+ */
+export async function sendeKreiswechsel(daten: {
+  vorname: string
+  nachname: string
+  gebDat: string
+  vonKreis: string
+  nachKreis: string
+  durch: string
+}): Promise<void> {
+  const to = process.env.PORTAL_MELDUNG_MAIL || ABSENDER
+  await smtp.sendMail({
+    from: ABSENDER,
+    to,
+    replyTo: ABSENDER,
+    subject: `[Portal] Kreiswechsel: ${daten.vorname} ${daten.nachname}`,
+    html: `<p>Im Portal wurde eine Person einem anderen EC-Kreis zugeordnet.</p>
+<table cellpadding="4">
+  <tr><td><strong>Person</strong></td><td>${esc(daten.vorname)} ${esc(daten.nachname)}, geboren ${esc(daten.gebDat)}</td></tr>
+  <tr><td><strong>Bisher</strong></td><td>${esc(daten.vonKreis)}</td></tr>
+  <tr><td><strong>Jetzt</strong></td><td>${esc(daten.nachKreis)}</td></tr>
+  <tr><td><strong>Eingetragen von</strong></td><td>${esc(daten.durch)}</td></tr>
+</table>
+<p>Das passiert, wenn jemand über „+ Neu" eine Person anlegt, die es im
+Bestand schon gibt. Wenn das nicht stimmt, lässt sich die Zuordnung in der
+Verwaltung zurücksetzen.</p>
+${FUSS}`
+  })
+
+  await queryP('INSERT INTO gesendeteEmails (content) VALUES (?)', [
+    JSON.stringify({ from: ABSENDER, to, subject: 'Kreiswechsel', daten })
+  ])
+}
+
 /** Namen kommen aus der DB und landen in HTML -- also escapen. */
 function esc(v: string): string {
   return v

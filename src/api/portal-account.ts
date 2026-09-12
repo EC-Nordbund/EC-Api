@@ -132,10 +132,13 @@ export default (app: Express): void => {
 
       const kreise = await queryP<any>(
         `SELECT ec.ecKreisID, ec.bezeichnung, ec.email, ec.website, ec.needsFZ,
-                ec.fz_verantwortlicher, ec.fz_verantwortlicher_personID,
-                p.vorname, p.nachname
+                ec.fz_verantwortlicher,
+                ec.fz_verantwortlicher_personID, ec.ortsverantwortlicher_personID,
+                fz.vorname AS fzVorname, fz.nachname AS fzNachname,
+                ov.vorname AS ovVorname, ov.nachname AS ovNachname
            FROM ecKreis ec
-           LEFT JOIN personen p ON p.personID = ec.fz_verantwortlicher_personID
+           LEFT JOIN personen fz ON fz.personID = ec.fz_verantwortlicher_personID
+           LEFT JOIN personen ov ON ov.personID = ec.ortsverantwortlicher_personID
           ORDER BY ec.bezeichnung`
       )
 
@@ -150,11 +153,19 @@ export default (app: Express): void => {
           // und kann von der Personen-Referenz abweichen. Beides nebeneinander
           // anzuzeigen ist ehrlicher, als eines davon zu verstecken.
           fzVerantwortlicherText: k.fz_verantwortlicher,
-          verantwortlich: k.fz_verantwortlicher_personID
+          // Zwei getrennte Aufgaben: Führungszeugnisse und Mitgliederpflege.
+          fzVerantwortlich: k.fz_verantwortlicher_personID
             ? {
                 personID: k.fz_verantwortlicher_personID,
-                vorname: k.vorname ?? '',
-                nachname: k.nachname ?? ''
+                vorname: k.fzVorname ?? '',
+                nachname: k.fzNachname ?? ''
+              }
+            : null,
+          ortsverantwortlich: k.ortsverantwortlicher_personID
+            ? {
+                personID: k.ortsverantwortlicher_personID,
+                vorname: k.ovVorname ?? '',
+                nachname: k.ovNachname ?? ''
               }
             : null
         }))
@@ -165,15 +176,19 @@ export default (app: Express): void => {
   })
 
   /**
-   * Ortsverantwortliche/n setzen oder entfernen.
+   * Verantwortliche/n eines EC-Kreises setzen oder entfernen.
    *
-   * Schreibt im selben Statement den Freitext `fz_verantwortlicher` mit: den
-   * liest fz-mail-system/cron.php als Anrede der Monats-Mail. So bleibt das
-   * PHP-System unveraendert lauffaehig und muss nicht im Gleichschritt mit der
-   * API deployt werden.
+   * `rolle` waehlt zwischen den beiden Aufgaben:
+   *   fz  -- Fuehrungszeugnisse einsehen und eintragen
+   *   ort -- Mitgliederliste des Kreises pflegen
+   *
+   * Bei der FZ-Rolle wird im selben Statement der Freitext
+   * `fz_verantwortlicher` mitgeschrieben: den liest fz-mail-system/cron.php
+   * als Anrede der Monats-Mail. So bleibt das PHP-System unveraendert
+   * lauffaehig und muss nicht im Gleichschritt deployt werden.
    */
   app.put(
-    '/v6/eckreis/:id/verantwortlicher',
+    '/v6/eckreis/:id/verantwortlicher/:rolle',
     async (req: Request, res: Response) => {
       try {
         await checkAuth(req)
@@ -184,6 +199,8 @@ export default (app: Express): void => {
           res.status(400).end('Ungültige ID')
           return
         }
+
+        const rolle = req.params.rolle === 'ort' ? 'ort' : 'fz'
 
         const roh = req.body?.personID
         const personID =
@@ -206,12 +223,20 @@ export default (app: Express): void => {
           text = `${p[0].vorname} ${p[0].nachname}`
         }
 
-        const r: any = await queryP(
-          `UPDATE ecKreis
-              SET fz_verantwortlicher_personID = ?, fz_verantwortlicher = ?
-            WHERE ecKreisID = ?`,
-          [personID, text, ecKreisID]
-        )
+        const r: any =
+          rolle === 'fz'
+            ? await queryP(
+                `UPDATE ecKreis
+                    SET fz_verantwortlicher_personID = ?, fz_verantwortlicher = ?
+                  WHERE ecKreisID = ?`,
+                [personID, text, ecKreisID]
+              )
+            : await queryP(
+                `UPDATE ecKreis
+                    SET ortsverantwortlicher_personID = ?
+                  WHERE ecKreisID = ?`,
+                [personID, ecKreisID]
+              )
         if (!r || r.affectedRows === 0) {
           res.status(404).end('EC-Kreis nicht gefunden')
           return
