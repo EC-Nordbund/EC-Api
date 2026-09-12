@@ -94,10 +94,10 @@ export function checkPortalToken(token: string): Promise<PortalPayload> {
  * JWT-Pruefung, damit offensichtlicher Muell nicht erst durch die Krypto geht.
  */
 export function tokenAusHeader(header: string | undefined): string {
-  if (!header) throw unauthorized('Keine Authentifizierung uebermittelt.')
+  if (!header) throw unauthorized('Keine Authentifizierung übermittelt.')
   const roh = header.startsWith('Bearer ') ? header.slice(7) : header
   if (!/^[A-Za-z0-9._-]+$/.test(roh)) {
-    throw unauthorized('Kein gueltiger Token uebermittelt.')
+    throw unauthorized('Kein gültiger Token übermittelt.')
   }
   return roh
 }

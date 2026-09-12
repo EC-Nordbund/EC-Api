@@ -1,12 +1,14 @@
 import { Request } from 'express'
 import { queryP } from '../helpers/mysql'
 import {
-  LEITUNGS_POSITIONEN,
+  PORTAL_POSITIONEN,
   SCOPE_NACHLAUF_MONATE,
   SCOPE_VORLAUF_MONATE,
   portalStatus,
   schemaGeprueft,
-  setSchemaOK
+  setSchemaOK,
+  umfangFuerPosition,
+  type Umfang
 } from './config'
 import { PortalFehler, forbidden, unauthorized } from './error'
 import { checkPortalToken, tokenAusHeader } from './token'
@@ -38,6 +40,12 @@ export interface ScopeVeranstaltung {
   begin: Date
   ende: Date | null
   position: number
+  /**
+   * 'voll' fuer Leitung und Hauptleitung, 'kueche' fuer die Kuechenleitung.
+   * Steuert, ob der Fuehrungszeugnis-Teil und die uebrigen Listen ueberhaupt
+   * erreichbar sind.
+   */
+  umfang: Umfang
 }
 
 export interface PortalScope {
@@ -76,7 +84,7 @@ export async function requirePortalAktiv(): Promise<void> {
     console.error('[portal] deaktiviert:', status.grund)
     throw new PortalFehler(
       'DISABLED',
-      'Das Portal ist derzeit nicht verfuegbar.',
+      'Das Portal ist derzeit nicht verfügbar.',
       503
     )
   }
@@ -107,7 +115,7 @@ export async function requirePortal(req: Request): Promise<PortalScope> {
   try {
     payload = await checkPortalToken(token)
   } catch {
-    throw unauthorized('Anmeldung abgelaufen oder ungueltig.')
+    throw unauthorized('Anmeldung abgelaufen oder ungültig.')
   }
 
   const rows = await queryP<UserRow>(
@@ -119,7 +127,7 @@ export async function requirePortal(req: Request): Promise<PortalScope> {
     [payload.pu]
   )
   if (rows.length !== 1) {
-    throw unauthorized('Zugang nicht mehr gueltig.')
+    throw unauthorized('Zugang nicht mehr gültig.')
   }
   const u = rows[0]
 
@@ -179,7 +187,7 @@ async function ladeVeranstaltungen(
                    AND v.\`begin\` <= CURDATE() + INTERVAL ? MONTH`
 
   if (superuser) {
-    const rows = await queryP<ScopeVeranstaltung>(
+    const rows = await queryP<Omit<ScopeVeranstaltung, 'umfang'>>(
       `SELECT v.veranstaltungsID, v.bezeichnung, v.kurzBezeichnung,
               v.\`begin\` AS \`begin\`, v.ende, 6 AS position
          FROM veranstaltungen v
@@ -187,45 +195,84 @@ async function ladeVeranstaltungen(
         ORDER BY v.\`begin\``,
       [SCOPE_NACHLAUF_MONATE, SCOPE_VORLAUF_MONATE]
     )
-    return rows
+    return rows.map((v) => ({ ...v, umfang: 'voll' as const }))
   }
 
-  return queryP<ScopeVeranstaltung>(
+  const rows = await queryP<Omit<ScopeVeranstaltung, 'umfang'>>(
     `SELECT v.veranstaltungsID, v.bezeichnung, v.kurzBezeichnung,
             v.\`begin\` AS \`begin\`, v.ende, a.position
        FROM anmeldungen a
        JOIN veranstaltungen v ON v.veranstaltungsID = a.veranstaltungsID
       WHERE a.personID = ?
-        AND a.position IN (${LEITUNGS_POSITIONEN.map(() => '?').join(',')})
+        AND a.position IN (${PORTAL_POSITIONEN.map(() => '?').join(',')})
         AND a.abmeldeZeitpunkt IS NULL
         AND ${fenster}
       ORDER BY v.\`begin\``,
     [
       personID,
-      ...LEITUNGS_POSITIONEN,
+      ...PORTAL_POSITIONEN,
       SCOPE_NACHLAUF_MONATE,
       SCOPE_VORLAUF_MONATE
     ]
   )
+
+  // Wer bei derselben Freizeit mehrfach gefuehrt ist, bekommt den weitesten
+  // Umfang -- sonst entschiede die Sortierung darueber, was jemand darf.
+  const je = new Map<number, ScopeVeranstaltung>()
+  for (const v of rows) {
+    const neu = { ...v, umfang: umfangFuerPosition(v.position) }
+    const alt = je.get(v.veranstaltungsID)
+    if (!alt || (alt.umfang !== 'voll' && neu.umfang === 'voll')) {
+      je.set(v.veranstaltungsID, neu)
+    }
+  }
+  return [...je.values()]
 }
 
 export function assertKreis(scope: PortalScope, ecKreisID: number): void {
   if (scope.superuser) return
   if (!scope.kreise.some((k) => k.ecKreisID === ecKreisID)) {
-    throw forbidden('Fuer diesen EC-Kreis bist du nicht zustaendig.')
+    throw forbidden('Für diesen EC-Kreis bist du nicht zuständig.')
   }
 }
 
+/**
+ * Zugriff auf eine Veranstaltung.
+ *
+ * `bedarf` sagt, wofuer: 'kueche' genuegt fuer die Kuechenliste, 'voll'
+ * verlangt Leitung oder Hauptleitung. Eine Kuechenleitung kommt damit an ihre
+ * Liste, aber nicht an den Fuehrungszeugnis-Stand des Teams.
+ */
 export function assertVeranstaltung(
   scope: PortalScope,
-  veranstaltungsID: number
+  veranstaltungsID: number,
+  bedarf: Umfang = 'voll'
 ): void {
   if (scope.superuser) return
-  if (
-    !scope.veranstaltungen.some((v) => v.veranstaltungsID === veranstaltungsID)
-  ) {
-    throw forbidden('Fuer diese Veranstaltung bist du nicht zustaendig.')
+
+  const v = scope.veranstaltungen.find(
+    (x) => x.veranstaltungsID === veranstaltungsID
+  )
+  if (!v) {
+    throw forbidden('Für diese Veranstaltung bist du nicht zuständig.')
   }
+  if (bedarf === 'voll' && v.umfang !== 'voll') {
+    throw forbidden(
+      'Als Küchenleitung siehst du nur die Küchenliste dieser Freizeit.'
+    )
+  }
+}
+
+/** Umfang fuer eine Veranstaltung im Scope (Superuser: immer voll). */
+export function umfangFuer(
+  scope: PortalScope,
+  veranstaltungsID: number
+): Umfang {
+  if (scope.superuser) return 'voll'
+  return (
+    scope.veranstaltungen.find((v) => v.veranstaltungsID === veranstaltungsID)
+      ?.umfang ?? 'kueche'
+  )
 }
 
 /**
@@ -248,12 +295,16 @@ export async function assertPerson(
 ): Promise<void> {
   if (personID === scope.personID) {
     throw forbidden(
-      'Das eigene Fuehrungszeugnis kann nicht selbst eingetragen werden.'
+      'Das eigene Führungszeugnis kann nicht selbst eingetragen werden.'
     )
   }
 
   const kreisIDs = scope.kreise.map((k) => k.ecKreisID)
-  const vIDs = scope.veranstaltungen.map((v) => v.veranstaltungsID)
+  // Nur Freizeiten mit vollem Umfang: eine Kuechenleitung traegt keine
+  // Fuehrungszeugnisse ein, auch nicht fuer ihr eigenes Kuechenteam.
+  const vIDs = scope.veranstaltungen
+    .filter((v) => v.umfang === 'voll')
+    .map((v) => v.veranstaltungsID)
 
   if (scope.superuser) {
     const da = await queryP(
@@ -284,7 +335,7 @@ export async function assertPerson(
     params.push(...vIDs)
   }
   if (bedingungen.length === 0) {
-    throw forbidden('Du bist derzeit fuer niemanden zustaendig.')
+    throw forbidden('Du bist derzeit für niemanden zuständig.')
   }
 
   const rows = await queryP(
@@ -295,6 +346,6 @@ export async function assertPerson(
     params
   )
   if (rows.length === 0) {
-    throw forbidden('Fuer diese Person bist du nicht zustaendig.')
+    throw forbidden('Für diese Person bist du nicht zuständig.')
   }
 }

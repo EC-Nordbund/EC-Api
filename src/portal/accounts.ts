@@ -495,9 +495,8 @@ export async function legeAccountAn(
   const pid = ganzzahl(personID)
   const email = normalisiereEmail(emailRoh)
   if (!pid)
-    throw badRequest('INVALID_INPUT', 'personID fehlt oder ist ungueltig.')
-  if (!email)
-    throw badRequest('INVALID_INPUT', 'Keine gueltige E-Mail-Adresse.')
+    throw badRequest('INVALID_INPUT', 'personID fehlt oder ist ungültig.')
+  if (!email) throw badRequest('INVALID_INPUT', 'Keine gültige E-Mail-Adresse.')
 
   const person = await queryP<{ vorname: string; nachname: string }>(
     'SELECT vorname, nachname FROM personen WHERE personID = ? AND anonymisiert = 0',
@@ -567,7 +566,7 @@ export async function aendereAccount(
   if (patch.email !== undefined) {
     const email = normalisiereEmail(patch.email)
     if (!email)
-      throw badRequest('INVALID_INPUT', 'Keine gueltige E-Mail-Adresse.')
+      throw badRequest('INVALID_INPUT', 'Keine gültige E-Mail-Adresse.')
     const belegt = await queryP(
       'SELECT 1 FROM portalUser WHERE email = ? AND portalUserID <> ?',
       [email, portalUserID]

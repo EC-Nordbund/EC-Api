@@ -9,7 +9,7 @@ import {
   setzePasswort
 } from '../portal/accounts'
 import { audit, clientIp } from '../portal/audit'
-import { portalErrorHandler, badRequest } from '../portal/error'
+import { portalErrorHandler, badRequest, forbidden } from '../portal/error'
 import {
   addFz,
   kreisListe,
@@ -27,8 +27,11 @@ import {
   assertPerson,
   assertVeranstaltung,
   requirePortal,
-  requirePortalAktiv
+  requirePortalAktiv,
+  umfangFuer,
+  type PortalScope
 } from '../portal/scope'
+import { KUECHEN_VORLAGE } from '../portal/config'
 
 /**
  * REST-Routen des EC-Portals (Freizeitleitung und Ortsverantwortliche).
@@ -81,10 +84,31 @@ function keinCache(res: Response): void {
   res.setHeader('Pragma', 'no-cache')
 }
 
+function positionText(position: number): string {
+  if (position === 6) return 'Hauptleitung'
+  if (position === 4) return 'Küchenleitung'
+  return 'Leitung'
+}
+
+/**
+ * Jemand, der bei keiner Freizeit Leitung ist und auch keinen EC-Kreis
+ * betreut, kommt ausschliesslich an die Kuechenvorlage. Der Vorlagen-Katalog
+ * ist nicht veranstaltungsbezogen -- deshalb hier die Person als Ganzes
+ * betrachtet statt einer einzelnen Freizeit.
+ */
+function nurKuechenVorlage(scope: PortalScope): boolean {
+  if (scope.superuser) return false
+  if (scope.kreise.length > 0) return false
+  return (
+    scope.veranstaltungen.length > 0 &&
+    scope.veranstaltungen.every((v) => v.umfang === 'kueche')
+  )
+}
+
 function ganzzahlParam(v: string): number {
   const n = parseInt(v, 10)
   if (!Number.isInteger(n) || n <= 0) {
-    throw badRequest('INVALID_INPUT', 'Ungueltige ID.')
+    throw badRequest('INVALID_INPUT', 'Ungültige ID.')
   }
   return n
 }
@@ -212,11 +236,12 @@ export default (app: Express): void => {
 
       const veranstaltungen = await Promise.all(
         scope.veranstaltungen.map(async (v) => {
-          const z = await offeneInVeranstaltung(
-            v.veranstaltungsID,
-            v.begin,
-            v.ende
-          )
+          // Der Fuehrungszeugnis-Zaehler gehoert zum FZ-Teil -- eine
+          // Kuechenleitung sieht ihn nicht und braucht ihn nicht.
+          const z =
+            v.umfang === 'voll'
+              ? await offeneInVeranstaltung(v.veranstaltungsID, v.begin, v.ende)
+              : null
           return {
             veranstaltungsID: v.veranstaltungsID,
             bezeichnung: v.bezeichnung,
@@ -224,9 +249,10 @@ export default (app: Express): void => {
             begin: dateObj(v.begin),
             ende: dateObj(v.ende),
             position: v.position,
-            positionText: v.position === 6 ? 'Hauptleitung' : 'Leitung',
-            mitarbeiter: z.mitarbeiter,
-            fzOffen: z.fzOffen
+            positionText: positionText(v.position),
+            umfang: v.umfang,
+            mitarbeiter: z?.mitarbeiter ?? null,
+            fzOffen: z?.fzOffen ?? null
           }
         })
       )
@@ -274,7 +300,8 @@ export default (app: Express): void => {
       try {
         const scope = await requirePortal(req)
         const vID = ganzzahlParam(req.params.id)
-        assertVeranstaltung(scope, vID)
+        // Der FZ-Stand des Teams ist Leitung und Hauptleitung vorbehalten.
+        assertVeranstaltung(scope, vID, 'voll')
 
         const daten = await veranstaltungMitarbeiter(vID)
 
@@ -299,10 +326,10 @@ export default (app: Express): void => {
       try {
         const scope = await requirePortal(req)
         const vID = ganzzahlParam(req.params.id)
-        assertVeranstaltung(scope, vID)
+        assertVeranstaltung(scope, vID, 'kueche')
 
         const felder = req.query.felder === 'voll' ? 'voll' : 'basis'
-        const daten = await tnListe(vID, felder)
+        const daten = await tnListe(vID, felder, umfangFuer(scope, vID))
 
         await audit(
           scope.portalUserID,
@@ -331,8 +358,15 @@ export default (app: Express): void => {
     '/portal/templates/list.json',
     async (req: Request, res: Response) => {
       try {
-        await requirePortal(req)
-        res.type('application/json').send(ladeKatalog())
+        const scope = await requirePortal(req)
+        const katalog = JSON.parse(ladeKatalog().toString('utf8'))
+        res.json(
+          nurKuechenVorlage(scope)
+            ? katalog.filter(
+                (t: { name: string }) => t.name === KUECHEN_VORLAGE
+              )
+            : katalog
+        )
       } catch (err) {
         portalErrorHandler(err, res)
       }
@@ -341,8 +375,11 @@ export default (app: Express): void => {
 
   app.get('/portal/templates/:name', async (req: Request, res: Response) => {
     try {
-      await requirePortal(req)
+      const scope = await requirePortal(req)
       const name = String(req.params.name).replace(/\.xlsx$/, '')
+      if (nurKuechenVorlage(scope) && name !== KUECHEN_VORLAGE) {
+        throw forbidden('Diese Vorlage steht dir nicht zur Verfügung.')
+      }
       res
         .type(
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'

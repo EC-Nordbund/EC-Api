@@ -31,7 +31,7 @@ export class PortalFehler extends Error {
 /** Kurzformen fuer die immer gleichen Faelle. */
 export const unauthorized = (m = 'Nicht angemeldet.') =>
   new PortalFehler('UNAUTHORIZED', m, 401)
-export const forbidden = (m = 'Dafuer fehlt dir die Berechtigung.') =>
+export const forbidden = (m = 'Dafür fehlt dir die Berechtigung.') =>
   new PortalFehler('NOT_IN_SCOPE', m, 403)
 export const badRequest = (code: string, m: string) =>
   new PortalFehler(code, m, 400)

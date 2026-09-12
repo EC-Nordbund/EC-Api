@@ -7,15 +7,40 @@
  */
 
 /**
- * Anmelde-Positionen (rollen.rollenID), die Zustaendigkeit fuer eine
- * Veranstaltung begruenden: 5 = Leitung, 6 = Hauptleitung.
+ * Anmelde-Positionen (rollen.rollenID), die Zugang zu einer Veranstaltung
+ * begruenden -- in zwei Stufen.
  *
  * Der Rollenschluessel steht nirgends in der DB dokumentiert; er stammt aus
  * EC-Verwaltung (pages/_/veranstaltungen/_id/_/anmeldungen.route.vue). Vor
  * einem Prod-Rollout mit `SELECT * FROM rollen` verifizieren -- die gesamte
- * Freizeitleiter-Autorisierung haengt an diesen zwei Zahlen.
+ * Veranstaltungs-Autorisierung haengt an diesen Zahlen.
  */
-export const LEITUNGS_POSITIONEN = [5, 6]
+
+/** 5 = Leitung, 6 = Hauptleitung: alles zur Veranstaltung. */
+export const POSITION_VOLL = [5, 6]
+
+/**
+ * 4 = Kuechenleitung: ausschliesslich die Kuechenliste.
+ *
+ * Die Kueche braucht Allergien, vegetarisch und Gesundheitshinweise -- genau
+ * dafuer ist die Liste da. Sie braucht aber weder den Fuehrungszeugnis-Stand
+ * des Teams noch Adressen oder die Aktivitaets-Freigaben der Teilnehmenden,
+ * und sie traegt keine Zeugnisse ein. Deshalb eine eigene Stufe statt einer
+ * dritten Zahl in POSITION_VOLL.
+ */
+export const POSITION_KUECHE = [4]
+
+export const PORTAL_POSITIONEN = [...POSITION_VOLL, ...POSITION_KUECHE]
+
+/** Was jemand bei einer Veranstaltung darf. */
+export type Umfang = 'voll' | 'kueche'
+
+export function umfangFuerPosition(position: number): Umfang {
+  return POSITION_KUECHE.includes(position) ? 'kueche' : 'voll'
+}
+
+/** Die einzige Vorlage, die eine Kuechenleitung herunterladen darf. */
+export const KUECHEN_VORLAGE = 'kueche'
 
 /**
  * Zeitfenster des Veranstaltungs-Scopes.
@@ -100,7 +125,7 @@ export function portalStatus(): { ok: boolean; grund: string } {
     return {
       ok: false,
       grund:
-        'PORTAL_JWT_SECRET ist identisch mit JWT_SECRET (Portal-Tokens waeren Verwaltungs-Tokens)'
+        'PORTAL_JWT_SECRET ist identisch mit JWT_SECRET (Portal-Tokens wären Verwaltungs-Tokens)'
     }
   }
   if (schemaOK === false) {
@@ -117,7 +142,7 @@ export function setSchemaOK(ok: boolean): void {
     schemaOK = ok
     if (!ok) {
       console.error(
-        '[portal] DB-Schema unvollstaendig -- dumps/zz-portal-schema.sql einspielen'
+        '[portal] DB-Schema unvollständig -- dumps/zz-portal-schema.sql einspielen'
       )
     }
   }

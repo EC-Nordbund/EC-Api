@@ -127,7 +127,7 @@ export function pruefePasswort(
   if (pwd.length > MAX_LAENGE) {
     throw badRequest(
       'WEAK_PASSWORD',
-      `Das Passwort darf hoechstens ${MAX_LAENGE} Zeichen lang sein.`
+      `Das Passwort darf höchstens ${MAX_LAENGE} Zeichen lang sein.`
     )
   }
 
@@ -149,7 +149,7 @@ export function pruefePasswort(
   if (verboten.some((v) => klein.includes(v))) {
     throw badRequest(
       'WEAK_PASSWORD',
-      'Das Passwort darf deinen Namen, deine Mailadresse oder offensichtliche Woerter nicht enthalten.'
+      'Das Passwort darf deinen Namen, deine Mailadresse oder offensichtliche Wörter nicht enthalten.'
     )
   }
 }

@@ -357,9 +357,16 @@ async function ladeVeranstaltung(id: number): Promise<VeranstaltungRow> {
  */
 export type TnFelder = 'basis' | 'voll'
 
+/**
+ * Zugriffsumfang der aufrufenden Person auf diese Veranstaltung.
+ * 'kueche' liefert ausschliesslich die Felder der Kuechenliste.
+ */
+export type TnUmfang = 'voll' | 'kueche'
+
 export async function tnListe(
   veranstaltungsID: number,
-  felder: TnFelder
+  felder: TnFelder,
+  umfang: TnUmfang = 'voll'
 ): Promise<Record<string, unknown>> {
   const v = await ladeVeranstaltung(veranstaltungsID)
 
@@ -383,38 +390,49 @@ export async function tnListe(
   )
 
   const voll = felder === 'voll'
+  const nurKueche = umfang === 'kueche'
 
+  /**
+   * Die Kuechenliste braucht Namen, Geburtsdatum, Kontakt und alles zur
+   * Ernaehrung -- dafuer ist sie da. Adressen, Aktivitaets-Freigaben,
+   * Anmeldezeitpunkte und das Extra-JSON braucht sie nicht, also bekommt eine
+   * Kuechenleitung sie auch nicht. Die Felder bleiben als leere Werte
+   * erhalten, damit xlsx-template und die Web-Ansicht nicht ueber
+   * undefined stolpern.
+   */
   const anmeldungen = rows.map((r) => ({
-    anmeldeID: r.anmeldeID,
+    anmeldeID: nurKueche ? '' : r.anmeldeID,
     position: r.position,
     wartelistenPlatz: r.wartelistenPlatz,
     person: {
       personID: r.personID,
       vorname: r.vorname,
       nachname: r.nachname,
-      geschlecht: r.geschlecht,
+      geschlecht: nurKueche ? '' : r.geschlecht,
       gebDat: dateObj(r.gebDat)
     },
-    adresse: {
-      strasse: r.strasse ?? '',
-      plz: r.plz ?? '',
-      ort: r.ort ?? ''
-    },
+    adresse: nurKueche
+      ? { strasse: '', plz: '', ort: '' }
+      : {
+          strasse: r.strasse ?? '',
+          plz: r.plz ?? '',
+          ort: r.ort ?? ''
+        },
     telefon: { telefon: r.telefon ?? '' },
     email: { eMail: r.eMail ?? '' },
     bemerkungen: voll ? (r.bemerkungen ?? '') : '',
     gesundheitsinformationen: voll ? (r.gesundheitsinformationen ?? '') : '',
     lebensmittelAllergien: voll ? (r.lebensmittelAllergien ?? '') : '',
     vegetarisch: r.vegetarisch === 1,
-    radfahren: r.radfahren === 1,
-    schwimmen: Number(r.schwimmen) || 0,
-    fahrgemeinschaften: r.fahrgemeinschaften === 1,
-    klettern: r.klettern === 1,
-    sichEntfernen: r.sichEntfernen === 1,
-    bootFahren: r.bootFahren === 1,
-    anmeldeZeitpunkt: tsObj(r.anmeldeZeitpunkt),
-    abmeldeZeitpunkt: tsObj(r.abmeldeZeitpunkt),
-    extra_json: r.extra_json ?? '{}'
+    radfahren: nurKueche ? false : r.radfahren === 1,
+    schwimmen: nurKueche ? 0 : Number(r.schwimmen) || 0,
+    fahrgemeinschaften: nurKueche ? false : r.fahrgemeinschaften === 1,
+    klettern: nurKueche ? false : r.klettern === 1,
+    sichEntfernen: nurKueche ? false : r.sichEntfernen === 1,
+    bootFahren: nurKueche ? false : r.bootFahren === 1,
+    anmeldeZeitpunkt: nurKueche ? null : tsObj(r.anmeldeZeitpunkt),
+    abmeldeZeitpunkt: nurKueche ? null : tsObj(r.abmeldeZeitpunkt),
+    extra_json: nurKueche ? '{}' : (r.extra_json ?? '{}')
   }))
 
   const hl = rows.find((r) => r.position === 6)
@@ -526,7 +544,7 @@ export function pruefeFzEingabe(body: any): FzEingabe {
   const personID =
     Number.isInteger(body?.personID) && body.personID > 0 ? body.personID : null
   if (!personID) {
-    throw badRequest('INVALID_INPUT', 'personID fehlt oder ist ungueltig.')
+    throw badRequest('INVALID_INPUT', 'personID fehlt oder ist ungültig.')
   }
 
   const fzVon = parseDatum(body?.fzVon)
@@ -566,7 +584,7 @@ export function pruefeFzEingabe(body: any): FzEingabe {
   if (plusJahre(fzVon, FZ_GUELTIG_JAHRE) < jetzt) {
     throw badRequest(
       'FZ_ABGELAUFEN',
-      'Dieses Zeugnis ist bereits aelter als fuenf Jahre und damit nicht mehr gueltig.'
+      'Dieses Zeugnis ist bereits älter als fünf Jahre und damit nicht mehr gültig.'
     )
   }
 
@@ -608,7 +626,7 @@ async function pruefeAlter(personID: number, gesehenAm: Date): Promise<void> {
   if (plusJahre(new Date(geb), FZ_MINDESTALTER) > gesehenAm) {
     throw badRequest(
       'ZU_JUNG',
-      `Fuer Personen unter ${FZ_MINDESTALTER} Jahren wird kein erweitertes Fuehrungszeugnis ausgestellt.`
+      `Für Personen unter ${FZ_MINDESTALTER} Jahren wird kein erweitertes Führungszeugnis ausgestellt.`
     )
   }
 }
@@ -637,7 +655,7 @@ export async function addFz(
   if (doppelt.length > 0) {
     throw new PortalFehler(
       'FZ_EXISTS',
-      'Fuer dieses Ausstellungsdatum ist bereits ein Zeugnis eingetragen.',
+      'Für dieses Ausstellungsdatum ist bereits ein Zeugnis eingetragen.',
       409
     )
   }
@@ -670,7 +688,7 @@ export async function addFz(
   // nicht blockieren.
   const warnung =
     eingabe.gesehenAm > plusMonate(eingabe.fzVon, FZ_VORLAGE_FRIST_MONATE)
-      ? 'Das Zeugnis war bei der Einsicht aelter als drei Monate.'
+      ? 'Das Zeugnis war bei der Einsicht älter als drei Monate.'
       : null
 
   return { fzID, warnung }

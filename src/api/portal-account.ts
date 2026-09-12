@@ -66,7 +66,7 @@ export default (app: Express): void => {
 
         const id = ganzzahl(req.params.id)
         if (!id) {
-          res.status(400).end('Ungueltige ID')
+          res.status(400).end('Ungültige ID')
           return
         }
         const acc = await ladeAccount(id)
@@ -92,7 +92,7 @@ export default (app: Express): void => {
 
       const id = ganzzahl(req.params.id)
       if (!id) {
-        res.status(400).end('Ungueltige ID')
+        res.status(400).end('Ungültige ID')
         return
       }
       await aendereAccount(id, {
@@ -114,7 +114,7 @@ export default (app: Express): void => {
 
       const id = ganzzahl(req.params.id)
       if (!id) {
-        res.status(400).end('Ungueltige ID')
+        res.status(400).end('Ungültige ID')
         return
       }
       await deaktiviereAccount(id)
@@ -181,7 +181,7 @@ export default (app: Express): void => {
 
         const ecKreisID = ganzzahl(req.params.id)
         if (!ecKreisID) {
-          res.status(400).end('Ungueltige ID')
+          res.status(400).end('Ungültige ID')
           return
         }
 
@@ -189,7 +189,7 @@ export default (app: Express): void => {
         const personID =
           roh === null || roh === undefined ? null : ganzzahl(roh)
         if (roh !== null && roh !== undefined && !personID) {
-          res.status(400).end('Ungueltige personID')
+          res.status(400).end('Ungültige personID')
           return
         }
 
