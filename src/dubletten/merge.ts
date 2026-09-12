@@ -353,29 +353,69 @@ export async function mergePersonen(
     // weil anmeldungen per Fremdschluessel darauf zeigt -- also erst die
     // Verweise umbiegen, dann loeschen. Das ersetzt die drei JOIN-UPDATEs der
     // alten Fassung samt ihrem Adress-Bug.
+    // `norm` fasst SCHREIBVARIANTEN zusammen ("Musterstr." / "Musterstraße").
+    // `indexSpalten` sind die Wertspalten des UNIQUE-Index -- daran entscheidet
+    // sich, ob ein UPDATE ueberhaupt erlaubt ist.
+    //
+    // Beide werden gebraucht, und das ist keine Doppelung: die semantische
+    // Normalisierung verwirft bewusst Werte ohne Beweiskraft (eine
+    // fuenfstellige Durchwahl wie "222-20" liefert normTelefon als leer, damit
+    // sie kein Dubletten-Signal wird). Fuer den Merge zaehlt das aber nicht --
+    // dort verletzt genau diese Nummer den Index, wenn beide Saetze sie haben.
+    // Genau daran ist ein Merge in Produktion mit ER_DUP_ENTRY gescheitert.
     const kontaktTabellen = [
       {
         tabelle: 'eMails',
         idSpalte: 'eMailID',
         fkSpalte: 'eMailID',
         felder: 'eMailID, eMail, isOld',
-        norm: (r: any) => normEmail(r.eMail)
+        norm: (r: any) => normEmail(r.eMail),
+        indexSpalten: ['eMail'],
+        indexWerte: (r: any) => [r.eMail]
       },
       {
         tabelle: 'telefone',
         idSpalte: 'telefonID',
         fkSpalte: 'telefonID',
         felder: 'telefonID, telefon, isOld',
-        norm: (r: any) => normTelefon(r.telefon)
+        norm: (r: any) => normTelefon(r.telefon),
+        indexSpalten: ['telefon'],
+        indexWerte: (r: any) => [r.telefon]
       },
       {
         tabelle: 'adressen',
         idSpalte: 'adressID',
         fkSpalte: 'adressID',
         felder: 'adressID, strasse, plz, ort, isOld',
-        norm: (r: any) => normAdresse(r.strasse, r.plz, r.ort)
+        norm: (r: any) => normAdresse(r.strasse, r.plz, r.ort),
+        indexSpalten: ['strasse', 'plz', 'ort'],
+        indexWerte: (r: any) => [r.strasse, r.plz, r.ort]
       }
     ]
+
+    /**
+     * Sucht die Zeile des Behalten-Satzes, die einem UPDATE im Weg staende.
+     *
+     * Bewusst per SQL statt per Vergleich in JS: der Index entscheidet nach der
+     * Collation der Spalte (utf8_general_ci ist case-insensitiv und behandelt
+     * auch "ä" und "a" als gleich). Das in JS nachzubauen waere geraten -- die
+     * Datenbank weiss es genau.
+     */
+    const indexTreffer = async (
+      t: (typeof kontaktTabellen)[number],
+      zeile: any
+    ): Promise<any | undefined> => {
+      const bedingung = t.indexSpalten
+        .map((s) => `\`${s}\` <=> ?`)
+        .join(' AND ')
+      const treffer = await q(
+        `SELECT ${t.felder} FROM \`${t.tabelle}\`
+          WHERE personID = ? AND ${bedingung}
+          LIMIT 1`,
+        [behalten, ...t.indexWerte(zeile)]
+      )
+      return treffer[0]
+    }
 
     for (const t of kontaktTabellen) {
       const zeilenB = await q(
@@ -398,7 +438,12 @@ export async function mergePersonen(
 
       for (const z of zeilenE) {
         const n = t.norm(z)
-        const gegenstueck = n ? vorhanden.get(n) : undefined
+        // Erst die semantische Gleichheit (fasst Schreibvarianten zusammen),
+        // dann die Frage an den Index: wuerde das UPDATE kollidieren? Ohne den
+        // zweiten Schritt laeuft der Merge bei Werten, die `norm` verwirft, in
+        // ein ER_DUP_ENTRY.
+        const gegenstueck =
+          (n ? vorhanden.get(n) : undefined) ?? (await indexTreffer(t, z))
 
         if (!gegenstueck) {
           await q(
@@ -776,6 +821,25 @@ export async function mergePersonen(
       zusammengefasst,
       aliasEingetragen: true
     }
+  }).catch((err: unknown) => {
+    // Fachliche Fehler tragen bereits eine verstaendliche Meldung.
+    if (err instanceof ecError) throw err
+    // Alles andere ist ein Fehler von uns, aber der rohe Datenbanktext
+    // ("ER_DUP_ENTRY: Duplicate entry '222-20' for key 'telefon'") landete
+    // sonst ungefiltert im Dialog der Sachbearbeiterin. Die Transaktion ist an
+    // dieser Stelle bereits zurueckgerollt, es ist also nichts halb passiert --
+    // genau das soll die Meldung auch sagen.
+    const text = String((err as Error)?.message ?? err)
+    if (/ER_DUP_ENTRY/i.test(text)) {
+      throw new ecError(
+        'Zusammenführen abgebrochen: die beiden Datensätze haben einen Wert, ' +
+          'den die Datenbank nur einmal je Person erlaubt, und er ließ sich ' +
+          'nicht automatisch zusammenfassen. Es wurde nichts geändert. ' +
+          `(technisch: ${text})`,
+        409
+      )
+    }
+    throw err
   })
 
   // Erst nach erfolgreichem Commit: der Cache darf nicht verworfen werden,
