@@ -71,11 +71,16 @@ app
   })
   .use('/v6', json())
 
+  // 20 Requests pro Sekunde und Client. Vorher standen hier 2 -- was in der
+  // Praxis bedeutete, dass eine Seite der Verwaltung, die zwei Listen parallel
+  // laedt, sich selbst ausbremste. Seit `trust proxy` gesetzt ist, zaehlt das
+  // Limit endlich je Client statt fuer alle gemeinsam, und der engere Wert
+  // waere ohnehin nur noch als Bremse gegen Einzelne gedacht gewesen.
   .use(
     '/v6',
     expressRateLimit({
       windowMs: 1000,
-      max: 2
+      max: 20
     })
   ) //.use(json({ type: 'application/*+json'}))
 

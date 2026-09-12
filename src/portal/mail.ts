@@ -102,13 +102,24 @@ ${FUSS}`,
 }
 
 /**
- * Meldung an die Geschaeftsstelle, wenn eine Person den EC-Kreis wechselt.
+ * Meldung an das Referententeam, wenn eine Person den EC-Kreis wechselt.
  *
  * Das Umhaengen passiert im Portal ohne Rueckfrage -- sonst braeuchte jeder
  * Umzug einen Anruf. Damit der abgebende Kreis seine Leute nicht kommentarlos
  * verliert, geht diese Meldung raus; sie ist die einzige Spur des Vorgangs
  * ausserhalb des Audit-Protokolls.
+ *
+ * Empfaenger fest im Code und nicht ueber eine Umgebungsvariable: es sind
+ * dieselben drei, an die auch die uebrigen Verwaltungsmeldungen gehen
+ * (graphql.ts, nuxt/index.ts). Eine Variable waere hier nur eine weitere
+ * Stelle, die beim Personalwechsel vergessen wird.
  */
+const REFERENTEN = [
+  'kirke.husberg@ec-nordbund.de',
+  'tobias.krahe@ec-nordbund.de',
+  'dortje.gaertner@ec-nordbund.de'
+]
+
 export async function sendeKreiswechsel(daten: {
   vorname: string
   nachname: string
@@ -117,10 +128,12 @@ export async function sendeKreiswechsel(daten: {
   nachKreis: string
   durch: string
 }): Promise<void> {
-  const to = process.env.PORTAL_MELDUNG_MAIL || ABSENDER
+  // Als Array statt als Zeichenkette: der Bestand trennt Empfaenger mit
+  // Semikolon (graphql.ts, nuxt/index.ts), nodemailer erwartet aber Komma --
+  // ein Array laesst die Frage gar nicht erst aufkommen.
   await smtp.sendMail({
     from: ABSENDER,
-    to,
+    to: REFERENTEN,
     replyTo: ABSENDER,
     subject: `[Portal] Kreiswechsel: ${daten.vorname} ${daten.nachname}`,
     html: `<p>Im Portal wurde eine Person einem anderen EC-Kreis zugeordnet.</p>
@@ -137,7 +150,12 @@ ${FUSS}`
   })
 
   await queryP('INSERT INTO gesendeteEmails (content) VALUES (?)', [
-    JSON.stringify({ from: ABSENDER, to, subject: 'Kreiswechsel', daten })
+    JSON.stringify({
+      from: ABSENDER,
+      to: REFERENTEN.join(', '),
+      subject: 'Kreiswechsel',
+      daten
+    })
   ])
 }
 
