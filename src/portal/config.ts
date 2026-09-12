@@ -39,6 +39,16 @@ export function umfangFuerPosition(position: number): Umfang {
   return POSITION_KUECHE.includes(position) ? 'kueche' : 'voll'
 }
 
+/**
+ * Laufzeit der QR-Codes zur Mitarbeitererfassung, in Kalenderjahren.
+ * Das Blatt gilt bis zum 31.12. des fuenften Jahres (siehe portal/qr.ts).
+ */
+export const QR_GUELTIG_JAHRE = 5
+
+/** Zielseite der Orts-Anmeldelinks. Unveraendert zum Bestand. */
+export const WEBSITE_ANMELDUNG =
+  'https://www.ec-nordbund.de/anmeldung/mitarbeiter'
+
 /** Die einzige Vorlage, die eine Kuechenleitung herunterladen darf. */
 export const KUECHEN_VORLAGE = 'kueche'
 

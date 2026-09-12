@@ -32,6 +32,7 @@ import {
   type PortalScope
 } from '../portal/scope'
 import { KUECHEN_VORLAGE } from '../portal/config'
+import { erzeugeQrPdf } from '../portal/qr'
 import {
   entferneAusKreis,
   kreisMitglieder,
@@ -304,6 +305,52 @@ export default (app: Express): void => {
       await audit(scope.portalUserID, 'liste.kreis', `kreis:${ecKreisID}`, req)
       keinCache(res)
       res.json(daten)
+    } catch (err) {
+      portalErrorHandler(err, res)
+    }
+  })
+
+  /**
+   * Das QR-Blatt zur Mitarbeitererfassung als PDF.
+   *
+   * Zustaendig ist die FZ-Verantwortliche: das Blatt haengt an der
+   * Fuehrungszeugnis-Pflicht, und sie ist es auch, bei der die Anmeldungen
+   * anschliessend als offene Vorgaenge auflaufen.
+   *
+   * Erzeugen aendert nichts am Bestand -- es entsteht nur ein weiteres
+   * gueltiges Dokument. Aeltere Aushaenge bleiben bis zu ihrem Ablauf
+   * nutzbar, es muss also niemand Blaetter einsammeln.
+   */
+  app.get('/portal/kreis/:id/qr', async (req: Request, res: Response) => {
+    try {
+      const scope = await requirePortal(req)
+      const ecKreisID = ganzzahlParam(req.params.id)
+      assertKreis(scope, ecKreisID, 'fz')
+
+      const { pdf, dateiname, jahr } = await erzeugeQrPdf(ecKreisID)
+
+      await audit(
+        scope.portalUserID,
+        'qr.kreis',
+        `kreis:${ecKreisID}:${jahr}`,
+        req
+      )
+      keinCache(res)
+      res
+        .type('application/pdf')
+        // Das Ablaufjahr als Header, damit das Portal nach dem Download die
+        // Gueltigkeit nennen kann, ohne die Fuenf-Jahres-Regel ein zweites
+        // Mal im Frontend zu fuehren.
+        .set('X-QR-Jahr', String(jahr))
+        // filename* mit UTF-8: im Namen stehen Kreisbezeichnungen wie
+        // "EC-Lübeck", und das reine `filename=` traegt nur ASCII.
+        .set(
+          'Content-Disposition',
+          `attachment; filename="qr-mitarbeitererfassung.pdf"; filename*=UTF-8''${encodeURIComponent(
+            dateiname
+          )}`
+        )
+        .send(pdf)
     } catch (err) {
       portalErrorHandler(err, res)
     }

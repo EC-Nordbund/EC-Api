@@ -60,7 +60,16 @@ app.set(
 
 app
   //.use(compression())
-  .use(cors({ origin: (o, cb) => cb(null, true) }))
+  // exposedHeaders: ohne diese Liste liest Browser-JavaScript von einer
+  // anderen Herkunft nur die sechs CORS-Standardheader. Das Portal laeuft auf
+  // portal.ec-nordbund.de und braucht bei Dateidownloads den Dateinamen aus
+  // Content-Disposition und das Ablaufjahr des QR-Blatts.
+  .use(
+    cors({
+      origin: (o, cb) => cb(null, true),
+      exposedHeaders: ['Content-Disposition', 'X-QR-Jahr']
+    })
+  )
   .use('/time', (req, res) => {
     res.end(`{"time": ${new Date().getTime()}}`)
   })
