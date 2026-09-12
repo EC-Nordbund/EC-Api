@@ -17,6 +17,7 @@ import {
   GraphQLList
 } from 'graphql'
 import { versions } from './config/nichtErlaubteVersionen'
+import { mergePersonen } from './dubletten/merge'
 import { changePWD, login } from './users/users'
 import mail from './helpers/mail'
 
@@ -1786,6 +1787,15 @@ export const schema = new GraphQLSchema({
           )
         })
       },
+      /**
+       * Die Logik liegt in src/dubletten/merge.ts und wird von dort auch von
+       * POST /v6/dubletten/merge benutzt. Sie lief hier urspruenglich inline und
+       * OHNE Transaktion: brach einer der rund zwanzig Schritte ab, blieb ein
+       * halb zusammengefuehrter Zustand zurueck. Dass Konflikte jetzt einen
+       * Fehler liefern statt stillschweigend Datenmuell, ist die beabsichtigte
+       * Reparatur -- die Mutation selbst bleibt in Signatur und Rueckgabewert
+       * unveraendert.
+       */
       mergePersons: {
         type: GraphQLBoolean,
 
@@ -1798,7 +1808,7 @@ export const schema = new GraphQLSchema({
           }
         }),
         resolve: handleAuth(async (_, args: any) => {
-          await mergePersonen(args)
+          await mergePersonen(args.personID_richtig, args.personID_falsch)
           return true
         })
       },
@@ -2953,151 +2963,3 @@ export const schema = new GraphQLSchema({
     }
   })
 })
-
-/**
- * Zwei Personen zusammenführen
- *
- * @author Sebastian
- * @param args Argumente
- */
-async function mergePersonen(args: {
-  personID_richtig: number
-  personID_falsch: number
-}) {
-  const con = await getMySQL()
-  await con.query(
-    sql`
-      UPDATE IGNORE adressen
-      SET personID = ${args.personID_richtig}
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE akPerson 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE anmeldungen 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE eMails 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE fz 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE fzAntrag 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE telefone 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE juleica 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE IGNORE tagsPersonen 
-      SET personID = ${args.personID_richtig} 
-      WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE fz 
-      SET gesehenVon = ${args.personID_richtig} 
-      WHERE gesehenVon = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE dublikate 
-      SET zielPersonID = ${args.personID_richtig} 
-      WHERE zielPersonID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      UPDATE anmeldungen as a 
-      
-      INNER JOIN telefone as e1 ON e1.telefonID = a.telefonID 
-      INNER JOIN telefone as e2 ON e1.telefon = e2.telefon 
-      
-      SET a.telefonID = e2.telefonID 
-      
-      WHERE 
-        e1.personID = ${args.personID_falsch} AND 
-        e2.personID = ${args.personID_richtig};`
-  )
-  await con.query(
-    sql`
-      UPDATE anmeldungen as a 
-      
-      INNER JOIN eMails as e1 ON e1.eMailID = a.eMailID 
-      INNER JOIN eMails as e2 ON e1.eMail = e2.eMail 
-      
-      SET a.eMailID = e2.emailID 
-      
-      WHERE 
-        e1.personID = ${args.personID_falsch} AND 
-        e2.personID = ${args.personID_richtig};`
-  )
-  await con.query(
-    sql`
-      UPDATE anmeldungen as a 
-      
-      INNER JOIN adressen as e1 ON e1.adressID = a.adressID 
-      INNER JOIN adressen as e2 ON (
-        e1.strasse = e2.strasse AND 
-        e1.strasse = e2.strasse AND 
-        e1.plz = e2.plz
-      ) 
-      
-      SET a.adressID = e2.adressID 
-      
-      WHERE 
-        e1.personID = ${args.personID_falsch} AND 
-        e2.personID = ${args.personID_richtig};`
-  )
-  await con.query(
-    sql`DELETE IGNORE FROM adressen WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`DELETE IGNORE FROM eMails WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`DELETE IGNORE FROM telefone WHERE personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`
-      INSERT into dublikate 
-      SELECT 
-        vorname, 
-        nachname, 
-        gebDat, 
-        ${args.personID_richtig} AS zielPersonID 
-      FROM 
-        personen 
-      WHERE 
-        personID = ${args.personID_falsch};`
-  )
-  await con.query(
-    sql`DELETE FROM personen WHERE personID = ${args.personID_falsch};`
-  )
-  con.release()
-}

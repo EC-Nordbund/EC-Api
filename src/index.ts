@@ -20,6 +20,7 @@ import sync from './api/sync'
 import anmeldetoken from './api/anmeldetoken'
 import portal from './api/portal'
 import portalAccount from './api/portal-account'
+import dubletten from './api/dubletten'
 
 // Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
 // ein einzelner vergessener Fehlerpfad in einem async-Express-Handler riss
@@ -110,6 +111,7 @@ sync(app)
 anmeldetoken(app)
 portal(app)
 portalAccount(app)
+dubletten(app)
 
 apollo.start().then(() => {
   app.use('/graphql', json(), expressMiddleware(apollo))
