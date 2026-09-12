@@ -17,10 +17,10 @@ Wir erheben Bemerkungen und Wünsche, sowie sämtliche Erlaubnisse und Einwillig
 
 # Deine Rechte
 ## Auskunftsrecht
-Du hast das Recht jederzeit eine Kopie deiner Daten, die bei uns gespeichert sind zu erhalten. Bitte wende dich dazu an Thomas Seeger oder an unseren Datenschutzbeauftragten. Dieses Auskunftsrecht bedeutet einen unheimlich hohen Verwaltungsaufwand für uns. Wir bitten daher darum, nicht leichtfertig von diesem Recht Gebrauch zu machen.
+Du hast das Recht jederzeit eine Kopie deiner Daten, die bei uns gespeichert sind zu erhalten. Bitte wende dich dazu an unser Referenten-Team oder an unseren Datenschutzbeauftragten. Dieses Auskunftsrecht bedeutet einen unheimlich hohen Verwaltungsaufwand für uns. Wir bitten daher darum, nicht leichtfertig von diesem Recht Gebrauch zu machen.
 
 ## Berichtigungsrecht
-Müssen deine Daten in irgendeiner Form berichtigt oder ergänzt werden, ist dies ebenfalls über Thomas Seeger oder unseren Datenschutzbeauftragten möglich.
+Müssen deine Daten in irgendeiner Form berichtigt oder ergänzt werden, ist dies ebenfalls über unser Referenten-Team oder unseren Datenschutzbeauftragten möglich.
 
 ## Recht auf Löschung (Recht auf Vergessenwerden)
 Da wir die Daten (insbesondere Gesundheitsdaten) zu deinem Schutz erheben und im Streitfall belegen müssen, dass wir alles Richtig gemacht haben (also z.B. eine Allergie uns nicht mitgeteilt wird etc.) und aufgrund Gesetzlicher Pflichten speichern wir die Daten bis entsprechende vergehen verjährt wären und anonymisieren danach die Daten.
