@@ -109,3 +109,35 @@ ALTER TABLE `ecKreis`
   ADD COLUMN IF NOT EXISTS `ortsverantwortlicher_personID` int(11) DEFAULT NULL
     AFTER `fz_verantwortlicher_personID`,
   ADD KEY IF NOT EXISTS `ortsverantwortlicher_personID` (`ortsverantwortlicher_personID`);
+
+
+-- ---------------------------------------------------------------------------
+-- Selbstkontrolle. Nach dem Einspielen ausfuehren -- jede Zeile muss "da"
+-- zeigen. Ein "FEHLT" bedeutet, dass die API die /portal/*-Routen mit 503
+-- abschaltet (Startup-Guard in src/portal/config.ts).
+--
+--   mysql -u<user> -p ecnordbund -e "SOURCE portal-schema.sql" && ...
+--
+-- Die Abfrage veraendert nichts und kann jederzeit wiederholt werden.
+-- ---------------------------------------------------------------------------
+SELECT 'portalUser' AS objekt, IF(COUNT(*)=1,'da','FEHLT') AS status
+  FROM information_schema.tables
+ WHERE table_schema = DATABASE() AND table_name = 'portalUser'
+UNION ALL SELECT 'portalToken', IF(COUNT(*)=1,'da','FEHLT')
+  FROM information_schema.tables
+ WHERE table_schema = DATABASE() AND table_name = 'portalToken'
+UNION ALL SELECT 'portalAudit', IF(COUNT(*)=1,'da','FEHLT')
+  FROM information_schema.tables
+ WHERE table_schema = DATABASE() AND table_name = 'portalAudit'
+UNION ALL SELECT 'portalUser.token_gen', IF(COUNT(*)=1,'da','FEHLT')
+  FROM information_schema.columns
+ WHERE table_schema = DATABASE() AND table_name = 'portalUser'
+   AND column_name = 'token_gen'
+UNION ALL SELECT 'ecKreis.fz_verantwortlicher_personID', IF(COUNT(*)=1,'da','FEHLT')
+  FROM information_schema.columns
+ WHERE table_schema = DATABASE() AND table_name = 'ecKreis'
+   AND column_name = 'fz_verantwortlicher_personID'
+UNION ALL SELECT 'ecKreis.ortsverantwortlicher_personID', IF(COUNT(*)=1,'da','FEHLT')
+  FROM information_schema.columns
+ WHERE table_schema = DATABASE() AND table_name = 'ecKreis'
+   AND column_name = 'ortsverantwortlicher_personID';
