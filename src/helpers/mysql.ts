@@ -41,6 +41,35 @@ export async function query<T = any>(sql: string, uid = -1): Promise<T[]> {
 }
 
 /**
+ * Wie query(), aber mit Prepared Statement und OHNE SQL-Logging.
+ *
+ * Zwei Gründe für die zweite Funktion statt eines Umbaus von query():
+ *
+ * 1. `query()` loggt jedes Statement inklusive eingesetzter Werte auf stdout.
+ *    Für die Portal-Abfragen wären das Namen, Geburtsdaten, Mailadressen und
+ *    Telefonnummern im Container-Log — das hat weder Retention noch
+ *    Zugriffsschutz. Portal-Code nutzt deshalb ausschließlich queryP() bzw.
+ *    withConnection().
+ * 2. Werte gehören als `?`-Parameter übergeben, nicht per sql-escape-tag in
+ *    den String interpoliert (Muster aus api/sync.ts).
+ *
+ * @author Sebastian
+ */
+export async function queryP<T = any>(
+  sql: string,
+  params: unknown[] = []
+): Promise<T[]> {
+  await ensurePool()
+
+  const connection = await pool!.getConnection()
+  try {
+    return await connection.query(sql, params)
+  } finally {
+    connection.release()
+  }
+}
+
+/**
  * Führt fn mit einer dedizierten Connection in einer Transaktion aus.
  * Commit bei Erfolg, Rollback bei jedem Fehler, Release garantiert.
  *

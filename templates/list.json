@@ -1,0 +1,22 @@
+[
+  {
+    "name": "kueche",
+    "label": "Küche"
+  },
+  {
+    "name": "leiter",
+    "label": "Leiter"
+  },
+  {
+    "name": "mitarbeiter",
+    "label": "Mitarbeiter"
+  },
+  {
+    "name": "zuschuesse",
+    "label": "Zuschüsse"
+  },
+  {
+    "name": "spezialMA",
+    "label": "Spezial MA Tag"
+  }
+]

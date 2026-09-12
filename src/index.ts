@@ -18,6 +18,8 @@ import nuxt from './nuxt'
 import fz from './api/fz'
 import sync from './api/sync'
 import anmeldetoken from './api/anmeldetoken'
+import portal from './api/portal'
+import portalAccount from './api/portal-account'
 
 // Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
 // ein einzelner vergessener Fehlerpfad in einem async-Express-Handler riss
@@ -50,6 +52,21 @@ const app = express()
     })
   ) //.use(json({ type: 'application/*+json'}))
 
+  // Das Portal liegt bewusst NICHT unter /v6: dessen Limit von 2 Requests pro
+  // Sekunde und IP ist fuer eine SPA zu eng, und mehrere Leiter hinter einem
+  // Gemeindehaus-NAT teilen sich dieselbe Adresse. Eigener Prefix mit eigenem,
+  // weiterem Limit -- die strengen Grenzen fuer Login und Passwort-Reset
+  // stehen in api/portal.ts an den einzelnen Routen.
+  // json() wird hier absichtlich nicht global gesetzt: die Portal-Routen
+  // bringen ihren eigenen Parser mit Groessenlimit mit.
+  .use(
+    '/portal',
+    expressRateLimit({
+      windowMs: 60 * 1000,
+      max: 120
+    })
+  )
+
 nuxt(app)
 user(app)
 personen(app)
@@ -59,6 +76,8 @@ bestBrief(app)
 fz(app)
 sync(app)
 anmeldetoken(app)
+portal(app)
+portalAccount(app)
 
 apollo.start().then(() => {
   app.use('/graphql', json(), expressMiddleware(apollo))
