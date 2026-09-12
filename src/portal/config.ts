@@ -131,7 +131,7 @@ export function portalStatus(): { ok: boolean; grund: string } {
   if (schemaOK === false) {
     return {
       ok: false,
-      grund: 'DB-Schema fehlt: zz-portal-schema.sql wurde nicht eingespielt'
+      grund: 'DB-Schema fehlt: sql/portal-schema.sql wurde nicht eingespielt'
     }
   }
   return { ok: true, grund: '' }
@@ -142,7 +142,7 @@ export function setSchemaOK(ok: boolean): void {
     schemaOK = ok
     if (!ok) {
       console.error(
-        '[portal] DB-Schema unvollständig -- dumps/zz-portal-schema.sql einspielen'
+        '[portal] DB-Schema unvollständig -- sql/portal-schema.sql einspielen'
       )
     }
   }

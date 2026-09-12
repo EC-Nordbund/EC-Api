@@ -62,7 +62,7 @@ export interface PortalScope {
 /**
  * Einmalige Schema-Pruefung beim ersten Portal-Request.
  *
- * Faengt den Fall "API deployt, zz-portal-schema.sql vergessen" ab: statt
+ * Faengt den Fall "API deployt, sql/portal-schema.sql vergessen" ab: statt
  * kryptischer SQL-Fehler in jeder Route gibt es dann ein klares 503.
  */
 async function pruefeSchema(): Promise<void> {
