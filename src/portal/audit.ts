@@ -33,13 +33,15 @@ export async function audit(
 }
 
 /**
- * IP des Clients. Hinter dem Reverse Proxy der Produktion steht die echte
- * Adresse in X-Forwarded-For; `req.ip` liefert dort sonst die des Proxys.
- * Nur der erste Eintrag zaehlt, der Rest ist vom Client faelschbar.
+ * IP des Clients.
+ *
+ * Ausschliesslich ueber `req.ip`, nicht durch eigenes Auslesen von
+ * X-Forwarded-For: dessen erster Eintrag stammt vom Client und ist damit frei
+ * erfunden -- im Protokoll staenden sonst Fantasie-Adressen, und genau dort
+ * will man sich darauf verlassen koennen. Express wertet den Header anhand der
+ * `trust proxy`-Einstellung aus (siehe index.ts) und liefert die Adresse, die
+ * der vertrauenswuerdige Proxy eingetragen hat.
  */
 export function clientIp(req: Request): string {
-  const xff = req.headers['x-forwarded-for']
-  const roh = Array.isArray(xff) ? xff[0] : xff
-  const ip = roh ? roh.split(',')[0].trim() : req.ip
-  return (ip || '').slice(0, 45)
+  return (req.ip || '').slice(0, 45)
 }

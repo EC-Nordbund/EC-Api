@@ -31,6 +31,30 @@ process.on('unhandledRejection', (reason) => {
 
 const apollo = new ApolloServer({ schema })
 const app = express()
+
+/**
+ * Die API laeuft in Produktion hinter einem Reverse Proxy. Ohne diese
+ * Einstellung ist `req.ip` dessen Adresse statt der des Clients -- und dann
+ * teilen sich ALLE Nutzer dieselbe Rate-Limit-Zelle. Beim Portal hiesse das:
+ * nach 60 Login-Versuchen ist die Anmeldung fuer alle gesperrt, egal von wo.
+ * Auch das bestehende Limit auf /v6 (2 Requests pro Sekunde) traf so die
+ * Verwaltung als Ganzes statt einzelner Clients.
+ *
+ * Bewusst NICHT `true`: damit wuerde Express der ersten Adresse im
+ * X-Forwarded-For glauben, und die kann jeder Client frei erfinden -- das
+ * Rate-Limit waere mit einem Header umgangen. Vertraut wird stattdessen allen
+ * Hops aus privaten Netzen (der Proxy liegt im Docker-Netz); Express nimmt
+ * dann die letzte Adresse ausserhalb davon, also die, die der Proxy
+ * eingetragen hat. Das bleibt richtig, egal wie viele private Hops
+ * dazwischenliegen.
+ *
+ * Ueber TRUST_PROXY anpassbar, falls die Konstellation davon abweicht
+ * (z. B. "1" fuer genau einen Hop).
+ */
+const trustProxy = process.env.TRUST_PROXY || 'loopback, linklocal, uniquelocal'
+app.set('trust proxy', /^\d+$/.test(trustProxy) ? Number(trustProxy) : trustProxy)
+
+app
   //.use(compression())
   .use(cors({ origin: (o, cb) => cb(null, true) }))
   .use('/time', (req, res) => {
