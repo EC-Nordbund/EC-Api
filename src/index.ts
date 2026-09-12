@@ -16,6 +16,7 @@ import * as http from 'http'
 
 import nuxt from './nuxt'
 import fz from './api/fz'
+import fzMailvorlage from './api/fz-mailvorlage'
 import sync from './api/sync'
 import anmeldetoken from './api/anmeldetoken'
 import portal from './api/portal'
@@ -116,6 +117,7 @@ ak(app)
 document(app)
 bestBrief(app)
 fz(app)
+fzMailvorlage(app)
 sync(app)
 anmeldetoken(app)
 portal(app)
