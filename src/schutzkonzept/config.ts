@@ -176,9 +176,18 @@ const deaktiviert = () =>
     503
   )
 
-/** Nur das Schema -- fuer die Portal- und Verwaltungsrouten. */
+/**
+ * Schema-Pruefung nur noch als Hinweis im Log, nie als Sperre.
+ *
+ * Die Sperre (503, solange Tabellen/Trigger fehlen) hat in Prod das ganze
+ * Modul abgeschaltet, obwohl das Schema komplett eingespielt war: SHOW
+ * TRIGGERS zeigt dem API-Benutzer ohne TRIGGER-Recht keine Trigger, und
+ * information_schema war ihm ganz verwehrt. Ein fehlendes Schema faellt
+ * ohnehin sofort auf (jede Route liefert dann 500 mit "Unknown table" im
+ * Log); die Pruefung hier meldet es nur frueher und lesbarer.
+ */
 export async function requireSchutzkonzeptSchema(): Promise<void> {
-  if (!(await pruefeSchema())) throw deaktiviert()
+  void pruefeSchema()
 }
 
 /**
