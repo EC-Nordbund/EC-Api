@@ -19,13 +19,7 @@ import {
   pruefeDefinition,
   type Pruefung
 } from './definition'
-import {
-  type Befehl,
-  befehlsFehlerText,
-  extrahiereKeys,
-  pruefeBefehle,
-  VORLAGE_UNZULAESSIG
-} from './platzhalter'
+import { type Befehl, extrahiereKeys } from './platzhalter'
 
 /**
  * Versionen des Schutzkonzept-Formulars.
@@ -489,12 +483,9 @@ async function pruefePaketgroesse(bytes: number): Promise<void> {
 }
 
 /**
- * Befehle der Vorlage lesen, gegen die Whitelist pruefen und die
- * Variablennamen liefern (Abgleich mit dem Formular im Builder).
- *
- * Die Pruefung ist keine Formsache: jeder Platzhalter laeuft beim Rendern als
- * JavaScript im API-Prozess, siehe platzhalter.ts. Eine Vorlage mit EXEC oder
- * einem beliebigen Funktionsaufruf wird deshalb hier schon abgelehnt.
+ * Befehle der Vorlage lesen und die Variablennamen liefern (Abgleich mit dem
+ * Formular im Builder). Die Vorlage selbst wird nicht eingeschraenkt -- sie
+ * kommt von der Schutzkonzept-Verwaltung, siehe platzhalter.ts.
  */
 async function platzhalterVon(inhalt: Buffer): Promise<string[]> {
   let befehle: Befehl[]
@@ -510,10 +501,6 @@ async function platzhalterVon(inhalt: Buffer): Promise<string[]> {
       'TEMPLATE_INVALID',
       `Die Vorlage ist fehlerhaft: ${String(err?.message ?? err).slice(0, 300)}`
     )
-  }
-  const unzulaessig = pruefeBefehle(befehle)
-  if (unzulaessig.length > 0) {
-    throw badRequest('TEMPLATE_INVALID', befehlsFehlerText(unzulaessig))
   }
   return extrahiereKeys(befehle)
 }
@@ -734,11 +721,7 @@ export async function mitRenderSlot<T>(fn: () => Promise<T>): Promise<T> {
   }
 }
 
-/**
- * Vorlage zu PDF rendern. Der Worker prueft die Befehle unmittelbar vor dem
- * Rendern noch einmal -- das deckt Vorlagen ab, die vor der Einfuehrung der
- * Pruefung hochgeladen wurden und in der DB liegen.
- */
+/** Vorlage zu PDF rendern (Worker + Gotenberg, gedrosselt). */
 export async function renderePdf(
   vorlage: Buffer,
   daten: Record<string, unknown>
@@ -751,15 +734,6 @@ export async function renderePdf(
     )
   } catch (err: any) {
     if (err instanceof PortalFehler) throw err
-    const text = String(err?.message ?? err)
-    if (text.includes(VORLAGE_UNZULAESSIG)) {
-      throw badRequest(
-        'TEMPLATE_INVALID',
-        text.slice(
-          text.indexOf(VORLAGE_UNZULAESSIG) + VORLAGE_UNZULAESSIG.length
-        )
-      )
-    }
     console.error('[schutzkonzept] PDF-Erzeugung fehlgeschlagen:', err)
     throw new PortalFehler(
       'PDF_FAILED',

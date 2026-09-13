@@ -13,13 +13,7 @@ import {
   set,
   timeout
 } from 'gotenberg-js-client'
-import {
-  type Befehl,
-  befehlsFehlerText,
-  istVerboten,
-  pruefeBefehle,
-  VORLAGE_UNZULAESSIG
-} from '../schutzkonzept/platzhalter'
+import { type Befehl, istVerboten } from '../schutzkonzept/platzhalter'
 
 /** docx-templates erwartet einen echten ArrayBuffer, keine Sicht darauf. */
 function alsArrayBuffer(v: Uint8Array): ArrayBuffer {
@@ -121,14 +115,12 @@ export default {
   /**
    * Schutzkonzept: Vorlage kommt aus der Datenbank statt aus einer Datei.
    *
-   * Vor JEDEM Rendern werden die Befehle der Vorlage gegen die Whitelist
-   * geprueft (pruefeBefehle) -- nicht nur beim Upload, damit auch Vorlagen
-   * erfasst sind, die schon vor dieser Pruefung in der DB lagen. Jeder
-   * Platzhalter laeuft sonst als JavaScript im API-Prozess, siehe
+   * Die Vorlage stammt von der Schutzkonzept-Verwaltung und darf alles, was
+   * docx-templates kann (Ausdruecke, EXEC, FOR, IF) -- siehe
    * schutzkonzept/platzhalter.ts. Die eingesetzten Antworten der EC-Kreise
-   * gehen nur als Werte hinein: Schluessel wie `__code__` fliegen vorher aus
-   * den Daten, weil docx-templates die Daten in denselben Kontext legt wie den
-   * auszufuehrenden Code (sichereDaten).
+   * dagegen gehen nur als Werte hinein: Schluessel wie `__code__` fliegen
+   * vorher aus den Daten, weil docx-templates die Daten in denselben Kontext
+   * legt wie den auszufuehrenden Code (sichereDaten).
    *
    * Ein unbekannter Platzhalter wird leer statt das ganze PDF abzubrechen --
    * der Builder warnt vorher beim Abgleich der Vorlage mit dem Formular.
@@ -139,14 +131,6 @@ export default {
     vorlage: Uint8Array,
     data: Record<string, any>
   ): Promise<ArrayBufferLike> {
-    const cmds = await listCommands(alsArrayBuffer(vorlage), ['{{', '}}'])
-    const unzulaessig = pruefeBefehle(
-      cmds.map((c) => ({ type: c.type, code: c.code }))
-    )
-    if (unzulaessig.length > 0) {
-      // Kein PortalFehler: durch comlink reist nur die Meldung.
-      throw new Error(VORLAGE_UNZULAESSIG + befehlsFehlerText(unzulaessig))
-    }
     return toBuffer(
       await gotenbergInst.fillDocToPdf(
         Buffer.from(vorlage),
