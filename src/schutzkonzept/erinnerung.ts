@@ -206,13 +206,13 @@ export function erinnerungsMail(
     .sort((a, b) => a.tage - b.tage)
     .map(
       (p) =>
-        `  <tr><td>${esc(p.termin.label)}</td><td>${datumDe(p.termin.datumISO)}</td><td>${p.tage < 0 ? '<strong>' : ''}${wannText(p.tage)}${p.tage < 0 ? '</strong>' : ''}</td></tr>`
+        `  <tr><td>${esc(p.termin.abschnitt)}</td><td>${esc(p.termin.label)}</td><td>${datumDe(p.termin.datumISO)}</td><td>${p.tage < 0 ? '<strong>' : ''}${wannText(p.tage)}${p.tage < 0 ? '</strong>' : ''}</td></tr>`
     )
     .join('\n')
   const html = `<p>Hallo,</p>
 <p>im Schutzkonzept von <strong>${esc(kreis)}</strong> ${n === 1 ? 'steht ein Termin an' : `stehen ${n} Termine an`}:</p>
 <table cellpadding="4">
-  <tr><th align="left">Was</th><th align="left">Datum</th><th align="left">Fällig</th></tr>
+  <tr><th align="left">Abschnitt</th><th align="left">Was</th><th align="left">Datum</th><th align="left">Fällig</th></tr>
 ${zeilen}
 </table>
 <p>Zum Schutzkonzept: <a href="${esc(link)}">${esc(link)}</a></p>
@@ -558,6 +558,7 @@ export async function anstehendeErinnerungen(
         bereichId: t.bereichId,
         abschnittId: t.abschnittId,
         feldId: t.feldId,
+        abschnitt: t.abschnitt,
         label: t.label,
         datum: t.datumISO,
         tage: tageZwischen(heute, t.datumISO),

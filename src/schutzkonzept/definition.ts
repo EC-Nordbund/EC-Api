@@ -1524,6 +1524,8 @@ export interface ErinnerungsTermin {
   bereichId: string
   abschnittId: string
   feldId: string
+  /** Titel des Abschnitts -- damit "Veraenderung bis zum" in Listen und Mails einen Bezug hat. */
+  abschnitt: string
   label: string
   datumISO: string
   tageVorher: number[]
@@ -1561,7 +1563,12 @@ export function erinnerungsTermine(
   for (const b of def.bereiche) {
     for (const a of b.abschnitte) {
       for (const f of a.felder) {
-        const wo = { bereichId: b.id, abschnittId: a.id, feldId: f.id }
+        const wo = {
+          bereichId: b.id,
+          abschnittId: a.id,
+          feldId: f.id,
+          abschnitt: a.titel
+        }
         if (f.typ === 'gruppe') {
           const roh = eigen(q, f.key)
           const zeilen: any[] = Array.isArray(roh) ? roh : []
