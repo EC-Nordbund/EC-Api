@@ -16,12 +16,15 @@ import * as http from 'http'
 
 import nuxt from './nuxt'
 import fz from './api/fz'
+import fzMailvorlage from './api/fz-mailvorlage'
 import sync from './api/sync'
 import anmeldetoken from './api/anmeldetoken'
 import portal from './api/portal'
 import portalAccount from './api/portal-account'
 import portalDownload from './api/portal-download'
 import dubletten from './api/dubletten'
+import schutzkonzept from './api/schutzkonzept'
+import { starteErinnerungsJob } from './schutzkonzept/erinnerung'
 
 // Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
 // ein einzelner vergessener Fehlerpfad in einem async-Express-Handler riss
@@ -115,6 +118,16 @@ app
       max: 120
     })
   )
+  // Ausfuell-System der EC-Kreise (schutzkonzept.ec-nordbund.de). Gleiche
+  // Ueberlegung wie beim Portal; die engen Grenzen fuer Code-Anforderung und
+  // Login stehen in api/schutzkonzept.ts.
+  .use(
+    '/schutzkonzept',
+    expressRateLimit({
+      windowMs: 60 * 1000,
+      max: 120
+    })
+  )
 
 nuxt(app)
 user(app)
@@ -123,12 +136,19 @@ ak(app)
 document(app)
 bestBrief(app)
 fz(app)
+fzMailvorlage(app)
 sync(app)
 anmeldetoken(app)
 portal(app)
 portalAccount(app)
 portalDownload(app)
 dubletten(app)
+schutzkonzept(app)
+// Taegliche Erinnerungs-Mails des Schutzkonzepts (feld.erinnerung). Nur mit
+// gesetztem Secret: ohne gibt es keine Logins und damit niemanden, der auf
+// die Mail reagieren koennte. Fehlt die Tabelle skErinnerung, schweigt der
+// Job, bis sie da ist.
+if (process.env.SCHUTZKONZEPT_JWT_SECRET) starteErinnerungsJob()
 
 apollo.start().then(() => {
   app.use('/graphql', json(), expressMiddleware(apollo))

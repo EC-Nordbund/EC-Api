@@ -66,6 +66,8 @@ export interface PortalScope {
   nachname: string
   email: string
   superuser: boolean
+  /** Globale Verantwortung fuer das Schutzkonzept-Formular (Superuser: immer). */
+  schutzkonzeptVerwalter: boolean
   kreise: ScopeKreis[]
   veranstaltungen: ScopeVeranstaltung[]
 }
@@ -159,8 +161,29 @@ export async function requirePortal(req: Request): Promise<PortalScope> {
     nachname: u.nachname,
     email: u.email,
     superuser,
+    schutzkonzeptVerwalter:
+      superuser || (await istSchutzkonzeptVerwalter(u.portalUserID)),
     kreise: await ladeKreise(u.personID, superuser),
     veranstaltungen: await ladeVeranstaltungen(u.personID, superuser)
+  }
+}
+
+/**
+ * Eigene Abfrage statt Spalte im Login-SELECT: die Spalte kommt aus
+ * sql/schutzkonzept-schema.sql. Ist die noch nicht eingespielt, soll das
+ * Portal selbst weiterlaufen -- nur eben ohne Schutzkonzept-Bereich.
+ */
+async function istSchutzkonzeptVerwalter(
+  portalUserID: number
+): Promise<boolean> {
+  try {
+    const rows = await queryP<{ v: number }>(
+      'SELECT is_schutzkonzept_verwalter AS v FROM portalUser WHERE portalUserID = ?',
+      [portalUserID]
+    )
+    return rows[0]?.v === 1
+  } catch {
+    return false
   }
 }
 

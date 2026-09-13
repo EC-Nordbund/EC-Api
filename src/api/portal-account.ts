@@ -98,6 +98,7 @@ export default (app: Express): void => {
       await aendereAccount(id, {
         email: req.body?.email,
         superuser: req.body?.superuser,
+        schutzkonzeptVerwalter: req.body?.schutzkonzeptVerwalter,
         aktiv: req.body?.aktiv,
         notiz: req.body?.notiz
       })

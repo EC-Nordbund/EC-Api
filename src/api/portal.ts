@@ -286,7 +286,8 @@ export default (app: Express): void => {
           vorname: scope.vorname,
           nachname: scope.nachname,
           email: scope.email,
-          superuser: scope.superuser
+          superuser: scope.superuser,
+          schutzkonzeptVerwalter: scope.schutzkonzeptVerwalter
         },
         kreise,
         veranstaltungen

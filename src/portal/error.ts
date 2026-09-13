@@ -21,7 +21,9 @@ export class PortalFehler extends Error {
   constructor(
     public code: string,
     message: string,
-    public status = 400
+    public status = 400,
+    /** Strukturierte Zusatzinfos, z. B. die Liste fehlender Pflichtfelder. */
+    public details?: unknown
   ) {
     super(message)
     this.name = 'PortalFehler'
@@ -46,7 +48,11 @@ export function portalErrorHandler(err: unknown, res: Response): void {
 
   if (err instanceof PortalFehler) {
     res.status(err.status).json({
-      error: { code: err.code, message: err.message }
+      error: {
+        code: err.code,
+        message: err.message,
+        ...(err.details !== undefined ? { details: err.details } : {})
+      }
     })
     return
   }

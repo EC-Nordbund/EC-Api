@@ -1,7 +1,8 @@
+import { randomBytes } from 'crypto'
 import { promises } from 'fs'
 import { Response } from 'node-fetch'
 
-import { createReport } from 'docx-templates'
+import { createReport, listCommands } from 'docx-templates'
 import { UserOptions } from 'docx-templates/lib/types'
 import {
   gotenberg,
@@ -12,6 +13,36 @@ import {
   set,
   timeout
 } from 'gotenberg-js-client'
+import {
+  type Befehl,
+  befehlsFehlerText,
+  istVerboten,
+  pruefeBefehle,
+  VORLAGE_UNZULAESSIG
+} from '../schutzkonzept/platzhalter'
+
+/** docx-templates erwartet einen echten ArrayBuffer, keine Sicht darauf. */
+function alsArrayBuffer(v: Uint8Array): ArrayBuffer {
+  return v.buffer.slice(
+    v.byteOffset,
+    v.byteOffset + v.byteLength
+  ) as ArrayBuffer
+}
+
+/**
+ * Nur Schluessel, die die Auswertung ueberhaupt lesen darf. Tabellenzeilen
+ * werden mitgefiltert; `$` ist den Schleifenvariablen vorbehalten.
+ */
+function sichereDaten(v: unknown): any {
+  if (Array.isArray(v)) return v.map(sichereDaten)
+  if (v === null || typeof v !== 'object') return v
+  const aus: Record<string, unknown> = {}
+  for (const [k, w] of Object.entries(v)) {
+    if (k.startsWith('$') || istVerboten(k)) continue
+    aus[k] = sichereDaten(w)
+  }
+  return aus
+}
 
 type config = Omit<UserOptions, 'template' | 'queryVars'>
 
@@ -86,6 +117,58 @@ export default {
     const file = await promises.readFile(filename)
 
     return toBuffer(await gotenbergInst.fillDocToPdf(file, [data]))
+  },
+  /**
+   * Schutzkonzept: Vorlage kommt aus der Datenbank statt aus einer Datei.
+   *
+   * Vor JEDEM Rendern werden die Befehle der Vorlage gegen die Whitelist
+   * geprueft (pruefeBefehle) -- nicht nur beim Upload, damit auch Vorlagen
+   * erfasst sind, die schon vor dieser Pruefung in der DB lagen. Jeder
+   * Platzhalter laeuft sonst als JavaScript im API-Prozess, siehe
+   * schutzkonzept/platzhalter.ts. Die eingesetzten Antworten der EC-Kreise
+   * gehen nur als Werte hinein: Schluessel wie `__code__` fliegen vorher aus
+   * den Daten, weil docx-templates die Daten in denselben Kontext legt wie den
+   * auszufuehrenden Code (sichereDaten).
+   *
+   * Ein unbekannter Platzhalter wird leer statt das ganze PDF abzubrechen --
+   * der Builder warnt vorher beim Abgleich der Vorlage mit dem Formular.
+   * Der errorHandler steht hier im Worker, weil Funktionen nicht durch
+   * comlink reisen koennen.
+   */
+  async schutzkonzeptPdf(
+    vorlage: Uint8Array,
+    data: Record<string, any>
+  ): Promise<ArrayBufferLike> {
+    const cmds = await listCommands(alsArrayBuffer(vorlage), ['{{', '}}'])
+    const unzulaessig = pruefeBefehle(
+      cmds.map((c) => ({ type: c.type, code: c.code }))
+    )
+    if (unzulaessig.length > 0) {
+      // Kein PortalFehler: durch comlink reist nur die Meldung.
+      throw new Error(VORLAGE_UNZULAESSIG + befehlsFehlerText(unzulaessig))
+    }
+    return toBuffer(
+      await gotenbergInst.fillDocToPdf(
+        Buffer.from(vorlage),
+        [sichereDaten(data)],
+        {
+          cmdDelimiter: ['{{', '}}'],
+          errorHandler: () => '',
+          // Standard ist "||": steht das in einer Antwort eines Kreises, fuegte
+          // docx-templates den Rest als rohes XML ins Dokument ein. Ein
+          // Zufallswert kommt in keinem Text vor.
+          literalXmlDelimiter: `#LX${randomBytes(12).toString('hex')}#`,
+          // Zeilenumbrueche aus mehrzeiligen Antworten: die Standardvariante
+          // verschluckt LibreOffice (= Gotenberg) -- "Zeile1Zeile2".
+          processLineBreaksAsNewText: true
+        }
+      )
+    )
+  },
+  /** Befehle einer `{{ }}`-Vorlage; wirft bei kaputter DOCX. */
+  async schutzkonzeptBefehle(vorlage: Uint8Array): Promise<Befehl[]> {
+    const cmds = await listCommands(alsArrayBuffer(vorlage), ['{{', '}}'])
+    return cmds.map((c) => ({ type: c.type, code: c.code }))
   },
   async generateDocument(
     filename: string,
