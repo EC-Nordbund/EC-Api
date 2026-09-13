@@ -32,6 +32,12 @@ import {
   type PortalScope
 } from '../portal/scope'
 import { KUECHEN_VORLAGE } from '../portal/config'
+import {
+  BEREICH_NAME,
+  bereicheFuer,
+  ladeDatei,
+  listeFuerPortal
+} from '../portal/downloads'
 import { erzeugeQrPdf } from '../portal/qr'
 import {
   entferneAusKreis,
@@ -447,6 +453,64 @@ export default (app: Express): void => {
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
         .send(ladeVorlage(name))
+    } catch (err) {
+      portalErrorHandler(err, res)
+    }
+  })
+
+  /* ---------------------------------------------------- Downloads --------- */
+
+  /**
+   * Formulare und Merkblaetter.
+   *
+   * Zwei feste Bereiche: wer eine Freizeit leitet, sieht "Für Freizeiten"; wer
+   * fuer einen EC-Kreis zustaendig ist, sieht "Für EC-Kreise". Beides zugleich
+   * ist der Normalfall bei Hauptamtlichen. Wer weder noch hat, bekommt eine
+   * leere Liste und im Portal gar keinen Menuepunkt.
+   */
+  app.get('/portal/downloads', async (req: Request, res: Response) => {
+    try {
+      const scope = await requirePortal(req)
+      const bereiche = bereicheFuer(scope)
+
+      keinCache(res)
+      res.json({
+        bereiche: bereiche.map((b) => ({
+          schluessel: b,
+          name: BEREICH_NAME[b]
+        })),
+        dateien: await listeFuerPortal(bereiche)
+      })
+    } catch (err) {
+      portalErrorHandler(err, res)
+    }
+  })
+
+  /**
+   * Die Datei selbst. Der Bereich wird hier ein zweites Mal geprueft -- die
+   * Liste zu filtern reicht nicht, eine ID laesst sich raten.
+   */
+  app.get('/portal/download/:id', async (req: Request, res: Response) => {
+    try {
+      const scope = await requirePortal(req)
+      const downloadID = ganzzahlParam(req.params.id)
+      const { kopf, inhalt } = await ladeDatei(downloadID)
+
+      if (!kopf.aktiv || !bereicheFuer(scope).includes(kopf.bereich)) {
+        throw forbidden('Diese Datei steht dir nicht zur Verfügung.')
+      }
+
+      await audit(scope.portalUserID, 'download', `datei:${downloadID}`, req)
+      keinCache(res)
+      res
+        .type(kopf.mimetype)
+        .set(
+          'Content-Disposition',
+          `attachment; filename="download"; filename*=UTF-8''${encodeURIComponent(
+            kopf.dateiname
+          )}`
+        )
+        .send(inhalt)
     } catch (err) {
       portalErrorHandler(err, res)
     }

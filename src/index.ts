@@ -20,6 +20,7 @@ import sync from './api/sync'
 import anmeldetoken from './api/anmeldetoken'
 import portal from './api/portal'
 import portalAccount from './api/portal-account'
+import portalDownload from './api/portal-download'
 import dubletten from './api/dubletten'
 
 // Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
@@ -79,6 +80,12 @@ app
   .use('/version', (req, res) => {
     res.end(`{"version": "${appVersion}"}`)
   })
+  // Vor dem allgemeinen /v6-Parser: Dateien fuer den Portal-Download reisen
+  // base64-kodiert im JSON und sprengen dessen Standardgrenze von 100 kB.
+  // body-parser merkt sich am Request, dass der Rumpf schon gelesen ist -- der
+  // Aufruf darunter laesst diese Route danach in Ruhe. Der Wert deckt die
+  // 10 MB Dateigroesse aus portal/downloads.ts samt base64-Aufschlag ab.
+  .use('/v6/portal-download', json({ limit: '15mb' }))
   .use('/v6', json())
 
   // 20 Requests pro Sekunde und Client. Vorher standen hier 2 -- was in der
@@ -120,10 +127,14 @@ sync(app)
 anmeldetoken(app)
 portal(app)
 portalAccount(app)
+portalDownload(app)
 dubletten(app)
 
 apollo.start().then(() => {
   app.use('/graphql', json(), expressMiddleware(apollo))
 
-  http.createServer(app).listen(4000)
+  // Port aus der Umgebung, Standard bleibt 4000. Gebraucht wird das lokal:
+  // wer an zwei Zweigen parallel arbeitet, braucht zwei APIs nebeneinander.
+  // In Produktion ist PORT nicht gesetzt, dort aendert sich nichts.
+  http.createServer(app).listen(Number(process.env.PORT) || 4000)
 })
