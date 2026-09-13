@@ -74,6 +74,12 @@ export interface LoginErgebnis {
  *  - Fehlversuche werden am Konto gezaehlt, nicht nur pro IP. Ein verteilter
  *    Angriff umgeht das IP-Limit sonst muehelos.
  */
+// E-Mail-Vergleiche in dieser Datei laufen binaer (COLLATE utf8mb4_bin):
+// die Standard-Collation haelt "müller@" und "muller@" fuer gleich, ein
+// Passwort-Link ginge dann an die falsche Adresse. Klausel bewusst auf der
+// Spaltenseite -- auf der Parameterseite scheitert sie an der
+// Verbindungs-Collation (ERROR 1253). Gleiche Behandlung wie in
+// schutzkonzept/auth.ts.
 export async function login(
   emailRoh: unknown,
   passwortRoh: unknown
@@ -90,7 +96,7 @@ export async function login(
             (pu.locked_until IS NOT NULL AND pu.locked_until > NOW()) AS gesperrt
        FROM portalUser pu
        JOIN personen p ON p.personID = pu.personID
-      WHERE pu.email = ? AND pu.aktiv = 1 AND p.anonymisiert = 0`,
+      WHERE pu.email COLLATE utf8mb4_bin = ? AND pu.aktiv = 1 AND p.anonymisiert = 0`,
     [email]
   )
 
@@ -246,7 +252,7 @@ export async function passwortVergessen(
     `SELECT pu.portalUserID, pu.email, p.vorname
        FROM portalUser pu
        JOIN personen p ON p.personID = pu.personID
-      WHERE pu.email = ? AND pu.aktiv = 1 AND p.anonymisiert = 0`,
+      WHERE pu.email COLLATE utf8mb4_bin = ? AND pu.aktiv = 1 AND p.anonymisiert = 0`,
     [email]
   )
   if (rows.length !== 1) return
@@ -449,6 +455,7 @@ export interface AccountUebersicht {
   gebDat: string | null
   email: string
   superuser: boolean
+  schutzkonzeptVerwalter: boolean
   aktiv: boolean
   passwortGesetzt: boolean
   offeneEinladung: boolean
@@ -469,6 +476,18 @@ export async function listeAccounts(): Promise<AccountUebersicht[]> {
        JOIN personen p ON p.personID = pu.personID
       ORDER BY p.nachname, p.vorname`
   )
+  // Getrennt abgefragt: die Spalte kommt aus sql/schutzkonzept-schema.sql und
+  // soll die Kontenliste nicht mitreissen, solange das Schema fehlt.
+  const verwalter = new Set<number>()
+  try {
+    for (const v of await queryP<{ portalUserID: number }>(
+      'SELECT portalUserID FROM portalUser WHERE is_schutzkonzept_verwalter = 1'
+    )) {
+      verwalter.add(v.portalUserID)
+    }
+  } catch {
+    /* Schutzkonzept-Schema noch nicht eingespielt */
+  }
   return rows.map((r) => ({
     portalUserID: r.portalUserID,
     personID: r.personID,
@@ -477,6 +496,7 @@ export async function listeAccounts(): Promise<AccountUebersicht[]> {
     gebDat: r.gebDat ? isoTag(r.gebDat) : null,
     email: r.email,
     superuser: r.is_superuser === 1,
+    schutzkonzeptVerwalter: verwalter.has(r.portalUserID),
     aktiv: r.aktiv === 1,
     passwortGesetzt: Number(r.hatPasswort) === 1,
     offeneEinladung: Number(r.offen) === 1,
@@ -505,7 +525,7 @@ export async function legeAccountAn(
   if (person.length !== 1) throw notFound('Person nicht gefunden.')
 
   const konflikt = await queryP<{ personID: number; email: string }>(
-    'SELECT personID, email FROM portalUser WHERE personID = ? OR email = ?',
+    'SELECT personID, email FROM portalUser WHERE personID = ? OR email COLLATE utf8mb4_bin = ?',
     [pid, email]
   )
   if (konflikt.length > 0) {
@@ -554,6 +574,7 @@ export async function aendereAccount(
   patch: {
     email?: unknown
     superuser?: unknown
+    schutzkonzeptVerwalter?: unknown
     aktiv?: unknown
     notiz?: unknown
   }
@@ -568,7 +589,7 @@ export async function aendereAccount(
     if (!email)
       throw badRequest('INVALID_INPUT', 'Keine gültige E-Mail-Adresse.')
     const belegt = await queryP(
-      'SELECT 1 FROM portalUser WHERE email = ? AND portalUserID <> ?',
+      'SELECT 1 FROM portalUser WHERE email COLLATE utf8mb4_bin = ? AND portalUserID <> ?',
       [email, portalUserID]
     )
     if (belegt.length > 0) {
@@ -584,6 +605,11 @@ export async function aendereAccount(
   if (patch.superuser !== undefined) {
     sets.push('is_superuser = ?')
     params.push(patch.superuser ? 1 : 0)
+  }
+  if (patch.schutzkonzeptVerwalter !== undefined) {
+    // Spalte aus sql/schutzkonzept-schema.sql
+    sets.push('is_schutzkonzept_verwalter = ?')
+    params.push(patch.schutzkonzeptVerwalter ? 1 : 0)
   }
   if (patch.aktiv !== undefined) {
     sets.push('aktiv = ?')

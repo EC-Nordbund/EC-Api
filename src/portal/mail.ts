@@ -23,7 +23,7 @@ const smtp = createTransport({
 
 const ABSENDER = 'fz@ec-nordbund.de'
 
-async function sendePortalMail(
+export async function sendePortalMail(
   to: string,
   subject: string,
   html: string,
@@ -38,11 +38,17 @@ async function sendePortalMail(
     html
   })
 
+  // Auch den Betreff schwaerzen: ein Geheimnis dort (frueher der Login-Code
+  // des Schutzkonzepts) laege sonst im Klartext im Protokoll. Leeres
+  // `geheim` nicht splitten -- das setzte den Platzhalter zwischen jedes
+  // Zeichen.
+  const schwaerze = (text: string) =>
+    geheim ? text.split(geheim).join('[LINK ENTFERNT]') : text
   const protokoll = {
     from: ABSENDER,
     to,
-    subject,
-    html: html.split(geheim).join('[LINK ENTFERNT]')
+    subject: schwaerze(subject),
+    html: schwaerze(html)
   }
   // queryP statt query: parametrisiert (der Bestand interpoliert den Mailtext
   // in den SQL-String) und ohne stdout-Logging, in dem sonst die Mailadresse
@@ -52,7 +58,7 @@ async function sendePortalMail(
   ])
 }
 
-const FUSS = `<p>Entschieden für Christus grüßt<br><strong>dein EC-Nordbund</strong></p>
+export const FUSS = `<p>Entschieden für Christus grüßt<br><strong>dein EC-Nordbund</strong></p>
 <hr>
 <p style="color:#666;font-size:small">Diese Mail wurde automatisch verschickt.
 Wenn du damit nichts anfangen kannst, ignoriere sie bitte einfach — ohne den
@@ -160,7 +166,7 @@ ${FUSS}`
 }
 
 /** Namen kommen aus der DB und landen in HTML -- also escapen. */
-function esc(v: string): string {
+export function esc(v: string): string {
   return v
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
