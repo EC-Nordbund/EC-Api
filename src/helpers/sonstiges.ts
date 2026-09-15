@@ -17,6 +17,12 @@ export function addAuth(
   return args
 }
 
+/**
+ * Das gepruefte Token-Payload wird dem Resolver als `context.auth`
+ * durchgereicht. Vorher verfiel es ungenutzt -- damit war in keiner Mutation
+ * feststellbar, wer sie ausgeloest hat, und protokollieren liess sich nichts.
+ * Resolver, die das nicht brauchen, merken von der Erweiterung nichts.
+ */
 export function handleAuth(
   cb: GraphQLFieldResolver<any, any>
   // // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -28,8 +34,9 @@ export function handleAuth(
     context: any,
     info: GraphQLResolveInfo
   ) {
-    if (await checkToken(args.authToken)) {
-      return cb(parent, args, context, info)
+    const auth = await checkToken(args.authToken)
+    if (auth) {
+      return cb(parent, args, { ...context, auth }, info)
     }
     throw 'Not allowed'
   }
