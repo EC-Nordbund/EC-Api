@@ -26,7 +26,7 @@ import { paarKey } from './keine'
  * 3. SECHS Personen-Referenzen wurden nie mitgezogen: users.person_id,
  *    portalUser.personID, DSGVO_Person.personID, keinedublikate und die beiden
  *    ecKreis-Zustaendigkeiten. Ein Verwaltungs-Login zeigte nach dem Merge auf
- *    einen geloeschten Satz.
+ *    einen geloeschten Satz. (Seit 09/2026 dazu ecKreisMitarbeit.personID.)
  * 4. Der Adress-Join verglich `e1.strasse = e2.strasse` zweimal und `ort` nie.
  * 5. Der Alias-Eintrag in `dublikate` war ein spaltenloses INSERT ... SELECT und
  *    kollidierte mit dem Primaerschluessel, sobald dieselbe Namenskombination
@@ -254,6 +254,7 @@ const REFERENZEN: Array<{ tabelle: string; spalte: string }> = [
   { tabelle: 'portalUser', spalte: 'personID' },
   { tabelle: 'ecKreis', spalte: 'fz_verantwortlicher_personID' },
   { tabelle: 'ecKreis', spalte: 'ortsverantwortlicher_personID' },
+  { tabelle: 'ecKreisMitarbeit', spalte: 'personID' },
   { tabelle: 'keinedublikate', spalte: 'personID_1' },
   { tabelle: 'keinedublikate', spalte: 'personID_2' }
 ]
@@ -585,6 +586,43 @@ export async function mergePersonen(
     )
     await q('DELETE FROM DSGVO_Person WHERE personID = ?', [entfernen])
     zaehle('DSGVO_Person', Number(dsgvoVorher[0]?.n ?? 0))
+
+    /* --------------------------------------------- E2 Mitarbeit in Kreisen */
+    // Mengentabelle wie tagsPersonen: UNIQUE(personID, ecKreisID). Arbeiten
+    // beide Saetze im selben Kreis, bleibt die Zeile des bleibenden Satzes.
+    // Die Tabelle kommt aus sql/kreis-mitarbeit.sql und kann in einer DB ohne
+    // Portal fehlen -- dann ueberspringen (Sicherheitsnetz K prueft trotzdem).
+    try {
+      const maDoppelt = await q(
+        `SELECT COUNT(*) n FROM ecKreisMitarbeit a
+           JOIN ecKreisMitarbeit b ON b.ecKreisID = a.ecKreisID
+          WHERE a.personID = ? AND b.personID = ?`,
+        [behalten, entfernen]
+      )
+      const maVorher = await q(
+        'SELECT COUNT(*) n FROM ecKreisMitarbeit WHERE personID = ?',
+        [entfernen]
+      )
+      await q(
+        `INSERT INTO ecKreisMitarbeit (personID, ecKreisID, seit, erzeugt_durch)
+              SELECT ?, ecKreisID, seit, erzeugt_durch
+                FROM ecKreisMitarbeit WHERE personID = ?
+         ON DUPLICATE KEY UPDATE ecKreisID = VALUES(ecKreisID)`,
+        [behalten, entfernen]
+      )
+      await q('DELETE FROM ecKreisMitarbeit WHERE personID = ?', [entfernen])
+      zaehle('ecKreisMitarbeit', Number(maVorher[0]?.n ?? 0))
+      const doppelt = Number(maDoppelt[0]?.n ?? 0)
+      if (doppelt > 0) {
+        zusammengefasst.push({
+          tabelle: 'ecKreisMitarbeit',
+          anzahl: doppelt,
+          grund: 'Mitarbeit im selben EC-Kreis'
+        })
+      }
+    } catch (err) {
+      if (!/doesn't exist/i.test(String((err as Error).message))) throw err
+    }
 
     /* ------------------------------------------------- F Einfache Referenzen */
     const einfach: Array<[string, string]> = [

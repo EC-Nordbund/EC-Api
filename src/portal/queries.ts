@@ -130,21 +130,25 @@ function formePerson(r: PersonFzRow): PersonFz {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Kreis-Liste (Ortsverantwortliche)                                           */
+/* Kreis-Liste (FZ-Verantwortliche): Mitarbeitende und ihre Zeugnisse         */
 /* -------------------------------------------------------------------------- */
 
 export type KreisModus = 'ampel' | 'alle'
 
 /**
- * Personen eines EC-Kreises.
+ * Mitarbeitende eines EC-Kreises (ecKreisMitarbeit), nicht seine Mitglieder.
+ * Wer wo Mitglied ist (personen.ecKreis), ist fuer diese Liste ohne Belang --
+ * das Zeugnis wird dort vorgezeigt, wo jemand mitarbeitet.
  *
- * `ampel` bildet exakt die Auswahl der Monats-Mail ab (cron.php:18-36): nur
- * Personen, die aus dem Mahnlauf nicht ausgenommen sind und bei denen ueberhaupt
- * etwas passiert ist -- ein Zeugnis juenger als sechs Jahre oder ein Antrag
- * juenger als sechs Monate. Dass beide Ansichten dieselbe Menge zeigen, ist
- * wichtig: sonst kommt die Rueckfrage "warum steht der bei mir nicht drauf".
+ * `ampel` bildet exakt die Auswahl der Monats-Mail ab (cron.php, Kreis-
+ * Schleife): nur Mitarbeitende, die aus dem Mahnlauf nicht ausgenommen sind
+ * und bei denen ueberhaupt etwas passiert ist -- ein Zeugnis juenger als sechs
+ * Jahre oder ein Antrag juenger als sechs Monate. Dass beide Ansichten
+ * dieselbe Menge zeigen, ist wichtig: sonst kommt die Rueckfrage "warum steht
+ * der bei mir nicht drauf".
  *
- * `alle` nimmt jede Person des Kreises dazu, auch die ganz ohne FZ-Vorgang.
+ * `alle` nimmt jede als mitarbeitend eingetragene Person dazu, auch die ganz
+ * ohne FZ-Vorgang.
  */
 export async function kreisListe(
   ecKreisID: number,
@@ -176,9 +180,10 @@ export async function kreisListe(
 
   const rows = await queryP<PersonFzRow>(
     `SELECT ${PERSON_FZ_SPALTEN}
-       FROM personen p
+       FROM ecKreisMitarbeit m
+       JOIN personen p ON p.personID = m.personID
        ${LETZTES_FZ}
-      WHERE p.ecKreis = ? AND p.anonymisiert = 0 ${filter}
+      WHERE m.ecKreisID = ? AND p.anonymisiert = 0 ${filter}
       ORDER BY p.nachname, p.vorname`,
     [ecKreisID]
   )
@@ -490,9 +495,10 @@ export async function offeneImKreis(ecKreisID: number): Promise<number> {
   const rows = await queryP<{ fzVon: Date | null; ersterAntrag: Date | null }>(
     `SELECT fz.fzVon,
             (SELECT MIN(fa.erzeugt) FROM fzAntrag fa WHERE fa.personID = p.personID) AS ersterAntrag
-       FROM personen p
+       FROM ecKreisMitarbeit m
+       JOIN personen p ON p.personID = m.personID
        ${LETZTES_FZ}
-      WHERE p.ecKreis = ? AND p.anonymisiert = 0 AND p.fz_deactivate = 0
+      WHERE m.ecKreisID = ? AND p.anonymisiert = 0 AND p.fz_deactivate = 0
         AND (EXISTS (SELECT 1 FROM fz f WHERE f.personID = p.personID
                       AND f.fzVon > NOW() - INTERVAL 6 YEAR)
           OR EXISTS (SELECT 1 FROM fzAntrag fa WHERE fa.personID = p.personID
@@ -635,9 +641,10 @@ async function pruefeAlter(personID: number, gesehenAm: Date): Promise<void> {
  * Traegt ein eingesehenes Fuehrungszeugnis ein.
  *
  * Fachlich identisch zur Mutation `addFZ` (graphql.ts): Zeile in `fz`, offene
- * Antraege der Person loeschen. Dazu `ecKreis.lastFZUpdate` -- das macht
- * `addFZ` nicht, `addFZAntrag` schon, und ohne den Anstupser merkt die
- * Monats-Mail die Aenderung erst ueber den Pruefsummenvergleich.
+ * Antraege der Person loeschen. Dazu `ecKreis.lastFZUpdate` in jedem Kreis,
+ * in dem die Person mitarbeitet -- das macht `addFZ` nicht, `addFZAntrag`
+ * schon, und ohne den Anstupser merkt die Monats-Mail die Aenderung erst ueber
+ * den Pruefsummenvergleich.
  *
  * `personen.fz_status` wird bewusst NICHT gesetzt: das schreibt der PHP-Cron,
  * und zwei Schreiber auf demselben Feld erzeugen Races mit dessen Lauf.
@@ -677,7 +684,7 @@ export async function addFz(
     ])
     await conn.query(
       `UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP
-        WHERE ecKreisID = (SELECT ecKreis FROM personen WHERE personID = ?)`,
+        WHERE ecKreisID IN (SELECT ecKreisID FROM ecKreisMitarbeit WHERE personID = ?)`,
       [eingabe.personID]
     )
     return res.insertId as number

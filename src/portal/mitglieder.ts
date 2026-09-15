@@ -1,3 +1,4 @@
+import type { PoolConnection } from 'promise-mysql'
 import { queryP, withConnection } from '../helpers/mysql'
 import { badRequest, notFound, PortalFehler } from './error'
 import { dateObj, isoDatum, parseDatum, type DateObj } from './date'
@@ -6,8 +7,11 @@ import { dateObj, isoDatum, parseDatum, type DateObj } from './date'
  * Mitgliederliste eines EC-Kreises -- die Aufgabe der oder des
  * Ortsverantwortlichen.
  *
- * Anders als die Fuehrungszeugnis-Liste zeigt sie ausnahmslos alle Personen des
- * Kreises, unabhaengig davon, ob je ein Zeugnis im Spiel war.
+ * Mitgliedschaft heisst `personen.ecKreis` (genau ein Kreis) plus Status
+ * `ecMitglied`. Sie hat mit der Mitarbeit (ecKreisMitarbeit, siehe
+ * mitarbeit.ts) nichts zu tun: wer hier steht, ist Mitglied, und ob je ein
+ * Fuehrungszeugnis im Spiel war, spielt keine Rolle. Umgekehrt taucht jemand,
+ * der nur mitarbeitet, hier nicht auf.
  */
 
 export interface MitgliedStatus {
@@ -188,15 +192,8 @@ export function pruefeNeuePerson(body: any): NeuePersonEingabe {
   }
 }
 
-export interface AnlageErgebnis {
-  personID: number
-  /** neu angelegt, aus dem Bestand übernommen, oder aus einem anderen Kreis geholt */
-  art: 'neu' | 'uebernommen' | 'umgezogen'
-  vorherigerKreis: { ecKreisID: number; bezeichnung: string } | null
-}
-
 /**
- * Person anlegen oder aus dem Bestand übernehmen.
+ * Bestehende Person zu einer Eingabe finden -- oder null.
  *
  * Dieselbe Reihenfolge wie die Anmeldung auf der Website (graphql.ts,
  * Mutation `anmelden`), und aus demselben Grund: `personen` hat ein UNIQUE auf
@@ -207,128 +204,170 @@ export interface AnlageErgebnis {
  *  2. Sonst in `dublikate` nachschlagen -- dort stehen Schreibvarianten, die
  *     die Geschäftsstelle bereits einer Person zugeordnet hat. So landet
  *     "Müller"/"Mueller" nicht zweimal im Bestand.
- *  3. Erst wenn beides leer bleibt, eine neue Person anlegen.
  *
- * Kontaktdaten werden wie dort per get-or-create ergänzt: vorhandene bleiben,
- * neue kommen dazu. Nichts wird überschrieben -- der Ortsverantwortliche soll
+ * Wird von der Mitglieder- UND der Mitarbeiter-Anlage benutzt (mitarbeit.ts),
+ * damit die Dublettenlogik genau einmal existiert.
+ */
+export async function findePerson(
+  conn: PoolConnection,
+  eingabe: NeuePersonEingabe
+): Promise<{ personID: number; ecKreis: number | null } | null> {
+  const geb = isoDatum(eingabe.gebDat)
+
+  const treffer = await conn.query(
+    'SELECT personID, ecKreis, anonymisiert FROM personen WHERE vorname = ? AND nachname = ? AND gebDat = ?',
+    [eingabe.vorname, eingabe.nachname, geb]
+  )
+  if (treffer.length > 0) {
+    if (treffer[0].anonymisiert === 1) {
+      throw new PortalFehler(
+        'ANONYMISIERT',
+        'Zu diesen Angaben gibt es einen gelöschten Datensatz. Bitte wende dich an die Geschäftsstelle.',
+        409
+      )
+    }
+    return { personID: treffer[0].personID, ecKreis: treffer[0].ecKreis }
+  }
+
+  const dubs = await conn.query(
+    'SELECT zielPersonID FROM dublikate WHERE vorname = ? AND nachname = ? AND gebDat = ?',
+    [eingabe.vorname, eingabe.nachname, geb]
+  )
+  if (dubs.length === 0) return null
+
+  const p = await conn.query(
+    'SELECT personID, ecKreis, anonymisiert FROM personen WHERE personID = ?',
+    [dubs[0].zielPersonID]
+  )
+  if (p.length === 0) return null
+  if (p[0].anonymisiert === 1) {
+    throw new PortalFehler(
+      'ANONYMISIERT',
+      'Zu diesen Angaben gibt es einen gelöschten Datensatz. Bitte wende dich an die Geschäftsstelle.',
+      409
+    )
+  }
+  return { personID: p[0].personID, ecKreis: p[0].ecKreis }
+}
+
+/**
+ * Neue Person anlegen. `ecKreisID` ist die Mitgliedschaft -- null, wenn die
+ * Person nur mitarbeitet und nirgends Mitglied ist.
+ */
+export async function legePersonAn(
+  conn: PoolConnection,
+  eingabe: NeuePersonEingabe,
+  ecKreisID: number | null
+): Promise<number> {
+  const res: any = await conn.query(
+    `INSERT INTO personen (vorname, nachname, gebDat, geschlecht, ecKreis, ecMitglied)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      eingabe.vorname,
+      eingabe.nachname,
+      isoDatum(eingabe.gebDat),
+      eingabe.geschlecht,
+      ecKreisID,
+      ecKreisID === null ? 1 : eingabe.ecMitglied
+    ]
+  )
+  return res.insertId as number
+}
+
+/**
+ * Kontaktdaten per get-or-create ergänzen: vorhandene bleiben, neue kommen
+ * dazu. Nichts wird überschrieben -- wer im Portal eine Person eintraegt, soll
  * ergänzen können, ohne bestehende Angaben zu zerstören.
+ */
+export async function ergaenzeKontakt(
+  conn: PoolConnection,
+  personID: number,
+  eingabe: NeuePersonEingabe
+): Promise<void> {
+  if (eingabe.email) {
+    const da = await conn.query(
+      'SELECT eMailID FROM eMails WHERE personID = ? AND eMail = ?',
+      [personID, eingabe.email]
+    )
+    if (da.length === 0) {
+      await conn.query('INSERT INTO eMails (eMail, personID) VALUES (?, ?)', [
+        eingabe.email,
+        personID
+      ])
+    }
+  }
+  if (eingabe.telefon) {
+    const da = await conn.query(
+      'SELECT telefonID FROM telefone WHERE personID = ? AND telefon = ?',
+      [personID, eingabe.telefon]
+    )
+    if (da.length === 0) {
+      await conn.query(
+        'INSERT INTO telefone (telefon, personID) VALUES (?, ?)',
+        [eingabe.telefon, personID]
+      )
+    }
+  }
+  if (eingabe.strasse && eingabe.plz && eingabe.ort) {
+    const da = await conn.query(
+      'SELECT adressID FROM adressen WHERE personID = ? AND strasse = ? AND plz = ? AND ort = ?',
+      [personID, eingabe.strasse, eingabe.plz, eingabe.ort]
+    )
+    if (da.length === 0) {
+      await conn.query(
+        'INSERT INTO adressen (personID, strasse, plz, ort) VALUES (?, ?, ?, ?)',
+        [personID, eingabe.strasse, eingabe.plz, eingabe.ort]
+      )
+    }
+  }
+}
+
+export interface AnlageErgebnis {
+  personID: number
+  /** neu angelegt, aus dem Bestand übernommen, oder aus einem anderen Kreis geholt */
+  art: 'neu' | 'uebernommen' | 'umgezogen'
+  vorherigerKreis: { ecKreisID: number; bezeichnung: string } | null
+}
+
+/**
+ * "+ Neu" in der Mitgliederliste: Person als Mitglied anlegen oder aus dem
+ * Bestand übernehmen (Dublettenlogik in findePerson).
+ *
+ * Mitglied ist man in genau einem Kreis: gehoerte die Person bisher zu einem
+ * anderen, zieht sie um (`umgezogen`), und der Aufrufer meldet das der
+ * Geschaeftsstelle. Eine Mitarbeit (ecKreisMitarbeit) wird hier NICHT
+ * angelegt -- das ist Sache der FZ-Verantwortlichen.
  */
 export async function personAnlegenOderUebernehmen(
   eingabe: NeuePersonEingabe,
   ecKreisID: number
 ): Promise<AnlageErgebnis> {
-  const geb = isoDatum(eingabe.gebDat)
-
   return withConnection(async (conn) => {
     let art: AnlageErgebnis['art'] = 'uebernommen'
-    let personID: number | null = null
     let vorherigerKreis: AnlageErgebnis['vorherigerKreis'] = null
 
-    const treffer = await conn.query(
-      'SELECT personID, ecKreis, anonymisiert FROM personen WHERE vorname = ? AND nachname = ? AND gebDat = ?',
-      [eingabe.vorname, eingabe.nachname, geb]
-    )
-
-    if (treffer.length > 0) {
-      personID = treffer[0].personID
-      if (treffer[0].anonymisiert === 1) {
-        throw new PortalFehler(
-          'ANONYMISIERT',
-          'Zu diesen Angaben gibt es einen gelöschten Datensatz. Bitte wende dich an die Geschäftsstelle.',
-          409
-        )
-      }
-      if (treffer[0].ecKreis && treffer[0].ecKreis !== ecKreisID) {
+    const bekannt = await findePerson(conn, eingabe)
+    let personID: number
+    if (bekannt) {
+      personID = bekannt.personID
+      if (bekannt.ecKreis && bekannt.ecKreis !== ecKreisID) {
         art = 'umgezogen'
         const alt = await conn.query(
           'SELECT ecKreisID, bezeichnung FROM ecKreis WHERE ecKreisID = ?',
-          [treffer[0].ecKreis]
+          [bekannt.ecKreis]
         )
         vorherigerKreis = alt[0] ?? null
       }
-    } else {
-      const dubs = await conn.query(
-        'SELECT zielPersonID FROM dublikate WHERE vorname = ? AND nachname = ? AND gebDat = ?',
-        [eingabe.vorname, eingabe.nachname, geb]
-      )
-      if (dubs.length > 0) {
-        personID = dubs[0].zielPersonID
-        const p = await conn.query(
-          'SELECT ecKreis FROM personen WHERE personID = ?',
-          [personID]
-        )
-        if (p.length > 0 && p[0].ecKreis && p[0].ecKreis !== ecKreisID) {
-          art = 'umgezogen'
-          const alt = await conn.query(
-            'SELECT ecKreisID, bezeichnung FROM ecKreis WHERE ecKreisID = ?',
-            [p[0].ecKreis]
-          )
-          vorherigerKreis = alt[0] ?? null
-        }
-      } else {
-        const res: any = await conn.query(
-          `INSERT INTO personen (vorname, nachname, gebDat, geschlecht, ecKreis, ecMitglied)
-           VALUES (?, ?, ?, ?, ?, ?)`,
-          [
-            eingabe.vorname,
-            eingabe.nachname,
-            geb,
-            eingabe.geschlecht,
-            ecKreisID,
-            eingabe.ecMitglied
-          ]
-        )
-        personID = res.insertId
-        art = 'neu'
-      }
-    }
-
-    if (!personID) throw notFound('Person konnte nicht angelegt werden.')
-
-    if (art !== 'neu') {
       await conn.query(
         'UPDATE personen SET ecKreis = ?, ecMitglied = ? WHERE personID = ?',
         [ecKreisID, eingabe.ecMitglied, personID]
       )
+    } else {
+      personID = await legePersonAn(conn, eingabe, ecKreisID)
+      art = 'neu'
     }
 
-    // Kontaktdaten ergänzen, vorhandene unberührt lassen.
-    if (eingabe.email) {
-      const da = await conn.query(
-        'SELECT eMailID FROM eMails WHERE personID = ? AND eMail = ?',
-        [personID, eingabe.email]
-      )
-      if (da.length === 0) {
-        await conn.query('INSERT INTO eMails (eMail, personID) VALUES (?, ?)', [
-          eingabe.email,
-          personID
-        ])
-      }
-    }
-    if (eingabe.telefon) {
-      const da = await conn.query(
-        'SELECT telefonID FROM telefone WHERE personID = ? AND telefon = ?',
-        [personID, eingabe.telefon]
-      )
-      if (da.length === 0) {
-        await conn.query(
-          'INSERT INTO telefone (telefon, personID) VALUES (?, ?)',
-          [eingabe.telefon, personID]
-        )
-      }
-    }
-    if (eingabe.strasse && eingabe.plz && eingabe.ort) {
-      const da = await conn.query(
-        'SELECT adressID FROM adressen WHERE personID = ? AND strasse = ? AND plz = ? AND ort = ?',
-        [personID, eingabe.strasse, eingabe.plz, eingabe.ort]
-      )
-      if (da.length === 0) {
-        await conn.query(
-          'INSERT INTO adressen (personID, strasse, plz, ort) VALUES (?, ?, ?, ?)',
-          [personID, eingabe.strasse, eingabe.plz, eingabe.ort]
-        )
-      }
-    }
+    await ergaenzeKontakt(conn, personID, eingabe)
 
     return { personID, art, vorherigerKreis }
   })

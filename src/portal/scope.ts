@@ -16,9 +16,12 @@ import { checkPortalToken, tokenAusHeader } from './token'
 /**
  * Wer darf was sehen.
  *
- * Zwei Quellen von Zustaendigkeit:
- *  - Ortsverantwortliche: ecKreis.fz_verantwortlicher_personID zeigt auf die
- *    Person. Wird in EC-Verwaltung gepflegt.
+ * Drei Quellen von Zustaendigkeit:
+ *  - FZ-Verantwortliche: ecKreis.fz_verantwortlicher_personID zeigt auf die
+ *    Person. Sieht die Mitarbeitenden des Kreises (ecKreisMitarbeit) samt
+ *    Fuehrungszeugnissen und pflegt, wer dort mitarbeitet.
+ *  - Ortsverantwortliche: ecKreis.ortsverantwortlicher_personID. Pflegt die
+ *    Mitgliederliste (personen.ecKreis). Beides wird in EC-Verwaltung gepflegt.
  *  - Freizeitleitung: ergibt sich ohne jede Pflege aus anmeldungen.position
  *    (5 = Leitung, 6 = Hauptleitung) der jeweiligen Veranstaltung.
  *
@@ -77,14 +80,16 @@ export interface PortalScope {
 /**
  * Einmalige Schema-Pruefung beim ersten Portal-Request.
  *
- * Faengt den Fall "API deployt, sql/portal-schema.sql vergessen" ab: statt
- * kryptischer SQL-Fehler in jeder Route gibt es dann ein klares 503.
+ * Faengt den Fall "API deployt, sql/portal-schema.sql oder
+ * sql/kreis-mitarbeit.sql vergessen" ab: statt kryptischer SQL-Fehler in jeder
+ * Route gibt es dann ein klares 503.
  */
 async function pruefeSchema(): Promise<void> {
   if (schemaGeprueft()) return
   try {
     await queryP('SELECT 1 FROM portalUser LIMIT 1')
     await queryP('SELECT fz_verantwortlicher_personID FROM ecKreis LIMIT 1')
+    await queryP('SELECT 1 FROM ecKreisMitarbeit LIMIT 1')
     setSchemaOK(true)
   } catch {
     setSchemaOK(false)
@@ -320,7 +325,7 @@ export function assertKreis(
   if (!k.rollen.includes(rolle)) {
     throw forbidden(
       rolle === 'fz'
-        ? 'Die Führungszeugnis-Liste dieses Kreises sieht die oder der FZ-Verantwortliche.'
+        ? 'Die Mitarbeiter- und Führungszeugnis-Liste dieses Kreises sieht die oder der FZ-Verantwortliche.'
         : 'Die Mitgliederliste dieses Kreises pflegt die oder der Ortsverantwortliche.'
     )
   }
@@ -390,7 +395,9 @@ export async function assertPerson(
   }
 
   // Nur Kreise, in denen die Person FZ-Verantwortliche ist: der
-  // Ortsverantwortliche traegt keine Fuehrungszeugnisse ein.
+  // Ortsverantwortliche traegt keine Fuehrungszeugnisse ein. Und nur fuer
+  // Personen, die dort als mitarbeitend eingetragen sind (ecKreisMitarbeit) --
+  // die Mitgliedschaft (personen.ecKreis) spielt hier keine Rolle.
   const kreisIDs = scope.kreise
     .filter((k) => k.rollen.includes('fz'))
     .map((k) => k.ecKreisID)
@@ -415,7 +422,11 @@ export async function assertPerson(
   const params: unknown[] = [personID]
 
   if (kreisIDs.length > 0) {
-    bedingungen.push(`p.ecKreis IN (${kreisIDs.map(() => '?').join(',')})`)
+    bedingungen.push(
+      `EXISTS (SELECT 1 FROM ecKreisMitarbeit m
+                WHERE m.personID = p.personID
+                  AND m.ecKreisID IN (${kreisIDs.map(() => '?').join(',')}))`
+    )
     params.push(...kreisIDs)
   }
   if (vIDs.length > 0) {

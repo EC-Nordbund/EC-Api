@@ -48,6 +48,10 @@ import {
   setzeStatus
 } from '../portal/mitglieder'
 import { sendeKreiswechsel } from '../portal/mail'
+import {
+  entferneMitarbeit,
+  mitarbeiterAnlegenOderUebernehmen
+} from '../portal/mitarbeit'
 import { materialMe } from '../material/katalog'
 
 /**
@@ -304,6 +308,11 @@ export default (app: Express): void => {
 
   /* --------------------------------------------------------------- Listen -- */
 
+  /**
+   * Mitarbeitende des Kreises (ecKreisMitarbeit) mit ihrem FZ-Stand. Nicht
+   * die Mitglieder: wer wo Mitglied ist, steht in personen.ecKreis und geht
+   * die FZ-Verantwortliche nichts an.
+   */
   app.get('/portal/kreis/:id/personen', async (req: Request, res: Response) => {
     try {
       const scope = await requirePortal(req)
@@ -646,6 +655,70 @@ export default (app: Express): void => {
 
         keinCache(res)
         res.status(201).json(ergebnis)
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  /* ------------------------------------------------ Mitarbeit ------------- */
+
+  /**
+   * "+ Mitarbeiter/in": Person in die Mitarbeiterliste des Kreises aufnehmen,
+   * bei Bedarf neu anlegen. Dieselbe Dublettenpruefung wie bei Mitgliedern
+   * (portal/mitglieder.ts), aber ohne Umzug: die Mitgliedschaft der Person --
+   * wo auch immer -- bleibt unangetastet, und eine neue Person wird nirgends
+   * Mitglied. Deshalb auch keine Kreiswechsel-Mail.
+   */
+  app.post(
+    '/portal/kreis/:id/mitarbeiter',
+    body(),
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requirePortal(req)
+        const ecKreisID = ganzzahlParam(req.params.id)
+        assertKreis(scope, ecKreisID, 'fz')
+
+        const eingabe = pruefeNeuePerson(req.body)
+        const ergebnis = await mitarbeiterAnlegenOderUebernehmen(
+          eingabe,
+          ecKreisID
+        )
+
+        await audit(
+          scope.portalUserID,
+          `mitarbeit.${ergebnis.art}`,
+          `person:${ergebnis.personID}`,
+          req
+        )
+        keinCache(res)
+        res.status(201).json(ergebnis)
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  /** Aus der Mitarbeiterliste nehmen. Person und Mitgliedschaft bleiben. */
+  app.delete(
+    '/portal/kreis/:id/mitarbeiter/:personID',
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requirePortal(req)
+        const ecKreisID = ganzzahlParam(req.params.id)
+        assertKreis(scope, ecKreisID, 'fz')
+
+        const personID = ganzzahlParam(req.params.personID)
+        await entferneMitarbeit(personID, ecKreisID)
+
+        await audit(
+          scope.portalUserID,
+          'mitarbeit.entfernt',
+          `person:${personID}`,
+          req
+        )
+        keinCache(res)
+        res.json({ status: 'OK' })
       } catch (err) {
         portalErrorHandler(err, res)
       }

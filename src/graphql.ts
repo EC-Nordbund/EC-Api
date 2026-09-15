@@ -289,7 +289,9 @@ const ecKreis = new GraphQLObjectType({
       type: new GraphQLList(person),
       resolve(val: { ecKreisID: number }) {
         return query(
-          `SELECT * FROM personen WHERE personen.ecKreis = ${val.ecKreisID} AND (EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 10 YEAR))))`
+          // Mitarbeitende des Kreises (ecKreisMitarbeit), nicht seine Mitglieder:
+          // das Zeugnis gehoert dorthin, wo jemand mitarbeitet.
+          `SELECT personen.* FROM personen JOIN ecKreisMitarbeit m ON m.personID = personen.personID WHERE m.ecKreisID = ${val.ecKreisID} AND personen.anonymisiert = 0 AND (EXISTS (SELECT * FROM fzAntrag WHERE fzAntrag.personID = personen.personID) OR EXISTS (SELECT * FROM fz WHERE fz.personID = personen.personID AND fz.fzVon > (DATE_SUB(NOW(), INTERVAL 10 YEAR))))`
         )
       }
     }
@@ -1738,15 +1740,12 @@ export const schema = new GraphQLSchema({
           await query(
             `INSERT INTO fzAntrag (personID) VALUES (${args.personID})`
           )
-          const ecKreisID = await query(
-            sql`SELECT ecKreis FROM personen WHERE personID = ${args.personID}`
-          )[0]?.ecKreis
-
-          if (ecKreis) {
-            await query(
-              sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
-            )
-          }
+          // Alle Kreise, in denen die Person mitarbeitet. (Vorher wurde hier
+          // ein Promise indiziert und der GraphQL-Typ `ecKreis` statt der ID
+          // geprueft -- das UPDATE lief nie.)
+          await query(
+            sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID IN (SELECT ecKreisID FROM ecKreisMitarbeit WHERE personID = ${args.personID})`
+          )
         })
       },
       editSonstiges: {
@@ -2677,8 +2676,15 @@ export const schema = new GraphQLSchema({
                 )
               )[0].ecKreisID
 
+              // Wer sich ueber den Aushang eines Kreises meldet, arbeitet dort
+              // mit -- Mitglied wird er dadurch nur, wenn er noch nirgends
+              // Mitglied ist. Eine bestehende Mitgliedschaft in einem anderen
+              // Kreis bleibt unangetastet.
               await query(
-                sql`UPDATE personen SET ecKreis = ${ecKreisID} WHERE personID = ${personID}`
+                sql`INSERT IGNORE INTO ecKreisMitarbeit (personID, ecKreisID, erzeugt_durch) VALUES (${personID}, ${ecKreisID}, 'qr')`
+              )
+              await query(
+                sql`UPDATE personen SET ecKreis = ${ecKreisID} WHERE personID = ${personID} AND ecKreis IS NULL`
               )
 
               if (generateFlag) {
@@ -2848,15 +2854,10 @@ export const schema = new GraphQLSchema({
                 }
 
                 if (generateFlag) {
-                  const ecKreisID = await query(
-                    sql`SELECT ecKreis FROM personen WHERE personID = ${personID}`
-                  )[0]?.ecKreis
-
-                  if (ecKreis) {
-                    await query(
-                      sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID = ${ecKreisID}`
-                    )
-                  }
+                  // Alle Kreise, in denen die Person mitarbeitet (siehe addFZAntrag).
+                  await query(
+                    sql`UPDATE ecKreis SET lastFZUpdate = CURRENT_TIMESTAMP WHERE ecKreisID IN (SELECT ecKreisID FROM ecKreisMitarbeit WHERE personID = ${personID})`
+                  )
 
                   await createFZ(
                     personID,

@@ -12,6 +12,12 @@ import {
   listeAccounts
 } from '../portal/accounts'
 import { clientIp } from '../portal/audit'
+import { PortalFehler } from '../portal/error'
+import {
+  entferneMitarbeit,
+  fuegeMitarbeitHinzu,
+  mitarbeitKreise
+} from '../portal/mitarbeit'
 import { requirePortalAktiv } from '../portal/scope'
 
 /**
@@ -247,6 +253,82 @@ export default (app: Express): void => {
         res.json({ status: 'OK' })
       } catch (err) {
         errorHandler(err, res)
+      }
+    }
+  )
+
+  /* ------------------------------------------------------- Mitarbeit ----- */
+
+  /**
+   * Mitarbeit einer Person in EC-Kreisen (ecKreisMitarbeit) -- getrennt von
+   * der Mitgliedschaft (personen.ecKreis), die die GraphQL-Personenabfrage
+   * weiterhin liefert. Die Mitarbeit entscheidet, in wessen FZ-Liste und
+   * Monats-Excel die Person auftaucht.
+   *
+   * Die Fehler aus portal/mitarbeit.ts sind PortalFehler (JSON-Konvention des
+   * Portals); hier unter /v6 werden sie in die text/plain-Konvention der
+   * Verwaltung uebersetzt.
+   */
+  const mitarbeitFehler = (err: unknown, res: Response) => {
+    if (err instanceof PortalFehler) {
+      res.status(err.status).end(err.message)
+      return
+    }
+    errorHandler(err, res)
+  }
+
+  app.get('/v6/personen/:id/mitarbeit', async (req: Request, res: Response) => {
+    try {
+      await checkAuth(req)
+      await requirePortalAktiv()
+      const personID = ganzzahl(req.params.id)
+      if (!personID) {
+        res.status(400).end('Ungültige ID')
+        return
+      }
+      res.json({ kreise: await mitarbeitKreise(personID) })
+    } catch (err) {
+      mitarbeitFehler(err, res)
+    }
+  })
+
+  // PUT, nicht POST: der Eintrag ist idempotent (INSERT IGNORE auf UNIQUE).
+  app.put(
+    '/v6/personen/:id/mitarbeit/:ecKreisID',
+    async (req: Request, res: Response) => {
+      try {
+        await checkAuth(req)
+        await requirePortalAktiv()
+        const personID = ganzzahl(req.params.id)
+        const ecKreisID = ganzzahl(req.params.ecKreisID)
+        if (!personID || !ecKreisID) {
+          res.status(400).end('Ungültige ID')
+          return
+        }
+        const neu = await fuegeMitarbeitHinzu(personID, ecKreisID, 'verwaltung')
+        res.json({ status: 'OK', neu })
+      } catch (err) {
+        mitarbeitFehler(err, res)
+      }
+    }
+  )
+
+  app.delete(
+    '/v6/personen/:id/mitarbeit/:ecKreisID',
+    async (req: Request, res: Response) => {
+      try {
+        await checkAuth(req)
+        await requirePortalAktiv()
+        const personID = ganzzahl(req.params.id)
+        const ecKreisID = ganzzahl(req.params.ecKreisID)
+        if (!personID || !ecKreisID) {
+          res.status(400).end('Ungültige ID')
+          return
+        }
+        await entferneMitarbeit(personID, ecKreisID)
+        res.json({ status: 'OK' })
+      } catch (err) {
+        mitarbeitFehler(err, res)
       }
     }
   )
