@@ -139,9 +139,45 @@ CREATE TABLE IF NOT EXISTS `materialAntragPosition` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ---------------------------------------------------------------------------
+-- Materiallisten-Vorlagen ("Teencamp-Grundliste"): eine benannte Liste von
+-- Material mit Mengen, die der Nutzer im Katalog als Auswahl laedt.
+--
+-- Pflege nur durch Materialwarte (Vorgabe). bereich wie beim Material:
+-- 'allgemein' sieht jeder, 'referenten' nur, wer auch das Spezial-Material
+-- sieht -- eine allgemeine Vorlage darf deshalb kein referenten-Material
+-- enthalten (prueft der Code). Kein aktiv-Flag: Vorlagen haengen an nichts,
+-- Loeschen ist echtes Loeschen. Archiviertes Material bleibt in der Vorlage
+-- stehen und wird beim Laden uebersprungen, sonst wuerde eine Vorlage durch
+-- eine Ausmusterung unbenutzbar.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `materialVorlage` (
+  `materialVorlageID` int(11)       NOT NULL AUTO_INCREMENT,
+  `name`              varchar(120)  NOT NULL,
+  `beschreibung`      varchar(1000) NOT NULL DEFAULT '',
+  `bereich`           enum('allgemein','referenten') NOT NULL DEFAULT 'allgemein',
+  `sortierung`        int(11)       NOT NULL DEFAULT 0,
+  `erstellt`          timestamp     NOT NULL DEFAULT current_timestamp(),
+  `erstellt_von`      int(11)       NOT NULL DEFAULT 0 COMMENT 'portalUser.portalUserID',
+  `geaendert`         timestamp     NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `geaendert_von`     int(11)       NOT NULL DEFAULT 0 COMMENT 'portalUser.portalUserID',
+  PRIMARY KEY (`materialVorlageID`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `materialVorlagePosition` (
+  `materialVorlagePositionID` int(11) NOT NULL AUTO_INCREMENT,
+  `materialVorlageID`         int(11) NOT NULL,
+  `materialID`                int(11) NOT NULL,
+  `menge`                     int(11) NOT NULL,
+  PRIMARY KEY (`materialVorlagePositionID`),
+  UNIQUE KEY `vorlage_material` (`materialVorlageID`, `materialID`),
+  KEY `materialID` (`materialID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------------------------------------------------------------------------
 -- Selbstkontrolle: jede Zeile muss 'da' zeigen. Alternativ, falls
 -- information_schema nicht lesbar ist:
---   SHOW TABLES LIKE 'material%';                        -- 5 Zeilen
+--   SHOW TABLES LIKE 'material%';                        -- 7 Zeilen
 --   SHOW COLUMNS FROM portalUser LIKE 'is_material_verwalter';
 -- ---------------------------------------------------------------------------
 SELECT 'portalUser.is_material_verwalter' AS objekt, IF(COUNT(*)=1,'da','FEHLT') AS status
@@ -151,7 +187,8 @@ SELECT 'portalUser.is_material_verwalter' AS objekt, IF(COUNT(*)=1,'da','FEHLT')
 UNION ALL SELECT t.n, IF(COUNT(i.table_name)=1,'da','FEHLT')
   FROM (SELECT 'materialKategorie' n UNION ALL SELECT 'material'
         UNION ALL SELECT 'materialFoto' UNION ALL SELECT 'materialAntrag'
-        UNION ALL SELECT 'materialAntragPosition') t
+        UNION ALL SELECT 'materialAntragPosition'
+        UNION ALL SELECT 'materialVorlage' UNION ALL SELECT 'materialVorlagePosition') t
   LEFT JOIN information_schema.tables i
     ON i.table_schema = DATABASE() AND i.table_name = t.n
  GROUP BY t.n;

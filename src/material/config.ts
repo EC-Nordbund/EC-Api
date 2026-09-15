@@ -54,7 +54,11 @@ const TABELLEN = [
   'material',
   'materialFoto',
   'materialAntrag',
-  'materialAntragPosition'
+  'materialAntragPosition',
+  // Vorlagen kamen spaeter dazu: Schema-Update VOR dem API-Deploy einspielen,
+  // sonst antwortet der ganze Material-Bereich mit 503.
+  'materialVorlage',
+  'materialVorlagePosition'
 ]
 
 let schemaDa = false

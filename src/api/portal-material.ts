@@ -47,6 +47,14 @@ import {
   sendeAntragStorniert
 } from '../material/mail'
 import { erinnerungenVerschicken } from '../material/erinnerung'
+import {
+  pruefeVorlageEingabe,
+  vorlageAnlegen,
+  vorlageErsetzen,
+  vorlageLoeschen,
+  vorlagenFuer,
+  vorlagenVerwaltung
+} from '../material/vorlage'
 
 /**
  * REST-Routen der Materialverwaltung (/portal/material/*).
@@ -136,6 +144,21 @@ export default (app: Express): void => {
       }
     }
   )
+
+  /**
+   * Vorlagen der sichtbaren Bereiche. Positionen ungefiltert -- der Katalog
+   * kuerzt und laesst weg, was er gerade nicht sieht (dort steht `frei`).
+   * Steht bewusst VOR der :id/foto-Route.
+   */
+  app.get('/portal/material/vorlagen', async (req: Request, res: Response) => {
+    try {
+      const scope = await requireMaterial(req)
+      keinCache(res)
+      res.json({ vorlagen: await vorlagenFuer(scope) })
+    } catch (err) {
+      portalErrorHandler(err, res)
+    }
+  })
 
   /**
    * Das grosse Foto. Sichtbarkeit wird hier ein zweites Mal geprueft (eine
@@ -479,6 +502,90 @@ export default (app: Express): void => {
           scope.portalUserID,
           'material.kategorie.weg',
           `kategorie:${kid}`,
+          req
+        )
+        keinCache(res)
+        res.json({ status: 'OK' })
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  /* ------------------------------------------------------------ Vorlagen */
+
+  app.get(
+    '/portal/material/verwaltung/vorlage',
+    async (req: Request, res: Response) => {
+      try {
+        await requireMaterialwart(req)
+        keinCache(res)
+        res.json({ vorlagen: await vorlagenVerwaltung() })
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  app.post(
+    '/portal/material/verwaltung/vorlage',
+    body(),
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requireMaterialwart(req)
+        const eingabe = await pruefeVorlageEingabe(req.body ?? {})
+        const materialVorlageID = await vorlageAnlegen(
+          eingabe,
+          scope.portalUserID
+        )
+        await audit(
+          scope.portalUserID,
+          'material.vorlage.neu',
+          `vorlage:${materialVorlageID}`,
+          req
+        )
+        keinCache(res)
+        res.status(201).json({ materialVorlageID })
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  app.put(
+    '/portal/material/verwaltung/vorlage/:id',
+    body(),
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requireMaterialwart(req)
+        const vid = id(req.params.id)
+        const eingabe = await pruefeVorlageEingabe(req.body ?? {})
+        await vorlageErsetzen(vid, eingabe, scope.portalUserID)
+        await audit(
+          scope.portalUserID,
+          'material.vorlage.aendern',
+          `vorlage:${vid}`,
+          req
+        )
+        keinCache(res)
+        res.json({ status: 'OK' })
+      } catch (err) {
+        portalErrorHandler(err, res)
+      }
+    }
+  )
+
+  app.delete(
+    '/portal/material/verwaltung/vorlage/:id',
+    async (req: Request, res: Response) => {
+      try {
+        const scope = await requireMaterialwart(req)
+        const vid = id(req.params.id)
+        await vorlageLoeschen(vid)
+        await audit(
+          scope.portalUserID,
+          'material.vorlage.weg',
+          `vorlage:${vid}`,
           req
         )
         keinCache(res)
