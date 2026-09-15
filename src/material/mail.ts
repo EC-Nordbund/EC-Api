@@ -48,8 +48,10 @@ const linkWart = (id: number) =>
 const zeitraum = (a: AntragDetail) =>
   `${a.vonObj?.german ?? a.von} – ${a.bisObj?.german ?? a.bis}`
 
+// Anlass auf eine Zeile bringen: per curl liesse sich ein Zeilenumbruch
+// einschleusen, und der gehoert nicht in einen Mail-Header.
 const betreff = (a: AntragDetail, ereignis: string) =>
-  `Materialantrag „${a.anlass}“ (${zeitraum(a)}): ${ereignis}`
+  `Materialantrag „${a.anlass.replace(/\s+/g, ' ').trim()}“ (${zeitraum(a)}): ${ereignis}`
 
 const kopfzeile = (a: AntragDetail) => `<table cellpadding="4">
   <tr><td><strong>Anlass</strong></td><td>${esc(a.anlass)}${a.kreis ? ` (${esc(a.kreis)})` : ''}</td></tr>
@@ -156,9 +158,12 @@ ${FUSS}`
   )
 }
 
-export async function sendeAllesZurueck(a: AntragDetail): Promise<void> {
+export async function sendeAllesZurueck(
+  a: AntragDetail,
+  ohnePortalUserID?: number
+): Promise<void> {
   await anAlle(
-    await materialwarte(),
+    await materialwarte(ohnePortalUserID),
     betreff(a, 'alles zurückgebracht'),
     `<p>${esc(a.antragsteller.vorname)} ${esc(a.antragsteller.nachname)} hat in der
 Packliste alle Positionen als zurückgebracht abgehakt. Wenn alles da ist, kann

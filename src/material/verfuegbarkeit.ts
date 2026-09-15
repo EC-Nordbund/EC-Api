@@ -141,6 +141,7 @@ export interface BelegungMaterial {
   bestand: number
   aktiv: boolean
   freigegeben: boolean
+  hatFoto: boolean
   /** Hoechste gleichzeitig genehmigte Menge an einem Tag des Fensters. */
   maxBelegt: number
   ueberbucht: boolean
@@ -170,9 +171,10 @@ export async function belegung(
 ): Promise<BelegungMaterial[]> {
   const material = await queryP<any>(
     `SELECT m.materialID, m.name, m.bereich, m.bestand, m.aktiv, m.freigegeben,
-            k.bezeichnung AS kategorie
+            k.bezeichnung AS kategorie, f.materialID IS NOT NULL AS hatFoto
        FROM material m
        LEFT JOIN materialKategorie k ON k.materialKategorieID = m.materialKategorieID
+       LEFT JOIN materialFoto f ON f.materialID = m.materialID
       ORDER BY k.sortierung, k.bezeichnung, m.name`
   )
   const rows = await queryP<any>(
@@ -220,6 +222,7 @@ export async function belegung(
       bestand: m.bestand,
       aktiv: m.aktiv === 1,
       freigegeben: m.freigegeben === 1,
+      hatFoto: Number(m.hatFoto) === 1,
       maxBelegt: spitze(reservierungen),
       ueberbucht: spitze(reservierungen) > m.bestand,
       reservierungen

@@ -1,4 +1,5 @@
-import { Express, Request, Response } from 'express'
+import { Express, NextFunction, Request, Response } from 'express'
+import type { PortalScope } from '../portal/scope'
 import { json } from 'body-parser'
 import { audit } from '../portal/audit'
 import { badRequest, portalErrorHandler } from '../portal/error'
@@ -60,8 +61,25 @@ import { erinnerungenVerschicken } from '../material/erinnerung'
  */
 
 const body = () => json({ limit: '32kb' })
-/** Foto: 2 MB + 150 kB, base64 (+33 %), plus JSON-Rahmen. */
-const fotoBody = () => json({ limit: '4mb' })
+/**
+ * Foto: 2 MB + 150 kB, base64 (+33 %), plus JSON-Rahmen.
+ *
+ * Erst anmelden, dann puffern (wie docx() im Schutzkonzept): sonst koennte
+ * jeder Unangemeldete pro Request 4 MB in den Speicher druecken. Der
+ * Materialwart-Scope landet in res.locals, die Route greift ihn dort ab.
+ */
+function fotoBody() {
+  const parser = json({ limit: '4mb' })
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.locals.scope = await requireMaterialwart(req)
+    } catch (err) {
+      portalErrorHandler(err, res)
+      return
+    }
+    parser(req, res, next)
+  }
+}
 
 function keinCache(res: Response): void {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
@@ -256,7 +274,7 @@ export default (app: Express): void => {
         res.json({ status: 'OK', allesZurueck })
         if (allesZurueck) {
           ladeAntrag(materialAntragID)
-            .then(sendeAllesZurueck)
+            .then((a) => sendeAllesZurueck(a, scope.portalUserID))
             .catch(mailFehler('alles zurueck'))
         }
       } catch (err) {
@@ -354,7 +372,7 @@ export default (app: Express): void => {
     fotoBody(),
     async (req: Request, res: Response) => {
       try {
-        const scope = await requireMaterialwart(req)
+        const scope: PortalScope = res.locals.scope
         const materialID = id(req.params.id)
         await fotoSetzen(materialID, req.body ?? {})
         await audit(

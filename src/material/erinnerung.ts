@@ -42,8 +42,13 @@ export async function erinnerungenVerschicken(): Promise<LaufErgebnis> {
   )
   for (const { materialAntragID } of ueberfaellig) {
     try {
-      await sendeErinnerungRueckgabe(await ladeAntrag(materialAntragID))
+      // Erst markieren, dann verschicken: die Erinnerung geht an zwei
+      // Empfaengerkreise. Bliebe der zweite Versand haengen, kaeme sonst der
+      // erste am naechsten Tag noch einmal. Lieber eine Erinnerung zu wenig
+      // als taeglich dieselbe.
+      const a = await ladeAntrag(materialAntragID)
       await markiere(materialAntragID)
+      await sendeErinnerungRueckgabe(a)
       r.rueckgabe++
     } catch (err) {
       r.fehler++
@@ -63,8 +68,9 @@ export async function erinnerungenVerschicken(): Promise<LaufErgebnis> {
   )
   for (const { materialAntragID } of offen) {
     try {
-      await sendeErinnerungOffen(await ladeAntrag(materialAntragID))
+      const a = await ladeAntrag(materialAntragID)
       await markiere(materialAntragID)
+      await sendeErinnerungOffen(a)
       r.unbearbeitet++
     } catch (err) {
       r.fehler++
