@@ -17,7 +17,14 @@
  *    Tabellen-Feld (`gruppe`): ein Array aus wiederum flachen Zeilen.
  *
  * Die DOCX-Daten haben dieselben Schluessel wie die gespeicherten Daten, nur
- * mit Ausgabewerten (Checkbox -> "X", Datum -> TT.MM.JJJJ, ...).
+ * mit Ausgabewerten (Checkbox -> "X", Datum -> TT.MM.JJJJ, ...). Ein Foto
+ * (`foto`) liegt als base64-JPEG/PNG direkt im Wert; die DOCX bekommt dazu
+ * `${key}_extension` (".jpg"/".png"), damit der IMAGE-Befehl von
+ * docx-templates beides hat:
+ * `{{IMAGE ({width: 4, height: 5, data: foto, extension: foto_extension})}}`
+ * -- die Klammern um das Objekt sind Pflicht: docx-templates wertet den
+ * Befehl per eval aus, und ein nacktes `{...}` ist dort ein Block, kein
+ * Objekt (SyntaxError, das Bild fehlt still).
  *
  * Drei Dinge liegen NEBEN den Daten, nicht darin:
  *  - `feld.regeln` (Wertebereich je Feld) und `feld.erinnerung` (Mail vor
@@ -40,6 +47,7 @@ export type FeldTyp =
   | 'multiselect'
   | 'checkbox'
   | 'info'
+  | 'foto'
   | 'gruppe'
 
 export const FELD_TYPEN: { typ: FeldTyp; label: string }[] = [
@@ -52,6 +60,7 @@ export const FELD_TYPEN: { typ: FeldTyp; label: string }[] = [
   { typ: 'multiselect', label: 'Mehrfachauswahl' },
   { typ: 'checkbox', label: 'Checkbox' },
   { typ: 'info', label: 'Info-Text (nur Anzeige)' },
+  { typ: 'foto', label: 'Foto (Bild)' },
   { typ: 'gruppe', label: 'Tabelle (wiederholbare Einträge)' }
 ]
 
@@ -114,7 +123,10 @@ export interface Einstellungen {
 export interface Feld {
   /** Stabile ID, bleibt ueber alle Formularversionen gleich. */
   id: string
-  /** Interne Bezeichnung = Platzhaltername in der DOCX. Leer bei `info`. */
+  /**
+   * Interne Bezeichnung = Platzhaltername in der DOCX. Leer bei `info`.
+   * Ein `foto` belegt zusaetzlich `${key}_extension` (nur in der DOCX).
+   */
   key: string
   label: string
   /** Hilfetext unter dem Feld; bei `info` der angezeigte Text. */
@@ -168,11 +180,19 @@ export type Daten = Record<string, Wert>
  * sind sie bewusst grosszuegig (ein Verhaltenskodex als Info-Text, eine lange
  * Risikoanalyse) und exportiert: die Frontends setzen daraus maxlength/counter
  * und sperren "hinzufuegen", damit nie still etwas abgeschnitten wird.
- * Achtung: ein Bereich geht als ein Request durch den 2-MB-JSON-Parser.
+ * Achtung: ein Bereich geht als ein Request durch den JSON-Parser der
+ * Speicher-Route (8 MB, api/schutzkonzept.ts) -- Fotos zaehlen mit.
  */
 export const GRENZEN = {
   textLaenge: 2000,
   textareaLaenge: 50000,
+  /**
+   * base64-Zeichen eines Fotos (~600 kB Bild). Die Frontends verkleinern vor
+   * dem Speichern auf FOTO_MAX_PX und JPEG; ein 1200-px-Handyfoto hat damit
+   * 150-400 kB. Fotos liegen im JSON des Stands, jedes zaehlt fuer die
+   * Speicher-Route und den Fingerabdruck der Abschnitte mit.
+   */
+  fotoZeichen: 800000,
   keyLaenge: 60,
   maxZeilen: 200,
   labelLaenge: 1000,
@@ -226,6 +246,58 @@ export const hatOptionen = (typ: FeldTyp): boolean =>
   typ === 'select' || typ === 'radio' || typ === 'multiselect'
 
 export const hatDaten = (typ: FeldTyp): boolean => typ !== 'info'
+
+/* --------------------------------------------------------------- Foto ---- */
+
+/** Laengste Kante, auf die die Frontends ein Foto vor dem Speichern rechnen. */
+export const FOTO_MAX_PX = 1200
+
+export type FotoExtension = '.jpg' | '.png' | '.gif'
+
+/**
+ * Dateityp eines base64-kodierten Fotos an den ersten Bytes (JPEG FF D8 FF,
+ * PNG 89 50 4E 47 ..., GIF "GIF8"), ohne zu dekodieren: die Praefixe der
+ * base64-Darstellung sind fest. Leer, wenn es keins der drei Formate ist --
+ * genau die, die docx-templates als IMAGE einbettet (SVG absichtlich nicht:
+ * XML aus fremder Hand hat in der Vorlage nichts verloren).
+ */
+export function fotoExtension(base64: unknown): FotoExtension | '' {
+  if (typeof base64 !== 'string') return ''
+  if (base64.startsWith('/9j/')) return '.jpg'
+  if (base64.startsWith('iVBORw0KGgo')) return '.png'
+  if (base64.startsWith('R0lGOD')) return '.gif'
+  return ''
+}
+
+const FOTO_MIME: Record<FotoExtension, string> = {
+  '.jpg': 'image/jpeg',
+  '.png': 'image/png',
+  '.gif': 'image/gif'
+}
+
+/** `data:`-URL fuer die Vorschau im Browser; leer ohne (gueltiges) Foto. */
+export function fotoDataUrl(base64: unknown): string {
+  const ext = fotoExtension(base64)
+  return ext ? `data:${FOTO_MIME[ext]};base64,${base64}` : ''
+}
+
+const BASE64_RE = /^[A-Za-z0-9+/]+={0,2}$/
+
+/**
+ * Ist der Wert ein speicherbares Foto? Reines base64 (ohne `data:`-Praefix,
+ * Laenge durch 4 teilbar -- so kodiert es FileReader, und so dekodiert es
+ * docx-templates), hoechstens GRENZEN.fotoZeichen, erkanntes Format.
+ */
+export function gueltigesFoto(v: unknown): v is string {
+  return (
+    typeof v === 'string' &&
+    v.length > 0 &&
+    v.length <= GRENZEN.fotoZeichen &&
+    v.length % 4 === 0 &&
+    fotoExtension(v) !== '' &&
+    BASE64_RE.test(v)
+  )
+}
 
 /** Alle Felder eines Bereichs (oberste Ebene, ohne Tabellenspalten). */
 export function felderVonBereich(b: Bereich): Feld[] {
@@ -766,6 +838,18 @@ export function pruefeDefinition(
 
     pruefeRegeln(f, wo)
 
+    if (f.typ === 'foto' && f.key && !keyFehler) {
+      // `${key}_extension` ist in der DOCX ein eigener Platzhalter (siehe
+      // ausgabe) -- gleiche Regeln und Kollisionspruefung wie Options-Keys.
+      const k = `${f.key}_extension`
+      const abgeleitetFehler = pruefeKey(k)
+      if (abgeleitetFehler) {
+        fehler.push({ ...wo, text: `${f.label}: ergibt ${abgeleitetFehler}` })
+      } else {
+        belegeKey(k, `Dateityp des Fotos „${f.label}“`, wo)
+      }
+    }
+
     if (hatOptionen(f.typ)) {
       if (f.optionen.length === 0) {
         fehler.push({ ...wo, text: `${f.label}: keine Auswahloptionen.` })
@@ -903,6 +987,7 @@ export function pruefeDefinition(
       if (f.typ === 'info' || !f.key || !KEY_RE.test(f.key)) continue
       const genutzt =
         inVorlagen.has(f.key) ||
+        (f.typ === 'foto' && inVorlagen.has(`${f.key}_extension`)) ||
         f.optionen.some((o) => inVorlagen.has(`${f.key}_${o.key}`))
       if (!genutzt) {
         warnungen.push({
@@ -938,6 +1023,8 @@ function bereinigeEinzelwert(f: Feld, v: unknown): Wert {
         : ''
     case 'checkbox':
       return v === true
+    case 'foto':
+      return gueltigesFoto(v) ? v : ''
     default:
       return null
   }
@@ -1169,6 +1256,10 @@ function umschluesseln(felderNeu: Feld[], felderAlt: Feld[], q: any) {
       case 'checkbox':
         if (af.typ === 'checkbox') setze(nf.key, eigen(q, af.key))
         break
+      case 'foto':
+        // Nur Foto -> Foto; aus Text laesst sich kein Bild raten.
+        if (af.typ === 'foto') setze(nf.key, eigen(q, af.key))
+        break
       case 'select':
       case 'radio':
         // Mehrfach- -> Einfachauswahl: nur die erste Option passt hinein.
@@ -1206,6 +1297,7 @@ function umschluesseln(felderNeu: Feld[], felderAlt: Feld[], q: any) {
  * ordneZu). Bei geaenderten Typen wird umgewandelt, soweit das ohne Raten
  * geht: Zahl/Datum/Auswahl -> Text wie im PDF, Text -> Zahl/Datum wenn er
  * eine(s) ist, Text -> Auswahl bei Treffer auf Schluessel oder Beschriftung.
+ * Ein Foto bleibt nur ein Foto (alsText gibt dafuer leer).
  * Entfernte Felder und Optionen fallen weg. Ein Feld, das zwischen oberster
  * Ebene und Tabellenspalte wandert, wird nicht uebernommen.
  */
@@ -1754,6 +1846,14 @@ function ausgabe(felder: Feld[], q: any): Record<string, unknown> {
           (Array.isArray(v) ? v : []).map((z) => ausgabe(f.felder, z))
         )
         break
+      case 'foto':
+        // `{{IMAGE ({width, height, data: key, extension: key_extension})}}`.
+        // Ohne Foto sind beide leer; docx-templates meldet dann einen Fehler,
+        // den der Worker per errorHandler in "nichts einfuegen" verwandelt.
+        // Wer die Stelle lieber selbst steuert: `{{IMAGE key ? {...} : null}}`.
+        setze(f.key, gueltigesFoto(v) ? v : '')
+        setze(`${f.key}_extension`, fotoExtension(v))
+        break
       default:
         setze(f.key, typeof v === 'string' ? v : '')
     }
@@ -1787,6 +1887,14 @@ export function docxDaten(
   }
 }
 
+/**
+ * Platzhalter-Silhouette (90 x 120 px, PNG, 1 kB) fuer Foto-Felder in den
+ * Beispieldaten -- so zeigt das Test-PDF im Builder, ob der IMAGE-Befehl in
+ * der Vorlage stimmt.
+ */
+export const BEISPIEL_FOTO =
+  'iVBORw0KGgoAAAANSUhEUgAAAFoAAAB4CAMAAABFEhUNAAADAFBMVEXd3d2IiIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAW+XVTAAAAm0lEQVR42u3Xuw3AIBDAULz/0inSpYkU4fywB3gVcMcYVVVVtVTsWe58nWOePM0GywbLBssGzfZo0OxP0qDZ0dHdxhUeVXPKmLPRnOjmHmJuT+bOp26q9a+vzOwjol0Z7Q15YhK8dZ3kPE++aINlg2WDZYNmezRYNmi2R4NmezRotkeDZns0aPYnadDs6Nto0Ozo6D58VVVV9fs2Gw0J22sRW6MAAAAASUVORK5CYII='
+
 /** Beispieldaten fuer das Test-PDF im Builder. */
 export function beispielDaten(def: Definition): Daten {
   const fuelle = (felder: Feld[], nr: number): Daten => {
@@ -1817,6 +1925,9 @@ export function beispielDaten(def: Definition): Daten {
           break
         case 'checkbox':
           d[f.key] = nr % 2 === 0
+          break
+        case 'foto':
+          d[f.key] = BEISPIEL_FOTO
           break
         case 'gruppe':
           d[f.key] = [1, 2, 3].map((i) => fuelle(f.felder, i) as Zeile)

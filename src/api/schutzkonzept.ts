@@ -78,6 +78,13 @@ import {
 const body = () => json({ limit: '2mb' })
 
 /**
+ * Speichern eines Bereichs: Fotos reisen base64-kodiert in den Werten mit
+ * (je hoechstens GRENZEN.fotoZeichen, ~800 kB) -- ein Bereich mit mehreren
+ * Foto-Feldern sprengt die 2 MB. Nur diese eine Route, hinter dem Login.
+ */
+const bodyBereich = () => json({ limit: '8mb' })
+
+/**
  * Vorlagen-Upload (roher DOCX-Body). Drei Dinge, die body-parser allein
  * nicht leistet:
  *  - erst anmelden, dann puffern: sonst nimmt die API von jedem anonymen
@@ -332,7 +339,7 @@ export default (app: Express): void => {
 
   app.put(
     '/schutzkonzept/kreis/:id/draft/bereich/:bereichId',
-    body(),
+    bodyBereich(),
     async (req: Request, res: Response) => {
       try {
         const scope = await requireSk(req)

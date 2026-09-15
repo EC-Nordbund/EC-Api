@@ -83,6 +83,9 @@ const RESERVIERT = new Set([
  * Textbasis (portiert aus dem Prototyp form-tool): Strings werden entfernt,
  * dann alle Bezeichner ohne vorangestellten Punkt gesammelt. Was eine
  * Vorlage per EXEC selbst definiert, zaehlt nicht als Formularfeld.
+ * Objekt-Schluessel bleiben aussen vor, deshalb ergibt
+ * `IMAGE ({width: 4, height: 5, data: foto, extension: foto_extension})`
+ * nur `foto` und `foto_extension`.
  */
 export function extrahiereKeys(befehle: Befehl[]): string[] {
   const keys = new Set<string>()
@@ -105,7 +108,9 @@ export function extrahiereKeys(befehle: Befehl[]): string[] {
       const m = FOR_RE.exec(code.trim())
       if (!m) continue
       code = m[2]
-    } else if (!['INS', 'IF', 'EXEC'].includes(b.type)) {
+    } else if (
+      !['INS', 'IF', 'EXEC', 'IMAGE', 'LINK', 'HTML'].includes(b.type)
+    ) {
       continue
     }
     const ohneStrings = code.replace(/(['"`])(?:\\.|(?!\1).)*\1/g, '')
