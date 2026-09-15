@@ -19,6 +19,8 @@ import {
 import { versions } from './config/nichtErlaubteVersionen'
 import { mergePersonen } from './dubletten/merge'
 import { changePWD, login } from './users/users'
+import { protokolliereLeise, zustand } from './anmeldung/protokoll'
+import { ABMELDE_VERTEILER } from './anmeldung/verteiler'
 import mail from './helpers/mail'
 
 const ak = new GraphQLObjectType({
@@ -2361,14 +2363,46 @@ export const schema = new GraphQLSchema({
             type: new GraphQLNonNull(GraphQLString)
           }
         }),
-        resolve: handleAuth((_, args) => {
-          query(
+        resolve: handleAuth(async (_, args, context) => {
+          // Der Zustand VOR dem Update ist die einzige Gelegenheit, den
+          // bisherigen Wartelistenplatz festzuhalten -- das Update
+          // ueberschreibt ihn mit -1 und er ist danach verloren. Genau der
+          // fehlt sonst bei einer spaeteren Ruecknahme.
+          // UNIX_TIMESTAMP statt roher Spalte: siehe zustand() in
+          // anmeldung/protokoll.ts (UTC-Datenbank vs. lokale Node-Zeit).
+          const zeileLesen = () =>
+            query(
+              sql`SELECT personID, veranstaltungsID, position, wartelistenPlatz,
+                         UNIX_TIMESTAMP(abmeldeZeitpunkt) AS abmeldeZeitpunkt,
+                         abmeldeGebuehr, wegDerAbmeldung, kommentarAbmeldung,
+                         bisherBezahlt, rueckbezahlt
+                    FROM anmeldungen WHERE anmeldeID = ${args.anmeldeID}`
+            ).then((rows) => rows[0])
+          const vorherZeile = await zeileLesen()
+
+          await query(
             `UPDATE anmeldungen SET wartelistenPlatz=-1,abmeldeZeitpunkt=CURRENT_TIMESTAMP,abmeldeGebuehr=${args.gebuehr},wegDerAbmeldung="${args.weg}", kommentarAbmeldung="${args.kommentar}" WHERE anmeldeID = "${args.anmeldeID}"`
           )
+
+          if (vorherZeile) {
+            // Nachher nicht selbst zusammenbauen, sondern zurücklesen: so steht
+            // im Protokoll exakt das, was die Datenbank gespeichert hat.
+            await protokolliereLeise({
+              anmeldeID: args.anmeldeID,
+              personID: vorherZeile.personID,
+              veranstaltungsID: vorherZeile.veranstaltungsID,
+              userID: context?.auth?.userID ?? 0,
+              aktion: 'abmelden',
+              begruendung: `${args.weg} – ${args.kommentar}`,
+              vorher: zustand(vorherZeile),
+              nachher: zustand((await zeileLesen()) ?? {})
+            })
+          }
+
           sendMail(
             'automated@ec-nordbund.de',
             {
-              to: 'app@ec-nordbund.de;dortje.gaertner@ec-nordbund.de;tobias.krahe@ec-nordbund.de;kirke.husberg@ec-nordbund.de;BirgitHerbert@t-online.de'
+              to: ABMELDE_VERTEILER
             },
             `Neue Abmeldung`,
             `<h1>Neue Abmeldung</h1><p>Es gibt eine Abmeldung mit der AnmeldeID: ${args.anmeldeID}<br>Klicke <a href="https://verwaltung.ec-nordbund.de/#/anmeldungen/${args.anmeldeID}/home">HIER</a> um die Anmeldung einzusehen.</p>`

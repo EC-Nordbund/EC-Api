@@ -24,6 +24,7 @@ import portalAccount from './api/portal-account'
 import portalDownload from './api/portal-download'
 import portalMaterial from './api/portal-material'
 import dubletten from './api/dubletten'
+import anmeldung from './api/anmeldung'
 import schutzkonzept from './api/schutzkonzept'
 import { starteErinnerungsJob } from './schutzkonzept/erinnerung'
 import { starteMaterialErinnerungsJob } from './material/erinnerung'
@@ -146,6 +147,7 @@ portalAccount(app)
 portalDownload(app)
 portalMaterial(app)
 dubletten(app)
+anmeldung(app)
 schutzkonzept(app)
 // Taegliche Erinnerungs-Mails des Schutzkonzepts (feld.erinnerung). Nur mit
 // gesetztem Secret: ohne gibt es keine Logins und damit niemanden, der auf
