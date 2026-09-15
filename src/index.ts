@@ -22,9 +22,11 @@ import anmeldetoken from './api/anmeldetoken'
 import portal from './api/portal'
 import portalAccount from './api/portal-account'
 import portalDownload from './api/portal-download'
+import portalMaterial from './api/portal-material'
 import dubletten from './api/dubletten'
 import schutzkonzept from './api/schutzkonzept'
 import { starteErinnerungsJob } from './schutzkonzept/erinnerung'
+import { starteMaterialErinnerungsJob } from './material/erinnerung'
 
 // Sicherheitsnetz: Node >= 15 beendet den Prozess bei unhandled rejections —
 // ein einzelner vergessener Fehlerpfad in einem async-Express-Handler riss
@@ -142,6 +144,7 @@ anmeldetoken(app)
 portal(app)
 portalAccount(app)
 portalDownload(app)
+portalMaterial(app)
 dubletten(app)
 schutzkonzept(app)
 // Taegliche Erinnerungs-Mails des Schutzkonzepts (feld.erinnerung). Nur mit
@@ -149,6 +152,9 @@ schutzkonzept(app)
 // die Mail reagieren koennte. Fehlt die Tabelle skErinnerung, schweigt der
 // Job, bis sie da ist.
 if (process.env.SCHUTZKONZEPT_JWT_SECRET) starteErinnerungsJob()
+// Gleiches fuer die Materialverwaltung (Rueckgabe ueberfaellig, Antrag
+// unbearbeitet). Haengt am Portal-Secret; ohne Material-Schema schweigt er.
+if (process.env.PORTAL_JWT_SECRET) starteMaterialErinnerungsJob()
 
 apollo.start().then(() => {
   app.use('/graphql', json(), expressMiddleware(apollo))

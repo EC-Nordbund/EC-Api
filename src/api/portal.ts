@@ -48,6 +48,7 @@ import {
   setzeStatus
 } from '../portal/mitglieder'
 import { sendeKreiswechsel } from '../portal/mail'
+import { materialMe } from '../material/katalog'
 
 /**
  * REST-Routen des EC-Portals (Freizeitleitung und Ortsverantwortliche).
@@ -287,10 +288,14 @@ export default (app: Express): void => {
           nachname: scope.nachname,
           email: scope.email,
           superuser: scope.superuser,
-          schutzkonzeptVerwalter: scope.schutzkonzeptVerwalter
+          schutzkonzeptVerwalter: scope.schutzkonzeptVerwalter,
+          materialVerwalter: scope.materialVerwalter
         },
         kreise,
-        veranstaltungen
+        veranstaltungen,
+        // null, solange sql/material-schema.sql nicht eingespielt ist -- das
+        // Portal zeigt dann schlicht keinen Material-Bereich.
+        material: await materialMe(scope)
       })
     } catch (err) {
       portalErrorHandler(err, res)
