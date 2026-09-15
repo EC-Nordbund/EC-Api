@@ -456,6 +456,7 @@ export interface AccountUebersicht {
   email: string
   superuser: boolean
   schutzkonzeptVerwalter: boolean
+  materialVerwalter: boolean
   aktiv: boolean
   passwortGesetzt: boolean
   offeneEinladung: boolean
@@ -488,6 +489,17 @@ export async function listeAccounts(): Promise<AccountUebersicht[]> {
   } catch {
     /* Schutzkonzept-Schema noch nicht eingespielt */
   }
+  // Gleiches Prinzip fuer die Materialwarte (sql/material-schema.sql).
+  const materialwarte = new Set<number>()
+  try {
+    for (const v of await queryP<{ portalUserID: number }>(
+      'SELECT portalUserID FROM portalUser WHERE is_material_verwalter = 1'
+    )) {
+      materialwarte.add(v.portalUserID)
+    }
+  } catch {
+    /* Material-Schema noch nicht eingespielt */
+  }
   return rows.map((r) => ({
     portalUserID: r.portalUserID,
     personID: r.personID,
@@ -497,6 +509,7 @@ export async function listeAccounts(): Promise<AccountUebersicht[]> {
     email: r.email,
     superuser: r.is_superuser === 1,
     schutzkonzeptVerwalter: verwalter.has(r.portalUserID),
+    materialVerwalter: materialwarte.has(r.portalUserID),
     aktiv: r.aktiv === 1,
     passwortGesetzt: Number(r.hatPasswort) === 1,
     offeneEinladung: Number(r.offen) === 1,
@@ -575,6 +588,7 @@ export async function aendereAccount(
     email?: unknown
     superuser?: unknown
     schutzkonzeptVerwalter?: unknown
+    materialVerwalter?: unknown
     aktiv?: unknown
     notiz?: unknown
   }
@@ -610,6 +624,11 @@ export async function aendereAccount(
     // Spalte aus sql/schutzkonzept-schema.sql
     sets.push('is_schutzkonzept_verwalter = ?')
     params.push(patch.schutzkonzeptVerwalter ? 1 : 0)
+  }
+  if (patch.materialVerwalter !== undefined) {
+    // Spalte aus sql/material-schema.sql
+    sets.push('is_material_verwalter = ?')
+    params.push(patch.materialVerwalter ? 1 : 0)
   }
   if (patch.aktiv !== undefined) {
     sets.push('aktiv = ?')

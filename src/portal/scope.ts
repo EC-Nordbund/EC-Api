@@ -68,6 +68,8 @@ export interface PortalScope {
   superuser: boolean
   /** Globale Verantwortung fuer das Schutzkonzept-Formular (Superuser: immer). */
   schutzkonzeptVerwalter: boolean
+  /** Materialwart: pflegt den Bestand, bearbeitet Antraege (Superuser: immer). */
+  materialVerwalter: boolean
   kreise: ScopeKreis[]
   veranstaltungen: ScopeVeranstaltung[]
 }
@@ -163,6 +165,8 @@ export async function requirePortal(req: Request): Promise<PortalScope> {
     superuser,
     schutzkonzeptVerwalter:
       superuser || (await istSchutzkonzeptVerwalter(u.portalUserID)),
+    materialVerwalter:
+      superuser || (await hatFlag(u.portalUserID, 'is_material_verwalter')),
     kreise: await ladeKreise(u.personID, superuser),
     veranstaltungen: await ladeVeranstaltungen(u.personID, superuser)
   }
@@ -176,9 +180,22 @@ export async function requirePortal(req: Request): Promise<PortalScope> {
 async function istSchutzkonzeptVerwalter(
   portalUserID: number
 ): Promise<boolean> {
+  return hatFlag(portalUserID, 'is_schutzkonzept_verwalter')
+}
+
+/**
+ * Ein Rollen-Flag aus einer Modul-Spalte lesen, die es noch nicht geben muss
+ * (is_material_verwalter kommt aus sql/material-schema.sql). Fehlt die
+ * Spalte, ist die Antwort schlicht "nein" -- das Portal laeuft weiter.
+ * Der Spaltenname ist ein Literal aus dem Code, nie aus einer Eingabe.
+ */
+async function hatFlag(
+  portalUserID: number,
+  spalte: 'is_schutzkonzept_verwalter' | 'is_material_verwalter'
+): Promise<boolean> {
   try {
     const rows = await queryP<{ v: number }>(
-      'SELECT is_schutzkonzept_verwalter AS v FROM portalUser WHERE portalUserID = ?',
+      `SELECT ${spalte} AS v FROM portalUser WHERE portalUserID = ?`,
       [portalUserID]
     )
     return rows[0]?.v === 1

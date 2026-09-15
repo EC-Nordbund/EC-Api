@@ -99,6 +99,7 @@ export default (app: Express): void => {
         email: req.body?.email,
         superuser: req.body?.superuser,
         schutzkonzeptVerwalter: req.body?.schutzkonzeptVerwalter,
+        materialVerwalter: req.body?.materialVerwalter,
         aktiv: req.body?.aktiv,
         notiz: req.body?.notiz
       })
