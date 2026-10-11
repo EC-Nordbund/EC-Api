@@ -100,6 +100,15 @@ export function extrahiereKeys(befehle: Befehl[]): string[] {
       )) {
         eigene.add(m[1])
       }
+      // Die uebliche Schreibweise von docx-templates kommt ohne Deklaration
+      // aus (`EXEC x = vorname + ' ' + nachname`, `EXEC fmt = (d) => ...`):
+      // nur so bleibt der Name fuer die folgenden Befehle sichtbar.
+      const ohneStrings = b.code.replace(/(['"`])(?:\\.|(?!\1).)*\1/g, '')
+      for (const m of ohneStrings.matchAll(
+        /(?<![\w.$])([A-Za-z_$][\w$]*)\s*=(?![=>])/g
+      )) {
+        eigene.add(m[1])
+      }
     }
   }
   for (const b of befehle) {
