@@ -1,4 +1,3 @@
-import * as fs from 'fs'
 import { ruleLib } from './rules'
 import {
   saveForConfirm,
@@ -9,7 +8,6 @@ import {
 import { validate } from './validate'
 import { json } from 'body-parser'
 import { sendMail } from './sendMail'
-import * as path from 'path'
 import axios from 'axios'
 import {
   createMailContentMA,
@@ -19,6 +17,7 @@ import {
 } from './mailContent'
 import { checkToken } from './jwt'
 import { query } from '../helpers/mysql'
+import { ladeVorlage } from '../vorlagen/store'
 
 function getAge(gebDat: string, wann?: string | Date) {
   const today = wann ? new Date(wann) : new Date()
@@ -529,9 +528,9 @@ export default (app) => {
                 attachments: [
                   {
                     filename: 'Einverstaendniserklaerung.pdf',
-                    content: fs.createReadStream(
-                      path.join(__dirname, './Einverstaendniserklaerung.pdf')
-                    )
+                    // Dateivorlage: DB, sonst dist/Einverstaendniserklaerung.pdf
+                    content: (await ladeVorlage('christival.einverstaendnis'))
+                      .inhalt
                   }
                 ]
               })

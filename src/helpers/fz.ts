@@ -4,6 +4,7 @@ import { Readable } from 'stream'
 import worker from 'comlink:../workers/generation'
 import { ecError } from './error'
 import sql from 'sql-escape-tag'
+import { ladeVorlage } from '../vorlagen/store'
 
 /**
  * Erzeugt einen FZ-Antrag für eine bestimmte Person und sendet ihn per Mail an diese.
@@ -45,8 +46,9 @@ export async function createFZ(
   const p = personenDaten[0]
   const a = adressen[0]
 
-  // Erzeuge Antrag-PDF
-  const file = await worker.generateDocumentPDF('./fz.docx', {
+  // Erzeuge Antrag-PDF -- Vorlage aus den Dateivorlagen (DB, sonst ./fz.docx)
+  const vorlage = await ladeVorlage('fz.antrag')
+  const file = await worker.docxZuPdf(new Uint8Array(vorlage.inhalt), {
     vorname: p.vorname,
     nachname: p.nachname,
     gebDat: p.gebDat.toISOString().split('T')[0].split('-').reverse().join('.'),

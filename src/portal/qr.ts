@@ -4,6 +4,7 @@ import { queryP } from '../helpers/mysql'
 import { createToken } from '../nuxt/jwt'
 import { notFound } from './error'
 import { QR_GUELTIG_JAHRE, WEBSITE_ANMELDUNG } from './config'
+import { ladeVorlage } from '../vorlagen/store'
 
 /**
  * QR-Blatt zur Mitarbeitererfassung eines EC-Kreises.
@@ -18,8 +19,8 @@ import { QR_GUELTIG_JAHRE, WEBSITE_ANMELDUNG } from './config'
  * gueltig, es kommen nur neue Dokumente hinzu.
  */
 
-/** Vorlage relativ zum Arbeitsverzeichnis -- wie in portal/templates.ts. */
-const VORLAGE = './templates/qr-mitarbeitererfassung.docx'
+/** Vorlage aus den Dateivorlagen (DB, sonst ./templates/qr-mitarbeitererfassung.docx). */
+const VORLAGE = 'kreis.qr-mitarbeitererfassung'
 
 export interface QrBlatt {
   kreis: string
@@ -112,7 +113,11 @@ export async function erzeugeQrPdf(
   ecKreisID: number
 ): Promise<{ pdf: Buffer; dateiname: string; jahr: number }> {
   const blatt = await erzeugeQrBlatt(ecKreisID)
-  const datei = await worker.generateDocumentPDF(VORLAGE, blatt.daten)
+  const vorlage = await ladeVorlage(VORLAGE)
+  const datei = await worker.docxZuPdf(
+    new Uint8Array(vorlage.inhalt),
+    blatt.daten
+  )
 
   return {
     pdf: Buffer.from(datei),

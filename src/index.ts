@@ -9,7 +9,6 @@ import compression from 'compression'
 import user from './api/user'
 import personen from './api/personen'
 import ak from './api/ak'
-import document from './api/document'
 import bestBrief from './api/best-brief'
 import expressRateLimit from 'express-rate-limit'
 import * as http from 'http'
@@ -17,6 +16,7 @@ import * as http from 'http'
 import nuxt from './nuxt'
 import fz from './api/fz'
 import fzMailvorlage from './api/fz-mailvorlage'
+import dateivorlage from './api/dateivorlage'
 import sync from './api/sync'
 import anmeldetoken from './api/anmeldetoken'
 import portal from './api/portal'
@@ -92,6 +92,9 @@ app
   // Aufruf darunter laesst diese Route danach in Ruhe. Der Wert deckt die
   // 10 MB Dateigroesse aus portal/downloads.ts samt base64-Aufschlag ab.
   .use('/v6/portal-download', json({ limit: '15mb' }))
+  // Gleiches fuer die Dateivorlagen (Briefe, Sicherungsscheine, TN-Listen):
+  // 10 MB Datei plus base64-Aufschlag, siehe vorlagen/store.ts.
+  .use('/v6/dateivorlage', json({ limit: '15mb' }))
   .use('/v6', json())
 
   // 20 Requests pro Sekunde und Client. Vorher standen hier 2 -- was in der
@@ -136,10 +139,10 @@ nuxt(app)
 user(app)
 personen(app)
 ak(app)
-document(app)
 bestBrief(app)
 fz(app)
 fzMailvorlage(app)
+dateivorlage(app)
 sync(app)
 anmeldetoken(app)
 portal(app)

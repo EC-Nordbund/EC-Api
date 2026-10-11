@@ -442,7 +442,7 @@ export default (app: Express): void => {
     async (req: Request, res: Response) => {
       try {
         const scope = await requirePortal(req)
-        const katalog = JSON.parse(ladeKatalog().toString('utf8'))
+        const katalog = ladeKatalog()
         res.json(
           nurKuechenVorlage(scope)
             ? katalog.filter(
@@ -467,7 +467,7 @@ export default (app: Express): void => {
         .type(
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        .send(ladeVorlage(name))
+        .send(await ladeVorlage(name))
     } catch (err) {
       portalErrorHandler(err, res)
     }

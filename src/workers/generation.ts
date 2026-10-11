@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto'
-import { promises } from 'fs'
+import vm from 'vm'
 import { Response } from 'node-fetch'
 
 import { createReport, listCommands } from 'docx-templates'
@@ -95,22 +95,88 @@ const toBuffer = (stream: NodeJS.ReadableStream) => {
   return new Response(stream).buffer().then((v) => v.buffer)
 }
 
+/** Ein Zufallswert, der in keinem Text vorkommt (siehe schutzkonzeptPdf). */
+const zufallsDelimiter = () => `#LX${randomBytes(12).toString('hex')}#`
+
+/**
+ * Auswertung der Befehle einer Standardvorlage (Briefe, FZ-Antrag,
+ * QR-Blatt) mit Zeitlimit.
+ *
+ * Das ist der Sandbox-Pfad von docx-templates selbst (vm.Script in einem
+ * eigenen Kontext), nur mit `timeout`: die Vorlagen werden seit 09/2026 in
+ * EC-Verwaltung hochgeladen, und eine versehentliche Endlosschleife in einem
+ * Befehl legte sonst den einzigen Dokument-Worker und damit jeden
+ * Briefversand lahm. Den Hochladenden wird vertraut (vorlagen/pruefung.ts),
+ * das Zeitlimit faengt nur Tippfehler ab.
+ */
+const laufzeitbegrenzt: UserOptions['runJs'] = ({ sandbox }) => {
+  const context = vm.createContext(sandbox)
+  const result = new vm.Script(sandbox.__code__ ?? '').runInContext(context, {
+    timeout: 2000
+  })
+  // vm.createContext liefert den Typ Context; fuer docx-templates ist es
+  // dasselbe Objekt wie die uebergebene Sandbox.
+  return { modifiedSandbox: context as typeof sandbox, result }
+}
+
+/**
+ * Optionen fuer die Standardvorlagen (`+++`-Delimiter wie bisher).
+ *
+ * Der zufaellige literalXmlDelimiter schuetzt vor Anmeldedaten mit `||`
+ * darin (Bemerkungen, Gesundheitsinformationen): mit dem Standardwert fuegte
+ * docx-templates den Rest des Textes als rohes XML in den Brief ein.
+ */
+const standardOptionen = (delimiter?: string | [string, string]): config => ({
+  ...(delimiter ? { cmdDelimiter: delimiter } : {}),
+  literalXmlDelimiter: zufallsDelimiter(),
+  runJs: laufzeitbegrenzt
+})
+
 export default {
-  async generateDocumentsPDF(
-    filename: string,
-    data: Record<string, any>[]
+  /**
+   * Vorlage (DOCX als Bytes) mit Daten fuellen und als PDF liefern.
+   *
+   * Die Vorlagen kommen aus vorlagen/store.ts (Datenbank oder Dateisystem),
+   * nicht mehr ueber einen Dateinamen -- der Worker liest keine Dateien.
+   * Die Bytes muessen als eigene Kopie ankommen (new Uint8Array(buffer)):
+   * comlink klont sie in den Worker-Thread.
+   */
+  async docxZuPdf(
+    vorlage: Uint8Array,
+    data: Record<string, any>,
+    delimiter?: string | [string, string]
   ): Promise<ArrayBufferLike> {
-    const file = await promises.readFile(filename)
-
-    return toBuffer(await gotenbergInst.fillDocToPdf(file, data))
+    return toBuffer(
+      await gotenbergInst.fillDocToPdf(
+        Buffer.from(vorlage),
+        [data],
+        standardOptionen(delimiter)
+      )
+    )
   },
-  async generateDocumentPDF(
-    filename: string,
-    data: Record<string, any>
+  /** Wie docxZuPdf, aber das gefuellte DOCX selbst statt eines PDFs. */
+  async docxFuellen(
+    vorlage: Uint8Array,
+    data: Record<string, any>,
+    delimiter?: string | [string, string]
   ): Promise<ArrayBufferLike> {
-    const file = await promises.readFile(filename)
-
-    return toBuffer(await gotenbergInst.fillDocToPdf(file, [data]))
+    return gotenbergInst.fillDocToPdf(
+      Buffer.from(vorlage),
+      [data],
+      standardOptionen(delimiter),
+      true
+    )
+  },
+  /**
+   * Befehle einer Vorlage mit beliebigem Delimiter (Standard `+++`); wirft
+   * bei kaputter DOCX. Grundlage der Platzhalter-Pruefung beim Upload.
+   */
+  async befehle(
+    vorlage: Uint8Array,
+    delimiter: string | [string, string] = '+++'
+  ): Promise<Befehl[]> {
+    const cmds = await listCommands(alsArrayBuffer(vorlage), delimiter)
+    return cmds.map((c) => ({ type: c.type, code: c.code }))
   },
   /**
    * Schutzkonzept: Vorlage kommt aus der Datenbank statt aus einer Datei.
@@ -153,13 +219,5 @@ export default {
   async schutzkonzeptBefehle(vorlage: Uint8Array): Promise<Befehl[]> {
     const cmds = await listCommands(alsArrayBuffer(vorlage), ['{{', '}}'])
     return cmds.map((c) => ({ type: c.type, code: c.code }))
-  },
-  async generateDocument(
-    filename: string,
-    data: Record<string, any>
-  ): Promise<ArrayBufferLike> {
-    const file = await promises.readFile(filename)
-
-    return gotenbergInst.fillDocToPdf(file, [data], {}, true)
   }
 }

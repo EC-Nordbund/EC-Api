@@ -1,53 +1,32 @@
-import { readFileSync, existsSync } from 'fs'
-import { join, resolve } from 'path'
 import { notFound } from './error'
+import { TNLISTEN } from '../vorlagen/katalog'
+import { ladeVorlage as ladeDateivorlage } from '../vorlagen/store'
 
 /**
- * Ausliefern der TN-Listen-Vorlagen.
+ * Ausliefern der TN-Listen-Vorlagen fuers Portal.
  *
- * Die fuenf xlsx liegen bisher in EC-Verwaltung/public/templates und werden
- * dort clientseitig gefuellt. Wuerde das Portal sie kopieren, gaebe es
- * dieselben fuenf Binaerdateien in zwei Repos -- nicht diffbar, nicht testbar,
- * und die zweite Kopie veraltet unbemerkt beim ersten Layoutwechsel. Deshalb
- * liegen sie jetzt hier und werden ausgeliefert; das Rendern bleibt im Client
- * (xlsx-template), wo es erprobt ist.
- *
- * Naechster Schritt waere, auch EC-Verwaltung auf diese Quelle umzustellen --
- * dann existieren die Vorlagen genau einmal. Gehoert nicht in dieses Modul.
+ * Die fuenf xlsx sind seit 09/2026 Dateivorlagen (`tnliste.<name>`): sie
+ * liegen in der Datenbank, sobald jemand sie in EC-Verwaltung hochgeladen
+ * hat, sonst kommen sie aus ./templates. Verwaltung und Portal lesen
+ * dieselbe Quelle -- die Vorlagen existieren damit genau einmal. Das Rendern
+ * bleibt im Client (xlsx-template), wo es erprobt ist.
  */
-const ORDNER = resolve('./templates')
 
 /** Nur genau diese Namen, keine Pfadangaben -- sonst waere das ein Directory Traversal. */
 const ERLAUBT = /^[a-zA-Z0-9_-]+$/
 
-let katalog: Buffer | null = null
-
-export function ladeKatalog(): Buffer {
-  if (!katalog) {
-    const p = join(ORDNER, 'list.json')
-    if (!existsSync(p)) throw notFound('Vorlagenliste nicht gefunden.')
-    katalog = readFileSync(p)
-  }
-  return katalog
+/** Katalog wie das fruehere templates/list.json: name/label. */
+export function ladeKatalog(): { name: string; label: string }[] {
+  return TNLISTEN.map((t) => ({ name: t.name, label: t.label }))
 }
 
-const cache = new Map<string, Buffer>()
-
-export function ladeVorlage(name: string): Buffer {
-  if (!ERLAUBT.test(name)) throw notFound('Unbekannte Vorlage.')
-
-  const vorhanden = cache.get(name)
-  if (vorhanden) return vorhanden
-
-  const p = join(ORDNER, `${name}.xlsx`)
-  // Zusaetzlich zum Zeichensatz-Check: der aufgeloeste Pfad muss im Ordner
-  // liegen. Guertel und Hosentraeger, weil hier ein Request-Parameter in einen
-  // Dateipfad geht.
-  if (!resolve(p).startsWith(ORDNER + '/') || !existsSync(p)) {
+export async function ladeVorlage(name: string): Promise<Buffer> {
+  if (!ERLAUBT.test(name) || !TNLISTEN.some((t) => t.name === name)) {
+    throw notFound('Unbekannte Vorlage.')
+  }
+  try {
+    return (await ladeDateivorlage(`tnliste.${name}`)).inhalt
+  } catch {
     throw notFound(`Vorlage "${name}" nicht gefunden.`)
   }
-
-  const inhalt = readFileSync(p)
-  cache.set(name, inhalt)
-  return inhalt
 }

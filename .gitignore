@@ -3,8 +3,10 @@ dist
 *.docx
 # Ausnahme: die QR-Vorlage gehoert zum Code. Sie steht neben den
 # TN-Listen-Vorlagen in templates/ und wird von portal/qr.ts gefuellt --
-# anders als fz.docx und best-brief-1.docx im Wurzelverzeichnis, die aus dem
-# Deployment kommen und deshalb ignoriert bleiben.
+# anders als fz.docx und best-brief-<id>.docx im Wurzelverzeichnis, die nur
+# auf dem Prod-Server liegen. Seit 09/2026 sind alle diese Dateien
+# Dateivorlagen in der Datenbank (src/vorlagen/katalog.ts); was hier liegt,
+# ist nur noch der Fallback, bis "uebernehmen" in EC-Verwaltung gelaufen ist.
 !templates/*.docx
 *.pdf
 
