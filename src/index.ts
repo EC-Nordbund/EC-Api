@@ -21,6 +21,7 @@ import sync from './api/sync'
 import anmeldetoken from './api/anmeldetoken'
 import portal from './api/portal'
 import portalAccount from './api/portal-account'
+import userAdmin from './api/user-admin'
 import portalDownload from './api/portal-download'
 import portalMaterial from './api/portal-material'
 import dubletten from './api/dubletten'
@@ -147,6 +148,7 @@ sync(app)
 anmeldetoken(app)
 portal(app)
 portalAccount(app)
+userAdmin(app)
 portalDownload(app)
 portalMaterial(app)
 dubletten(app)

@@ -1,5 +1,6 @@
 import { sign, verify } from 'jsonwebtoken'
 import { payload } from '../types/payload'
+import { istAktiv } from '../users/sperre'
 
 const secret_token = process.env.JWT_SECRET!
 
@@ -54,7 +55,16 @@ export function checkToken(token: string): Promise<payload> {
         return
       }
 
-      res(decoded)
+      // Gesperrte oder abgelaufene Konten sofort abweisen, nicht erst wenn
+      // der Token nach 13 Stunden abläuft (users/sperre.ts).
+      if (typeof decoded.userID !== 'number') {
+        res(decoded)
+        return
+      }
+      istAktiv(decoded.userID).then((aktiv) => {
+        if (aktiv) res(decoded)
+        else rej(new Error('Benutzer ist gesperrt'))
+      }, rej)
     })
   })
 }
