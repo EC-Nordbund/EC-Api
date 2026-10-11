@@ -58,7 +58,7 @@ export async function sendePortalMail(
   ])
 }
 
-export const FUSS = `<p>Entschieden für Christus grüßt<br><strong>dein EC-Nordbund</strong></p>
+export const FUSS = `<p>Herzliche Grüße<br><strong>dein EC-Nordbund</strong></p>
 <hr>
 <p style="color:#666;font-size:small">Diese Mail wurde automatisch verschickt.
 Wenn du damit nichts anfangen kannst, ignoriere sie bitte einfach — ohne den
