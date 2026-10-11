@@ -47,6 +47,7 @@ export type FeldTyp =
   | 'multiselect'
   | 'checkbox'
   | 'info'
+  | 'infotabelle'
   | 'foto'
   | 'gruppe'
 
@@ -60,6 +61,7 @@ export const FELD_TYPEN: { typ: FeldTyp; label: string }[] = [
   { typ: 'multiselect', label: 'Mehrfachauswahl' },
   { typ: 'checkbox', label: 'Checkbox' },
   { typ: 'info', label: 'Info-Text (nur Anzeige)' },
+  { typ: 'infotabelle', label: 'Hinweis-Tabelle (nur Anzeige)' },
   { typ: 'foto', label: 'Foto (Bild)' },
   { typ: 'gruppe', label: 'Tabelle (wiederholbare Einträge)' }
 ]
@@ -120,16 +122,35 @@ export interface Einstellungen {
   abschnitteBestaetigen: boolean
 }
 
+/**
+ * Feste Tabelle der Verwaltung (`infotabelle`), z. B. eine Uebersicht von
+ * Zustaendigkeiten: reiner Text je Zelle, Zeilenumbrueche bleiben erhalten.
+ * Bewusst KEIN HTML und kein Markdown -- die Frontends geben die Zellen als
+ * Text aus (kein v-html), es gibt also nichts, was ausgefuehrt werden koennte.
+ * Wie `info` traegt sie keine Daten und kommt nicht in die DOCX (feste
+ * Inhalte gehoeren dort in die Vorlage).
+ */
+export interface HinweisTabelle {
+  /** Die erste Zeile ist die Kopfzeile. */
+  kopfzeile: boolean
+  /** Zeilen x Spalten; nach dem Normalisieren immer rechteckig. */
+  zeilen: string[][]
+}
+
 export interface Feld {
   /** Stabile ID, bleibt ueber alle Formularversionen gleich. */
   id: string
   /**
-   * Interne Bezeichnung = Platzhaltername in der DOCX. Leer bei `info`.
+   * Interne Bezeichnung = Platzhaltername in der DOCX. Ohne Bedeutung bei
+   * `info` und `infotabelle`.
    * Ein `foto` belegt zusaetzlich `${key}_extension` (nur in der DOCX).
    */
   key: string
   label: string
-  /** Hilfetext unter dem Feld; bei `info` der angezeigte Text. */
+  /**
+   * Hilfetext unter dem Feld; bei `info` der angezeigte Text, bei
+   * `infotabelle` die Erlaeuterung ueber der Tabelle.
+   */
   hilfe: string
   typ: FeldTyp
   pflicht: boolean
@@ -147,6 +168,8 @@ export interface Feld {
   maxEintraege: number
   /** Nur `gruppe`: Bezeichnung eines Eintrags, z. B. "Gruppenraum". */
   eintragLabel: string
+  /** Nur `infotabelle`: der feste Inhalt. Sonst leer (keine Zeilen). */
+  tabelle: HinweisTabelle
   regeln: Regeln
   erinnerung: Erinnerung
 }
@@ -207,6 +230,14 @@ export const GRENZEN = {
   /** Spalten je Tabelle */
   maxSpalten: 50,
   maxOptionen: 100,
+  /**
+   * Hinweis-Tabelle (`infotabelle`). Sie liegt in der Definition, nicht in
+   * den Daten: voll ausgereizt sind das 500 000 Zeichen je Tabelle, die
+   * Speicher-Route des Builders nimmt 2 MB an.
+   */
+  hinweisZeilen: 50,
+  hinweisSpalten: 10,
+  hinweisZelleLaenge: 1000,
   /** Datumsausdruck in Regeln ("+14d", "2026-12-31") */
   regelAusdruckLaenge: 20,
   /** Eintraege in erinnerung.tageVorher */
@@ -245,7 +276,24 @@ export function slug(text: string): string {
 export const hatOptionen = (typ: FeldTyp): boolean =>
   typ === 'select' || typ === 'radio' || typ === 'multiselect'
 
-export const hatDaten = (typ: FeldTyp): boolean => typ !== 'info'
+/**
+ * Reine Anzeige-Typen: fester Inhalt der Verwaltung, keine Antwort des
+ * Kreises. Sie haben keinen Wert, keine Pflicht, zaehlen nicht fuer den
+ * Fortschritt, sind kein Platzhalter und keine Tabellenspalte.
+ */
+export const istAnzeige = (typ: FeldTyp): boolean =>
+  typ === 'info' || typ === 'infotabelle'
+
+export const hatDaten = (typ: FeldTyp): boolean => !istAnzeige(typ)
+
+/** Spaltenzahl einer Hinweis-Tabelle (laengste Zeile); 0 ohne Tabelle. */
+export function hinweisSpalten(t: HinweisTabelle | undefined | null): number {
+  const zeilen = Array.isArray(t?.zeilen) ? t.zeilen : []
+  return zeilen.reduce(
+    (max, z) => Math.max(max, Array.isArray(z) ? z.length : 0),
+    0
+  )
+}
 
 /* --------------------------------------------------------------- Foto ---- */
 
@@ -539,16 +587,40 @@ function normalisiereErinnerung(roh: any, typ: FeldTyp): Erinnerung {
   }
 }
 
+/**
+ * Inhalt einer Hinweis-Tabelle: hoechstens hinweisZeilen x hinweisSpalten,
+ * jede Zelle ein bereinigter Text (alles andere wird zu ''), kurze Zeilen
+ * werden aufgefuellt -- die Anzeige bekommt immer ein Rechteck. Andere Typen
+ * tragen keine Tabelle.
+ */
+function normalisiereHinweisTabelle(roh: any, typ: FeldTyp): HinweisTabelle {
+  if (typ !== 'infotabelle') return { kopfzeile: false, zeilen: [] }
+  const zeilen: unknown[][] = (Array.isArray(roh?.zeilen) ? roh.zeilen : [])
+    .slice(0, GRENZEN.hinweisZeilen)
+    .map((z: unknown) =>
+      Array.isArray(z) ? z.slice(0, GRENZEN.hinweisSpalten) : []
+    )
+  const spalten = zeilen.reduce((max, z) => Math.max(max, z.length), 0)
+  return {
+    kopfzeile: roh?.kopfzeile === true,
+    zeilen: zeilen.map((z) =>
+      Array.from({ length: spalten }, (_, i) =>
+        str(z[i], GRENZEN.hinweisZelleLaenge)
+      )
+    )
+  }
+}
+
 function normalisiereFeld(roh: any, inTabelle: boolean): Feld {
   let typ: FeldTyp = TYPEN.has(roh?.typ) ? roh.typ : 'text'
-  if (inTabelle && (typ === 'gruppe' || typ === 'info')) typ = 'text'
+  if (inTabelle && (typ === 'gruppe' || istAnzeige(typ))) typ = 'text'
   return {
     id: idOderNeu(roh?.id),
     key: str(roh?.key, GRENZEN.keyLaenge).trim(),
     label: str(roh?.label, GRENZEN.labelLaenge),
     hilfe: str(roh?.hilfe, GRENZEN.hilfeLaenge),
     typ,
-    pflicht: typ !== 'info' && roh?.pflicht === true,
+    pflicht: hatDaten(typ) && roh?.pflicht === true,
     optionen: hatOptionen(typ)
       ? (Array.isArray(roh?.optionen) ? roh.optionen : [])
           .slice(0, GRENZEN.maxOptionen)
@@ -575,6 +647,7 @@ function normalisiereFeld(roh: any, inTabelle: boolean): Feld {
       typ === 'gruppe'
         ? str(roh?.eintragLabel, GRENZEN.eintragLabelLaenge)
         : '',
+    tabelle: normalisiereHinweisTabelle(roh?.tabelle, typ),
     regeln: normalisiereRegeln(roh?.regeln, typ),
     erinnerung: normalisiereErinnerung(roh?.erinnerung, typ)
   }
@@ -825,6 +898,22 @@ export function pruefeDefinition(
     belegeKey: (k: string, herkunft: string, wo: Problem) => void
   ) => {
     pruefeId(f.id, wo)
+    if (f.typ === 'infotabelle') {
+      // Die Ueberschrift ist freiwillig; ohne Inhalt waere das Feld aber ein
+      // leerer Kasten im Formular. `?.`: ein aelterer Stand (Sicherung im
+      // Browser) kennt die Eigenschaft noch nicht.
+      const name = f.label.trim() || 'Hinweis-Tabelle'
+      const zeilen = Array.isArray(f.tabelle?.zeilen) ? f.tabelle.zeilen : []
+      if (zeilen.length === 0 || hinweisSpalten(f.tabelle) === 0) {
+        fehler.push({
+          ...wo,
+          text: `${name}: Die Tabelle hat keine Zeilen oder Spalten.`
+        })
+      } else if (zeilen.every((z) => z.every((c) => !String(c ?? '').trim()))) {
+        warnungen.push({ ...wo, text: `${name}: Alle Zellen sind leer.` })
+      }
+      return
+    }
     if (!f.label.trim()) {
       fehler.push({ ...wo, text: 'Ein Feld hat keine Beschriftung.' })
     }
@@ -984,7 +1073,7 @@ export function pruefeDefinition(
   }
   if (platzhalter.length > 0) {
     for (const f of alleFelder(def)) {
-      if (f.typ === 'info' || !f.key || !KEY_RE.test(f.key)) continue
+      if (!hatDaten(f.typ) || !f.key || !KEY_RE.test(f.key)) continue
       const genutzt =
         inVorlagen.has(f.key) ||
         (f.typ === 'foto' && inVorlagen.has(`${f.key}_extension`)) ||
@@ -1297,7 +1386,10 @@ function umschluesseln(felderNeu: Feld[], felderAlt: Feld[], q: any) {
  * ordneZu). Bei geaenderten Typen wird umgewandelt, soweit das ohne Raten
  * geht: Zahl/Datum/Auswahl -> Text wie im PDF, Text -> Zahl/Datum wenn er
  * eine(s) ist, Text -> Auswahl bei Treffer auf Schluessel oder Beschriftung.
- * Ein Foto bleibt nur ein Foto (alsText gibt dafuer leer).
+ * Ein Foto bleibt nur ein Foto (alsText gibt dafuer leer). Anzeige-Typen
+ * (`info`, `infotabelle`) haben keine Daten: ein neues Hinweisfeld aendert
+ * an den uebernommenen Antworten nichts, und ein Feld, das zu einem wird,
+ * verliert seine Antwort.
  * Entfernte Felder und Optionen fallen weg. Ein Feld, das zwischen oberster
  * Ebene und Tabellenspalte wandert, wird nicht uebernommen.
  */
@@ -1325,6 +1417,7 @@ export function istAusgefuellt(f: Feld, daten: any): boolean {
   const q = daten && typeof daten === 'object' ? daten : {}
   switch (f.typ) {
     case 'info':
+    case 'infotabelle':
       return true
     case 'checkbox':
       // Pflicht-Checkbox = Zustimmung: nur angekreuzt zaehlt. Eine freiwillige
