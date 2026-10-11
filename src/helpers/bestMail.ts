@@ -2,7 +2,7 @@ import mail from './mail'
 import { query } from './mysql'
 import worker from 'comlink:../workers/generation'
 import sql from 'sql-escape-tag'
-import { readFile } from 'fs/promises'
+import { ladeVorlage } from '../vorlagen/store'
 
 async function getVData(vID: number): Promise<any> {
   return query(
@@ -117,47 +117,53 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
 
   const preis = vData[`preis${type}`]
 
-  const file = await worker.generateDocumentPDF(
-    `./best-brief-${vData.briefID}.docx`,
-    {
-      heute: new Date()
-        .toISOString()
-        .split('T')[0]
-        .split('-')
-        .reverse()
-        .join('.'),
-      anmeldeID: aData.anmeldeID,
-      person: {
-        vorname: aData.vorname,
-        nachname: aData.nachname,
-        gebDat: gebDat.split('-').reverse().join('.'),
-        geschlecht: aData.geschlecht,
-        volljaehrig: beginMinus18 >= gebDat
-      },
-      adresse: {
-        strasse: aData.strasse,
-        plz: aData.plz,
-        ort: aData.ort
-      },
-      name: vData.name,
-      begin: beginStr,
-      ende: endeStr,
-      jahr: begin.split('-')[0],
-      ort: vData.ort,
-      anzahlung: vData.anzahlung + ',00',
-      restzahlung: preis - vData.anzahlung + ',00',
-      restzahlungsdatum: restzahlung.split('-').reverse().join('.'),
-      vegetarisch: aData.vegetarisch,
-      lebensmittelAllergien: aData.lebensmittelAllergien,
-      fahrgemeinschaften: aData.fahrgemeinschaften,
-      bemerkungen: aData.bemerkungen,
-      gesundheitsinformationen: aData.gesundheitsinformationen,
-      schwimmen: aData.schwimmen,
-      sichEntfernen: aData.sichEntfernen,
-      klettern: aData.klettern,
-      bootfahren: aData.bootFahren
-    }
-  )
+  // Vorlagen aus den Dateivorlagen (DB, sonst die Dateien im
+  // Arbeitsverzeichnis wie bisher). Alle drei vor dem Rendern holen: fehlt
+  // der Sicherungsschein des Jahres, soll der Brief gar nicht erst entstehen
+  // -- und die Meldung nennt, was fehlt.
+  const jahr = begin.split('-')[0]
+  const briefVorlage = await ladeVorlage(`brief.bestaetigung.${vData.briefID}`)
+  const tnBedingungen = await ladeVorlage('brief.tn-bedingungen')
+  const sicherungsschein = await ladeVorlage(`brief.sicherungsschein.${jahr}`)
+
+  const file = await worker.docxZuPdf(new Uint8Array(briefVorlage.inhalt), {
+    heute: new Date()
+      .toISOString()
+      .split('T')[0]
+      .split('-')
+      .reverse()
+      .join('.'),
+    anmeldeID: aData.anmeldeID,
+    person: {
+      vorname: aData.vorname,
+      nachname: aData.nachname,
+      gebDat: gebDat.split('-').reverse().join('.'),
+      geschlecht: aData.geschlecht,
+      volljaehrig: beginMinus18 >= gebDat
+    },
+    adresse: {
+      strasse: aData.strasse,
+      plz: aData.plz,
+      ort: aData.ort
+    },
+    name: vData.name,
+    begin: beginStr,
+    ende: endeStr,
+    jahr: begin.split('-')[0],
+    ort: vData.ort,
+    anzahlung: vData.anzahlung + ',00',
+    restzahlung: preis - vData.anzahlung + ',00',
+    restzahlungsdatum: restzahlung.split('-').reverse().join('.'),
+    vegetarisch: aData.vegetarisch,
+    lebensmittelAllergien: aData.lebensmittelAllergien,
+    fahrgemeinschaften: aData.fahrgemeinschaften,
+    bemerkungen: aData.bemerkungen,
+    gesundheitsinformationen: aData.gesundheitsinformationen,
+    schwimmen: aData.schwimmen,
+    sichEntfernen: aData.sichEntfernen,
+    klettern: aData.klettern,
+    bootfahren: aData.bootFahren
+  })
 
   let text = 'N/A'
 
@@ -217,13 +223,11 @@ async function createBriefFromData(aData: any, vData: any): Promise<void> {
     [
       { content: Buffer.from(file), filename: 'bestaetigung_rechnung.pdf' },
       {
-        content: await readFile('./tnBedingungen.pdf'),
+        content: tnBedingungen.inhalt,
         filename: 'TeilnahmeBedingungen.pdf'
       },
       {
-        content: await readFile(
-          `./sicherungsschein_${begin.split('-')[0]}.pdf`
-        ),
+        content: sicherungsschein.inhalt,
         filename: 'Sicherungsschein.pdf'
       }
     ],

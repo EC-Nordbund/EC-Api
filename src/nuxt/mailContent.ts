@@ -1,40 +1,10 @@
 /* eslint-disable */
-const dsgvoTN = require('remark')()
-  .use(require('remark-html'))
-  .processSync(
-    '\n' +
-      require('fs')
-        .readFileSync('./teilnehmer.md', 'utf8')
-        .replace(/\n\s*#/, '\n##')
-  )
-  .toString()
-const dsgvoMA = require('remark')()
-  .use(require('remark-html'))
-  .processSync(
-    '\n' +
-      require('fs')
-        .readFileSync('./mitarbeiter.md', 'utf8')
-        .replace(/\n\s*#/, '\n##')
-  )
-  .toString()
-const dsgvoMAOrt = require('remark')()
-  .use(require('remark-html'))
-  .processSync(
-    '\n' +
-      require('fs')
-        .readFileSync('./mitglieder.md', 'utf8')
-        .replace(/\n\s*#/, '\n##')
-  )
-  .toString()
-const footer = require('remark')()
-  .use(require('remark-html'))
-  .processSync(
-    '\n' +
-      require('fs')
-        .readFileSync('./kontakt.md', 'utf8')
-        .replace(/\n\s*#/, '\n##')
-  )
-  .toString()
+import { vorlageAlsHtml } from '../vorlagen/markdown'
+
+// Datenschutztexte und Fusszeile kommen seit 09/2026 aus den Dateivorlagen
+// (Datenbank, sonst die .md-Dateien im Arbeitsverzeichnis wie bisher) und
+// werden je Mail geladen statt einmal beim Start -- so greift eine Aenderung
+// aus der Verwaltung sofort.
 
 const erlaubnisse = [
   'klettern',
@@ -57,6 +27,8 @@ export async function createMailContentTN(
   data: any,
   token: string
 ): Promise<string> {
+  const dsgvoTN = await vorlageAlsHtml('mail.dsgvo.teilnehmer')
+  const footer = await vorlageAlsHtml('mail.kontakt')
   return require('inline-css')(
     `
     <html lang="de">
@@ -285,6 +257,8 @@ export async function createMailContentMA(
   data: any,
   token: string
 ): Promise<string> {
+  const dsgvoMA = await vorlageAlsHtml('mail.dsgvo.mitarbeiter')
+  const footer = await vorlageAlsHtml('mail.kontakt')
   return require('inline-css')(
     `
     <html lang="de">
@@ -466,6 +440,8 @@ export async function createMailContentMAOrt(
   data: any,
   token: string
 ): Promise<string> {
+  const dsgvoMAOrt = await vorlageAlsHtml('mail.dsgvo.mitglieder')
+  const footer = await vorlageAlsHtml('mail.kontakt')
   return require('inline-css')(
     `
     <html lang="de">
@@ -632,6 +608,7 @@ export async function createMailContentMAOrt(
 }
 
 export async function erfolgMailContent(data: any): Promise<string> {
+  const footer = await vorlageAlsHtml('mail.kontakt')
   return require('inline-css')(
     `
     <html lang="de">

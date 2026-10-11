@@ -450,17 +450,10 @@ function pruefeDocx(inhalt: unknown): Buffer {
   return inhalt
 }
 
-/** max_allowed_packet der Pool-Verbindungen (Session-Wert) in Bytes. */
-export async function maxPaketBytes(): Promise<number> {
-  const [{ p }] = await queryP<{ p: number }>(
-    'SELECT @@max_allowed_packet AS p'
-  )
-  return Number(p)
-}
-
-/** Hex-Kodierung im Treiber: doppelte Groesse plus Luft fuer das Statement. */
-export const passtInPaket = (bytes: number, maxPaket: number): boolean =>
-  bytes * 2 + 64 * 1024 <= maxPaket
+// Paketpruefung liegt seit den Dateivorlagen in helpers/paket.ts; hier
+// re-exportiert, damit stand.ts unveraendert bleibt.
+import { maxPaketBytes, passtInPaket } from '../helpers/paket'
+export { maxPaketBytes, passtInPaket }
 
 /**
  * Passt die Datei durch max_allowed_packet?
